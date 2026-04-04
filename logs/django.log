@@ -1,0 +1,77 @@
+INFO 2026-03-31 08:45:45,291 views 57896 58596 User logged in: john.doe@example.com
+INFO 2026-04-01 16:09:39,707 views 63368 38760 User logged in: john.doe@example.com
+INFO 2026-04-01 16:10:31,658 views 63368 45924 User logged out: john.doe@example.com
+INFO 2026-04-01 16:12:44,677 views 59412 5232 User logged in: john.doe@example.com
+INFO 2026-04-01 16:29:20,923 views 44992 64536 User logged out: john.doe@example.com
+INFO 2026-04-01 16:40:33,816 views 44992 11148 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-01 17:20:18,129 views 44992 13104 User logged out: john.doe@example.com
+INFO 2026-04-01 17:23:00,458 views 44992 13104 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-01 17:48:40,645 views 44992 54004 User logged out: john.doe@example.com
+INFO 2026-04-01 17:48:57,797 views 44992 54004 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-01 18:15:47,917 views 44992 13128 User logged out: john.doe@example.com
+INFO 2026-04-01 18:16:15,790 views 44992 13128 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-01 18:59:58,695 views 44992 67096 User logged out: kamzycoded@gmail.com
+INFO 2026-04-01 19:00:25,205 views 44992 67096 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-01 19:48:32,864 views 44992 47084 User logged out: kamzycoded@gmail.com
+INFO 2026-04-01 19:53:46,629 views 44992 24292 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-01 21:01:02,223 views 44992 19988 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-01 21:49:29,167 views 55196 2040 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 10:38:48,021 views 52556 7044 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 11:33:44,002 signals 52556 32960 Meeting created: cyberspace by kamzycoded@gmail.com
+INFO 2026-04-02 11:36:17,765 signals 52556 46164 Meeting created: cyberspace by kamzycoded@gmail.com
+INFO 2026-04-02 11:36:17,793 signals 52556 46164 Participant kamzycoded@gmail.com joined meeting cyberspace
+INFO 2026-04-02 11:36:54,587 signals 55020 15264 Meeting created: cyberspace by kamzycoded@gmail.com
+INFO 2026-04-02 11:36:54,611 signals 55020 15264 Participant kamzycoded@gmail.com joined meeting cyberspace
+INFO 2026-04-02 11:45:08,452 views 66864 30028 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 11:46:26,245 signals 66864 38104 Meeting created: cyberspace by kamzycoded@gmail.com
+INFO 2026-04-02 11:46:26,261 signals 66864 38104 Participant kamzycoded@gmail.com joined meeting cyberspace
+INFO 2026-04-02 12:09:02,434 signals 66864 12340 Meeting deleted: cyberspace
+INFO 2026-04-02 12:09:07,993 signals 66864 66216 Meeting deleted: cyberspace
+INFO 2026-04-02 12:09:11,749 signals 66864 66216 Meeting deleted: cyberspace
+INFO 2026-04-02 14:35:07,799 views 66864 32056 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 15:33:45,595 signals 14004 58476 Participant kamzycoded@gmail.com joined meeting cyberspace
+INFO 2026-04-02 15:51:49,397 views 35052 57532 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 17:03:36,002 views 46204 42956 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-02 17:18:16,480 signals 46204 13768 Meeting created: software development by kamzycoded@gmail.com
+INFO 2026-04-02 17:18:16,489 signals 46204 13768 Participant kamzycoded@gmail.com joined meeting software development
+INFO 2026-04-02 17:40:37,094 views 54036 14740 User logged out: kamzycoded@gmail.com
+INFO 2026-04-02 17:41:14,083 views 54036 14740 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-02 18:54:24,823 views 54036 65652 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-02 18:58:45,450 views 54036 66820 User logged out: john.doe@example.com
+INFO 2026-04-03 11:33:02,601 views 54036 67572 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 12:04:38,573 signals 54036 43444 Participant john.doe@example.com joined meeting software development
+INFO 2026-04-03 12:16:58,169 views 54036 45000 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 13:17:32,996 views 51772 15492 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 13:59:07,817 views 14576 37180 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 14:06:16,699 signals 14576 6172 Participant john.doe@example.com joined meeting cyberspace
+INFO 2026-04-03 14:37:59,493 views 11528 46356 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 14:52:37,324 views 11528 47020 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 14:55:04,928 signals 11528 42492 Meeting deleted: cyberspace
+INFO 2026-04-03 14:55:08,594 signals 11528 66980 Meeting deleted: software development
+INFO 2026-04-03 14:56:06,686 signals 11528 4724 Meeting created: introduction to cybersecurity by kamzycoded@gmail.com
+INFO 2026-04-03 14:56:06,701 signals 11528 4724 Participant kamzycoded@gmail.com joined meeting introduction to cybersecurity
+INFO 2026-04-03 14:59:42,082 views 11528 44160 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 15:00:10,162 signals 11528 56380 Participant john.doe@example.com joined meeting introduction to cybersecurity
+INFO 2026-04-03 15:16:58,926 signals 50368 63000 Meeting deleted: introduction to cybersecurity
+INFO 2026-04-03 15:17:46,487 signals 50368 21740 Meeting created: introduction to cybersecurity by kamzycoded@gmail.com
+INFO 2026-04-03 15:17:46,514 signals 50368 21740 Participant kamzycoded@gmail.com joined meeting introduction to cybersecurity
+INFO 2026-04-03 15:22:37,946 signals 50368 55664 Participant john.doe@example.com joined meeting introduction to cybersecurity
+INFO 2026-04-03 15:23:13,977 views 50368 21872 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 15:24:06,963 views 50368 45072 User logged out: kamzycoded@gmail.com
+INFO 2026-04-03 15:24:14,553 views 50368 55664 User logged out: john.doe@example.com
+INFO 2026-04-03 15:24:43,524 views 50368 45072 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 15:25:01,665 views 50368 55664 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 15:27:14,573 views 50368 21872 User logged out: kamzycoded@gmail.com
+INFO 2026-04-03 15:27:28,153 views 50368 21872 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 15:30:23,699 views 50368 23424 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 15:52:57,648 views 18296 32140 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-03 15:54:33,636 signals 18296 2220 Meeting created: local room tester by kamzycoded@gmail.com
+INFO 2026-04-03 15:54:33,637 signals 18296 2220 Participant kamzycoded@gmail.com joined meeting local room tester
+INFO 2026-04-03 15:54:51,040 signals 18296 9236 Participant john.doe@example.com joined meeting local room tester
+INFO 2026-04-03 16:35:16,245 views 52208 22204 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-03 16:40:07,696 views 52208 19632 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-04 00:03:14,764 views 52208 39816 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-04 00:03:23,406 views 52208 15736 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-04-04 01:04:48,025 views 15424 9448 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-04 02:05:14,302 views 16284 44208 User logged in: john.doe@example.com (role=trainee)
+INFO 2026-04-04 02:13:19,555 views 16284 37088 User logged in: kamzycoded@gmail.com (role=instructor)

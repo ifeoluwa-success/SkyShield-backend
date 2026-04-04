@@ -1,0 +1,407 @@
+/*
+    DJANGO ADMIN - YOUR THEME ONLY - COMPLETE FILE
+    Original Django structure PERFECTLY preserved
+    YOUR colors with enhanced 3D effects
+    Full theme switcher support
+*/
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ==========================================================================
+   YOUR COLOR VARIABLES - Applied to Django's structure
+   ========================================================================== */
+
+html[data-theme="light"],
+:root {
+    /* YOUR EXACT COLORS */
+    --bg-primary: #F7F7F7 !important;
+    --bg-secondary: #FFFFFF !important;
+    --bg-tertiary: #E5E5E5 !important;
+    --text-primary: #0D0D0D !important;
+    --text-secondary: #A3A3A3 !important;
+    --border-color: #D4D4D4 !important;
+    --accent-blue: #18A0FB !important;
+    --accent-purple: #A259FF !important;
+    --accent-green: #0ACF83 !important;
+    --accent-red: #F24E1E !important;
+    --accent-yellow: #FFBC2C !important;
+    --aviation-blue: #1E40AF !important;
+    --gradient-primary: linear-gradient(135deg, #A259FF 0%, #18A0FB 100%) !important;
+    --gradient-secondary: linear-gradient(135deg, #A259FF 0%, #1E40AF 100%) !important;
+    
+    /* ENHANCED 3D SHADOWS - More depth, no float */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.18) !important;
+    --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+    --shadow-3d-blue: 0 20px 40px rgba(24, 160, 251, 0.2) !important;
+    --shadow-3d-purple: 0 20px 40px rgba(162, 89, 255, 0.2) !important;
+    
+    /* INSET SHADOWS for depth without float */
+    --inset-light: inset 0 1px 3px rgba(255, 255, 255, 0.5) !important;
+    --inset-dark: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    --inset-deep: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+
+    /* DJANGO VARIABLES - ALL replaced with YOUR colors */
+    --primary: var(--accent-purple) !important;
+    --secondary: var(--aviation-blue) !important;
+    --accent: var(--accent-yellow) !important;
+    --primary-fg: #FFFFFF !important;
+
+    --body-fg: var(--text-primary) !important;
+    --body-bg: var(--bg-primary) !important;
+    --body-quiet-color: var(--text-secondary) !important;
+    --body-loud-color: var(--text-primary) !important;
+
+    --header-color: #FFFFFF !important;
+    --header-branding-color: var(--accent-purple) !important;
+    --header-bg: var(--aviation-blue) !important;
+    --header-link-color: #FFFFFF !important;
+
+    --breadcrumbs-fg: rgba(255, 255, 255, 0.9) !important;
+    --breadcrumbs-link-fg: #FFFFFF !important;
+    --breadcrumbs-bg: var(--accent-purple) !important;
+
+    --link-fg: var(--accent-blue) !important;
+    --link-hover-color: var(--accent-purple) !important;
+    --link-selected-fg: var(--aviation-blue) !important;
+
+    --hairline-color: var(--border-color) !important;
+    --border-color: var(--border-color) !important;
+
+    --error-fg: var(--accent-red) !important;
+
+    --message-success-bg: rgba(10, 207, 131, 0.1) !important;
+    --message-warning-bg: rgba(255, 188, 44, 0.1) !important;
+    --message-error-bg: rgba(242, 78, 30, 0.1) !important;
+
+    --darkened-bg: var(--bg-tertiary) !important;
+    --selected-bg: rgba(162, 89, 255, 0.1) !important;
+    --selected-row: rgba(162, 89, 255, 0.05) !important;
+
+    --button-fg: #FFFFFF !important;
+    --button-bg: var(--accent-blue) !important;
+    --button-hover-bg: var(--accent-purple) !important;
+    --default-button-bg: var(--accent-purple) !important;
+    --default-button-hover-bg: var(--aviation-blue) !important;
+    --close-button-bg: var(--text-secondary) !important;
+    --close-button-hover-bg: var(--text-primary) !important;
+    --delete-button-bg: var(--accent-red) !important;
+    --delete-button-hover-bg: #dc2626 !important;
+
+    --object-tools-fg: var(--button-fg) !important;
+    --object-tools-bg: var(--close-button-bg) !important;
+    --object-tools-hover-bg: var(--close-button-hover-bg) !important;
+
+    --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    --font-family-monospace: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace !important;
+}
+
+/* ==========================================================================
+   YOUR DARK THEME - Using YOUR color palette
+   ========================================================================== */
+
+html[data-theme="dark"] {
+    /* YOUR DARK COLORS - Based on your light palette */
+    --bg-primary: #1a1a1a !important;        /* Dark version of #F7F7F7 */
+    --bg-secondary: #2d2d2d !important;      /* Dark version of #FFFFFF */
+    --bg-tertiary: #404040 !important;       /* Dark version of #E5E5E5 */
+    --text-primary: #FFFFFF !important;      /* White for dark mode */
+    --text-secondary: #B0B0B0 !important;    /* Light gray for secondary text */
+    --border-color: #404040 !important;      /* Dark border */
+    
+    /* YOUR ACCENT COLORS - Slightly adjusted for dark mode */
+    --accent-blue: #3B82F6 !important;        /* Brighter blue for dark mode */
+    --accent-purple: #A259FF !important;      /* Keep your purple (works well) */
+    --accent-green: #0ACF83 !important;       /* Keep your green (works well) */
+    --accent-red: #F24E1E !important;         /* Keep your red (works well) */
+    --accent-yellow: #FFBC2C !important;      /* Keep your yellow (works well) */
+    --aviation-blue: #2563EB !important;      /* Brighter aviation blue */
+    
+    /* YOUR GRADIENTS - Adjusted for dark mode */
+    --gradient-primary: linear-gradient(135deg, #A259FF 0%, #3B82F6 100%) !important;
+    --gradient-secondary: linear-gradient(135deg, #A259FF 0%, #2563EB 100%) !important;
+    
+    /* ENHANCED 3D SHADOWS - Dark mode versions */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35) !important;
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.45) !important;
+    --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.5) !important;
+    --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.55) !important;
+    --shadow-3d-blue: 0 20px 40px rgba(59, 130, 246, 0.3) !important;
+    --shadow-3d-purple: 0 20px 40px rgba(162, 89, 255, 0.3) !important;
+    
+    /* INSET SHADOWS - Dark mode */
+    --inset-light: inset 0 1px 3px rgba(255, 255, 255, 0.1) !important;
+    --inset-dark: inset 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    --inset-deep: inset 0 2px 4px rgba(0, 0, 0, 0.7) !important;
+
+    /* DJANGO VARIABLES - All using YOUR dark colors */
+    --primary: var(--accent-purple) !important;
+    --secondary: var(--aviation-blue) !important;
+    --accent: var(--accent-yellow) !important;
+    --primary-fg: #FFFFFF !important;
+
+    --body-fg: var(--text-primary) !important;
+    --body-bg: var(--bg-primary) !important;
+    --body-quiet-color: var(--text-secondary) !important;
+    --body-loud-color: var(--text-primary) !important;
+
+    --header-color: #FFFFFF !important;
+    --header-branding-color: var(--accent-purple) !important;
+    --header-bg: var(--aviation-blue) !important;
+    --header-link-color: #FFFFFF !important;
+
+    --breadcrumbs-fg: rgba(255, 255, 255, 0.9) !important;
+    --breadcrumbs-link-fg: #FFFFFF !important;
+    --breadcrumbs-bg: var(--accent-purple) !important;
+
+    --link-fg: var(--accent-blue) !important;
+    --link-hover-color: var(--accent-purple) !important;
+    --link-selected-fg: var(--aviation-blue) !important;
+
+    --hairline-color: var(--border-color) !important;
+    --border-color: var(--border-color) !important;
+
+    --error-fg: var(--accent-red) !important;
+
+    --message-success-bg: rgba(10, 207, 131, 0.2) !important;
+    --message-warning-bg: rgba(255, 188, 44, 0.2) !important;
+    --message-error-bg: rgba(242, 78, 30, 0.2) !important;
+
+    --darkened-bg: var(--bg-tertiary) !important;
+    --selected-bg: rgba(162, 89, 255, 0.2) !important;
+    --selected-row: rgba(162, 89, 255, 0.1) !important;
+
+    --button-fg: #FFFFFF !important;
+    --button-bg: var(--accent-blue) !important;
+    --button-hover-bg: var(--accent-purple) !important;
+    --default-button-bg: var(--accent-purple) !important;
+    --default-button-hover-bg: var(--aviation-blue) !important;
+    --close-button-bg: #4B5563 !important;
+    --close-button-hover-bg: #6B7280 !important;
+    --delete-button-bg: var(--accent-red) !important;
+    --delete-button-hover-bg: #dc2626 !important;
+
+    --object-tools-fg: var(--button-fg) !important;
+    --object-tools-bg: var(--close-button-bg) !important;
+    --object-tools-hover-bg: var(--close-button-hover-bg) !important;
+}
+
+/* ==========================================================================
+   SYSTEM PREFERENCE DARK THEME - Using YOUR colors
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] {
+        /* YOUR DARK COLORS - Same as dark theme */
+        --bg-primary: #1a1a1a !important;
+        --bg-secondary: #2d2d2d !important;
+        --bg-tertiary: #404040 !important;
+        --text-primary: #FFFFFF !important;
+        --text-secondary: #B0B0B0 !important;
+        --border-color: #404040 !important;
+        
+        --accent-blue: #3B82F6 !important;
+        --accent-purple: #A259FF !important;
+        --accent-green: #0ACF83 !important;
+        --accent-red: #F24E1E !important;
+        --accent-yellow: #FFBC2C !important;
+        --aviation-blue: #2563EB !important;
+        
+        --gradient-primary: linear-gradient(135deg, #A259FF 0%, #3B82F6 100%) !important;
+        --gradient-secondary: linear-gradient(135deg, #A259FF 0%, #2563EB 100%) !important;
+        
+        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35) !important;
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+        --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.45) !important;
+        --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.5) !important;
+        --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.55) !important;
+        --shadow-3d-blue: 0 20px 40px rgba(59, 130, 246, 0.3) !important;
+        --shadow-3d-purple: 0 20px 40px rgba(162, 89, 255, 0.3) !important;
+        
+        --inset-light: inset 0 1px 3px rgba(255, 255, 255, 0.1) !important;
+        --inset-dark: inset 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+        --inset-deep: inset 0 2px 4px rgba(0, 0, 0, 0.7) !important;
+
+        --primary: var(--accent-purple) !important;
+        --secondary: var(--aviation-blue) !important;
+        --accent: var(--accent-yellow) !important;
+        --primary-fg: #FFFFFF !important;
+
+        --body-fg: var(--text-primary) !important;
+        --body-bg: var(--bg-primary) !important;
+        --body-quiet-color: var(--text-secondary) !important;
+        --body-loud-color: var(--text-primary) !important;
+
+        --header-color: #FFFFFF !important;
+        --header-branding-color: var(--accent-purple) !important;
+        --header-bg: var(--aviation-blue) !important;
+        --header-link-color: #FFFFFF !important;
+
+        --breadcrumbs-fg: rgba(255, 255, 255, 0.9) !important;
+        --breadcrumbs-link-fg: #FFFFFF !important;
+        --breadcrumbs-bg: var(--accent-purple) !important;
+
+        --link-fg: var(--accent-blue) !important;
+        --link-hover-color: var(--accent-purple) !important;
+        --link-selected-fg: var(--aviation-blue) !important;
+
+        --hairline-color: var(--border-color) !important;
+        --border-color: var(--border-color) !important;
+
+        --error-fg: var(--accent-red) !important;
+
+        --message-success-bg: rgba(10, 207, 131, 0.2) !important;
+        --message-warning-bg: rgba(255, 188, 44, 0.2) !important;
+        --message-error-bg: rgba(242, 78, 30, 0.2) !important;
+
+        --darkened-bg: var(--bg-tertiary) !important;
+        --selected-bg: rgba(162, 89, 255, 0.2) !important;
+        --selected-row: rgba(162, 89, 255, 0.1) !important;
+
+        --button-fg: #FFFFFF !important;
+        --button-bg: var(--accent-blue) !important;
+        --button-hover-bg: var(--accent-purple) !important;
+        --default-button-bg: var(--accent-purple) !important;
+        --default-button-hover-bg: var(--aviation-blue) !important;
+        --close-button-bg: #4B5563 !important;
+        --close-button-hover-bg: #6B7280 !important;
+        --delete-button-bg: var(--accent-red) !important;
+        --delete-button-hover-bg: #dc2626 !important;
+
+        --object-tools-fg: var(--button-fg) !important;
+        --object-tools-bg: var(--close-button-bg) !important;
+        --object-tools-hover-bg: var(--close-button-hover-bg) !important;
+    }
+}
+
+/* ==========================================================================
+   THEME SWITCH - Using YOUR colors
+   ========================================================================== */
+
+.theme-toggle {
+    cursor: pointer !important;
+    border: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    vertical-align: middle !important;
+    margin-inline-start: 5px !important;
+    margin-top: -1px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    transition: all 0.2s ease !important;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-toggle:focus {
+    outline: 3px solid var(--accent-blue) !important;
+    outline-offset: 2px !important;
+}
+
+.theme-toggle svg {
+    vertical-align: middle !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    display: none !important;
+}
+
+/* Hide screen reader text */
+.theme-toggle .visually-hidden {
+    display: none !important;
+}
+
+html[data-theme="auto"] .theme-toggle .theme-label-when-auto {
+    display: block !important;
+}
+
+html[data-theme="dark"] .theme-toggle .theme-label-when-dark {
+    display: block !important;
+}
+
+html[data-theme="light"] .theme-toggle .theme-label-when-light {
+    display: block !important;
+}
+
+/* ICONS - Using YOUR colors */
+.theme-toggle svg.theme-icon-when-auto,
+.theme-toggle svg.theme-icon-when-dark,
+.theme-toggle svg.theme-icon-when-light {
+    fill: var(--header-link-color) !important;
+    color: var(--header-bg) !important;
+}
+
+html[data-theme="auto"] .theme-toggle svg.theme-icon-when-auto {
+    display: block !important;
+}
+
+html[data-theme="dark"] .theme-toggle svg.theme-icon-when-dark {
+    display: block !important;
+}
+
+html[data-theme="light"] .theme-toggle svg.theme-icon-when-light {
+    display: block !important;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    color: var(--body-fg) !important;
+    background-color: var(--body-bg) !important;
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR - Your Colors
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-tertiary) !important;
+    box-shadow: var(--inset-dark) !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-blue) !important;
+    border-radius: 6px !important;
+    box-shadow: var(--inset-light) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-purple) !important;
+}
+
+/* ==========================================================================
+   SELECTION - Your Colors
+   ========================================================================== */
+
+::selection {
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+}
+
+::-moz-selection {
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+}

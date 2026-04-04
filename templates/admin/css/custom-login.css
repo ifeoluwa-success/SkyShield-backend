@@ -1,0 +1,778 @@
+/* ============================================================= */
+/* SKYSHIELD EDU — DJANGO ADMIN LOGIN (HERO PAGE STYLE)         */
+/* ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ==========================================================================
+   COLOR VARIABLES - Using your SkyShield colors
+   ========================================================================== */
+
+:root {
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-500: #64748B;
+  --gray-700: #334155;
+  --gray-900: #0F172A;
+
+  --sky-blue: #1E40AF;
+  --sky-blue-dark: #1E3A8A;
+  --accent-purple: #8B5CF6;
+  --accent-purple-dark: #7C3AED;
+  --neon-blue: #00D1FF;
+  --neon-purple: #B026FF;
+  --accent-pink: #EC4899;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --shadow-3d: 0 20px 60px rgba(0,0,0,0.3);
+  --border-radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, 
+    var(--neon-blue) 0%, 
+    var(--sky-blue) 25%, 
+    var(--accent-purple) 50%, 
+    var(--neon-purple) 75%, 
+    var(--accent-pink) 100%);
+}
+
+/* ==========================================================================
+   DARK THEME VARIABLES
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --white: #0F172A;
+    --gray-100: #1E293B;
+    --gray-200: #334155;
+    --gray-300: #475569;
+    --gray-500: #94A3B8;
+    --gray-700: #E2E8F0;
+    --gray-900: #F1F5F9;
+  }
+}
+
+/* ==========================================================================
+   OVERRIDE DJANGO ADMIN LOGIN DEFAULTS
+   ========================================================================== */
+
+body.login {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+.login #container {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.login #header {
+  display: none !important;
+}
+
+.login #content {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.login #content-main {
+  float: none !important;
+  width: 100% !important;
+  background: transparent !important;
+}
+
+.login .errornote {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #ef4444 !important;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  margin-bottom: 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.login .errorlist {
+  margin: 5px 0 0 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.login .errorlist li {
+  color: #ef4444 !important;
+  font-size: 13px !important;
+  padding: 2px 0 !important;
+}
+
+/* ==========================================================================
+   LOGIN HERO SECTION
+   ========================================================================== */
+
+.login-hero-section {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--gray-900);
+  background-size: cover !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(30, 64, 175, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(0, 209, 255, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+}
+
+.login-content-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  gap: 100px;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   LEFT SIDE - WELCOME MESSAGE
+   ========================================================================== */
+
+.left-side {
+  flex: 1;
+  color: var(--white);
+  padding: 40px 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Badge Pill */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, 
+    rgba(30, 64, 175, 0.3) 0%, 
+    rgba(139, 92, 246, 0.3) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-pill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.7s ease;
+}
+
+.badge-pill:hover::before {
+  left: 100%;
+}
+
+.badge-text {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Main Headline */
+.main-headline {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: var(--white);
+  letter-spacing: -1.5px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gradient-text-sky {
+  background: var(--gradient-primary);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  position: relative;
+}
+
+/* Subtitle */
+.subtitle-text {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 580px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Trust Logos */
+.trust-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  opacity: 0.9;
+  margin-top: 40px;
+}
+
+.trust-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+}
+
+.logo-placeholder {
+  height: 40px;
+  width: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.logo-placeholder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.15), 
+    transparent);
+  transition: left 0.7s ease;
+}
+
+.logo-placeholder:hover::after {
+  left: 100%;
+}
+
+.faa-logo::before {
+  content: 'FAA';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.nato-logo::before {
+  content: 'NATO';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.iata-logo::before {
+  content: 'IATA';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.usaf-logo::before {
+  content: 'USAF';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ==========================================================================
+   RIGHT SIDE - LOGIN FORM
+   ========================================================================== */
+
+.right-side {
+  flex-shrink: 0;
+  width: 440px;
+  position: relative;
+  z-index: 20;
+}
+
+/* Premium 3D Glass Form */
+.login-form-card {
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.1) 100%);
+  padding: 40px;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 80px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.login-form-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--gradient-primary);
+  border-radius: calc(var(--border-radius) + 4px);
+  z-index: -1;
+  opacity: 0.3;
+  filter: blur(10px);
+}
+
+.login-form-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, 
+    rgba(0, 209, 255, 0.1) 0%, 
+    transparent 70%),
+    radial-gradient(circle at 70% 80%, 
+    rgba(176, 38, 255, 0.1) 0%, 
+    transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Form Elements */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.input-icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Django Form Field Overrides */
+#id_username, #id_password {
+  width: 100% !important;
+  padding: 16px 20px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 12px !important;
+  font-size: 15px !important;
+  color: var(--white) !important;
+  font-weight: 500 !important;
+  box-sizing: border-box !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+#id_username::placeholder, #id_password::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 400 !important;
+}
+
+#id_username:focus, #id_password:focus {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: var(--neon-blue) !important;
+  box-shadow: 
+    0 0 0 4px rgba(0, 209, 255, 0.25),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  outline: none !important;
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--white);
+  font-size: 14px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  accent-color: var(--neon-blue);
+}
+
+.forgot-link {
+  color: var(--white) !important;
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.forgot-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--neon-blue) !important;
+}
+
+/* Login Button */
+.btn-login {
+  background: var(--gradient-primary) !important;
+  color: var(--white) !important;
+  padding: 16px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  cursor: pointer !important;
+  margin-top: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 
+    0 10px 40px rgba(0, 209, 255, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  width: 100% !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  transition: left 0.7s ease;
+}
+
+.btn-login:hover::before {
+  left: 100%;
+}
+
+.btn-login svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-login:hover svg {
+  transform: translateX(5px);
+}
+
+/* Form Footer */
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+/* Form Decorations */
+.form-decoration-1 {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, 
+    rgba(0, 209, 255, 0.2) 0%, 
+    transparent 70%);
+  filter: blur(10px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.form-decoration-2 {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, 
+    rgba(176, 38, 255, 0.15) 0%, 
+    transparent 70%);
+  filter: blur(15px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Error Banner */
+.form-error-banner {
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+  .login-content-container {
+    gap: 80px;
+    padding: 0 24px;
+  }
+  .main-headline {
+    font-size: 56px;
+  }
+  .right-side {
+    width: 400px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .login-hero-section {
+    padding: 40px 0;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .login-content-container {
+    flex-direction: column;
+    padding: 0 32px;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .left-side {
+    padding: 40px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .subtitle-text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trust-logos {
+    justify-content: center;
+  }
+
+  .right-side {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-form-card {
+    padding: 30px 24px;
+  }
+  
+  .main-headline {
+    font-size: 48px;
+  }
+  
+  .subtitle-text {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-headline {
+    font-size: 40px;
+  }
+  
+  .trust-logos {
+    gap: 16px;
+  }
+  
+  .logo-placeholder {
+    height: 32px;
+    width: 48px;
+  }
+  
+  .login-content-container {
+    padding: 0 16px;
+  }
+  
+  .login-form-card {
+    padding: 24px 20px;
+  }
+  
+  #id_username, #id_password {
+    padding: 14px 16px !important;
+  }
+  
+  .btn-login {
+    padding: 14px !important;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-headline {
+    font-size: 32px;
+  }
+  
+  .badge-pill {
+    padding: 6px 16px;
+  }
+  
+  .badge-text {
+    font-size: 12px;
+  }
+  
+  .subtitle-text {
+    font-size: 16px;
+  }
+  
+  .login-form-card {
+    padding: 20px 16px;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  .login-hero-section {
+    background: white !important;
+  }
+  
+  .login-overlay {
+    display: none !important;
+  }
+  
+  .login-form-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  .badge-pill,
+  .trust-logos,
+  .form-decoration-1,
+  .form-decoration-2 {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--neon-blue) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}

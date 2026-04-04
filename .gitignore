@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+env/
+.venv/
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+
+# ─── Python ─────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ─── Virtual Environment ───────────────
+venv/
+env/
+.venv/
+
+# ─── Environment Variables ─────────────
+.env
+
+# ─── Django ────────────────────────────
+media/
+staticfiles/
+
+# Migrations (optional — usually KEEP them)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ─── Logs ──────────────────────────────
+*.log
+
+# ─── VS Code ───────────────────────────
+.vscode/
+
+# ─── OS Files ──────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Node (if you have frontend inside backend repo) ───
+node_modules/
+
+# ─── Build files ───────────────────────
+dist/
+build/
