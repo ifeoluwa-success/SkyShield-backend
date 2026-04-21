@@ -7,8 +7,7 @@ from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 from .models import (
     Scenario, SimulationSession, UserDecision, ScenarioFeedback,
     ScenarioAchievement, ScenarioComment, ScenarioBookmark
@@ -20,8 +19,7 @@ from .serializers import (
     SubmitDecisionSerializer, CompleteSimulationSerializer, HintRequestSerializer,
     SimulationSummarySerializer, CertificationSerializer
 )
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 import json
 
@@ -106,17 +104,17 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         return context
 
     @swagger_auto_schema(
-        operation_description="List all scenarios with optional filters",
-        manual_parameters=[
-            openapi.Parameter('category', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+        description="List all scenarios with optional filters",
+        parameters=[
+            OpenApiParameter('category', OpenApiTypes.STR,
                             description='Filter by category'),
-            openapi.Parameter('difficulty', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+            OpenApiParameter('difficulty', OpenApiTypes.STR,
                             description='Filter by difficulty level'),
-            openapi.Parameter('threat_type', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+            OpenApiParameter('threat_type', OpenApiTypes.STR,
                             description='Filter by threat type'),
-            openapi.Parameter('search', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+            OpenApiParameter('search', OpenApiTypes.STR,
                             description='Search in title, description, tags'),
-            openapi.Parameter('featured', openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN,
+            OpenApiParameter('featured', OpenApiTypes.BOOL,
                             description='Filter featured scenarios'),
         ],
         responses={200: ScenarioListSerializer(many=True)}
@@ -125,14 +123,14 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Get detailed scenario information",
+        description="Get detailed scenario information",
         responses={200: ScenarioDetailSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Get personalized scenario recommendations",
+        description="Get personalized scenario recommendations",
         responses={200: ScenarioListSerializer(many=True)}
     )
     @action(detail=False, methods=['get'])
@@ -178,16 +176,8 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        operation_description="Toggle bookmark for a scenario",
-        responses={200: openapi.Response(
-            description="Bookmark status",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'bookmarked': openapi.Schema(type=openapi.TYPE_BOOLEAN)
-                }
-            )
-        )}
+        description="Toggle bookmark for a scenario",
+        responses={200: OpenApiResponse(description="Bookmark status")}
     )
     @action(detail=True, methods=['post'])
     def bookmark(self, request, pk=None):
@@ -205,7 +195,7 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'bookmarked': True})
 
     @swagger_auto_schema(
-        operation_description="Get all bookmarked scenarios for the user",
+        description="Get all bookmarked scenarios for the user",
         responses={200: ScenarioListSerializer(many=True)}
     )
     @action(detail=False, methods=['get'])
@@ -246,8 +236,8 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
         ).select_related('scenario')
 
     @swagger_auto_schema(
-        operation_description="Start a new simulation session",
-        request_body=StartSimulationSerializer,
+        description="Start a new simulation session",
+        request=StartSimulationSerializer,
         responses={
             201: SimulationSessionSerializer(),
             400: "Bad Request",
@@ -320,25 +310,10 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_description="Submit a decision for the current step",
-        request_body=SubmitDecisionSerializer,
+        description="Submit a decision for the current step",
+        request=SubmitDecisionSerializer,
         responses={
-            200: openapi.Response(
-                description="Decision processed",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'correct': openapi.Schema(type=openapi.TYPE_BOOLEAN),
-                        'feedback': openapi.Schema(type=openapi.TYPE_OBJECT),
-                        'next_step': openapi.Schema(type=openapi.TYPE_OBJECT),
-                        'session': openapi.Schema(type=openapi.TYPE_OBJECT),
-                        'completed': openapi.Schema(type=openapi.TYPE_BOOLEAN),
-                        'score': openapi.Schema(type=openapi.TYPE_NUMBER),
-                        'passed': openapi.Schema(type=openapi.TYPE_BOOLEAN),
-                        'summary': openapi.Schema(type=openapi.TYPE_OBJECT)
-                    }
-                )
-            ),
+            200: OpenApiResponse(description="Decision processed"),
             400: "Bad Request",
             404: "Session not found"
         }
@@ -493,20 +468,10 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_description="Request a hint for the current step",
-        request_body=HintRequestSerializer,
+        description="Request a hint for the current step",
+        request=HintRequestSerializer,
         responses={
-            200: openapi.Response(
-                description="Hint provided",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'hint': openapi.Schema(type=openapi.TYPE_STRING),
-                        'hints_used': openapi.Schema(type=openapi.TYPE_INTEGER),
-                        'hints_remaining': openapi.Schema(type=openapi.TYPE_INTEGER)
-                    }
-                )
-            ),
+            200: OpenApiResponse(description="Hint provided"),
             400: "Bad Request",
             404: "Session not found"
         }
@@ -569,16 +534,8 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_description="Abandon an in-progress simulation",
-        responses={200: openapi.Response(
-            description="Simulation abandoned",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Abandon an in-progress simulation",
+        responses={200: OpenApiResponse(description="Simulation abandoned")}
     )
     @action(detail=True, methods=['post'])
     def abandon(self, request, pk=None):
@@ -598,18 +555,9 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
             )
 
     @swagger_auto_schema(
-        operation_description="Get decision history for a completed session",
+        description="Get decision history for a completed session",
         responses={
-            200: openapi.Response(
-                description="Session history",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'session': openapi.Schema(type=openapi.TYPE_OBJECT),
-                        'decisions': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT))
-                    }
-                )
-            ),
+            200: OpenApiResponse(description="Session history"),
             404: "Session not found"
         }
     )
@@ -784,7 +732,7 @@ class FeedbackView(APIView):
         responses={
             200: FeedbackResponseSerializer,
             201: FeedbackResponseSerializer,
-            400: openapi.Response(description="Bad Request")
+            400: OpenApiResponse(description="Bad Request")
         }
     )
     def post(self, request):
@@ -817,7 +765,7 @@ class FeedbackView(APIView):
         ],
         responses={
             200: ScenarioFeedbackSerializer,
-            404: openapi.Response(description="Feedback not found")
+            404: OpenApiResponse(description="Feedback not found")
         }
     )
     def get(self, request):
@@ -867,45 +815,45 @@ class CommentViewSet(viewsets.ModelViewSet):
         ).select_related('user').order_by('-created_at')
 
     @swagger_auto_schema(
-        operation_description="List comments for a scenario",
+        description="List comments for a scenario",
         responses={200: ScenarioCommentSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Create a new comment",
-        request_body=ScenarioCommentSerializer,
+        description="Create a new comment",
+        request=ScenarioCommentSerializer,
         responses={201: ScenarioCommentSerializer()}
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Retrieve a specific comment",
+        description="Retrieve a specific comment",
         responses={200: ScenarioCommentSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Update a comment",
-        request_body=ScenarioCommentSerializer,
+        description="Update a comment",
+        request=ScenarioCommentSerializer,
         responses={200: ScenarioCommentSerializer()}
     )
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Partially update a comment",
-        request_body=ScenarioCommentSerializer,
+        description="Partially update a comment",
+        request=ScenarioCommentSerializer,
         responses={200: ScenarioCommentSerializer()}
     )
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Delete a comment",
+        description="Delete a comment",
         responses={204: "No Content"}
     )
     def destroy(self, request, *args, **kwargs):
@@ -950,25 +898,15 @@ class AchievementViewSet(viewsets.ReadOnlyModelViewSet):
         ).select_related('scenario').order_by('-earned_at')
 
     @swagger_auto_schema(
-        operation_description="List user achievements",
+        description="List user achievements",
         responses={200: ScenarioAchievementSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Get achievement statistics",
-        responses={200: openapi.Response(
-            description="Achievement stats",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'total': openapi.Schema(type=openapi.TYPE_INTEGER),
-                    'by_type': openapi.Schema(type=openapi.TYPE_OBJECT),
-                    'recent': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT))
-                }
-            )
-        )}
+        description="Get achievement statistics",
+        responses={200: OpenApiResponse(description="Achievement stats")}
     )
     @action(detail=False, methods=['get'])
     def stats(self, request):

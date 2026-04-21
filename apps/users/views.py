@@ -8,8 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.db.models import Q
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 import uuid
 from datetime import timedelta
 from .models import (
@@ -23,8 +22,7 @@ from .serializers import (
     UserActivitySerializer, UserNotificationSerializer, UserDeviceSerializer,
     UserSessionSerializer
 )
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 
 logger = logging.getLogger(__name__)
@@ -97,7 +95,7 @@ class RegisterView(APIView):
         request=UserRegistrationSerializer,
         responses={
             201: RegisterResponseSerializer,
-            400: openapi.Response(description="Bad Request")
+            400: OpenApiResponse(description="Bad Request")
         },
         description="Register a new user account"
     )
@@ -143,7 +141,7 @@ class LoginView(APIView):
         request=UserLoginSerializer,
         responses={
             200: LoginResponseSerializer,
-            401: openapi.Response(description="Unauthorized")
+            401: OpenApiResponse(description="Unauthorized")
         },
         description="Login with username or email and password"
     )
@@ -249,24 +247,24 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
     @swagger_auto_schema(
-        request_body=UserProfileSerializer,
+        request=UserProfileSerializer,
         responses={200: UserProfileSerializer},
-        operation_description="Update user profile"
+        description="Update user profile"
     )
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        request_body=UserProfileSerializer,
+        request=UserProfileSerializer,
         responses={200: UserProfileSerializer},
-        operation_description="Partially update user profile"
+        description="Partially update user profile"
     )
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(
         responses={200: UserProfileSerializer},
-        operation_description="Get user profile"
+        description="Get user profile"
     )
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -466,14 +464,14 @@ class UserActivityView(generics.ListAPIView):
         return UserActivity.objects.filter(user=self.request.user)
 
     @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter('limit', openapi.IN_QUERY, type=openapi.TYPE_INTEGER,
+        parameters=[
+            OpenApiParameter('limit', OpenApiTypes.INT,
                               description='Number of activities to return'),
-            openapi.Parameter('activity_type', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+            OpenApiParameter('activity_type', OpenApiTypes.STR,
                               description='Filter by activity type'),
         ],
         responses={200: UserActivitySerializer(many=True)},
-        operation_description="Get user activity history"
+        description="Get user activity history"
     )
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -504,14 +502,9 @@ class UserNotificationViewSet(viewsets.ReadOnlyModelViewSet):
         return UserNotification.objects.filter(user=self.request.user)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Mark notification as read",
-        responses={200: openapi.Response(
-            description="Notification marked as read",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Mark notification as read",
+        responses={200: OpenApiResponse(
+            description="Notification marked as read"
         )}
     )
     @action(detail=True, methods=['post'])
@@ -522,14 +515,9 @@ class UserNotificationViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({"message": "Notification marked as read"})
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Mark all notifications as read",
-        responses={200: openapi.Response(
-            description="All notifications marked as read",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Mark all notifications as read",
+        responses={200: OpenApiResponse(
+            description="All notifications marked as read"
         )}
     )
     @action(detail=False, methods=['post'])
@@ -552,14 +540,9 @@ class UserDeviceViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Trust a device",
-        responses={200: openapi.Response(
-            description="Device trusted",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Trust a device",
+        responses={200: OpenApiResponse(
+            description="Device trusted"
         )}
     )
     @action(detail=True, methods=['post'])
@@ -570,14 +553,9 @@ class UserDeviceViewSet(viewsets.ModelViewSet):
         return Response({"message": "Device trusted"})
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Untrust a device",
-        responses={200: openapi.Response(
-            description="Device untrusted",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Untrust a device",
+        responses={200: OpenApiResponse(
+            description="Device untrusted"
         )}
     )
     @action(detail=True, methods=['post'])
@@ -599,14 +577,9 @@ class UserSessionsViewSet(viewsets.ReadOnlyModelViewSet):
         return UserSession.objects.filter(user=self.request.user).order_by('-login_time')
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Terminate a specific session",
-        responses={200: openapi.Response(
-            description="Session terminated",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Terminate a specific session",
+        responses={200: OpenApiResponse(
+            description="Session terminated"
         )}
     )
     @action(detail=True, methods=['post'], url_path='terminate')
@@ -621,14 +594,9 @@ class UserSessionsViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Terminate all other sessions",
-        responses={200: openapi.Response(
-            description="All other sessions terminated",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={'message': openapi.Schema(type=openapi.TYPE_STRING)}
-            )
+        description="Terminate all other sessions",
+        responses={200: OpenApiResponse(
+            description="All other sessions terminated"
         )}
     )
     @action(detail=False, methods=['post'])

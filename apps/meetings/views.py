@@ -14,8 +14,7 @@ from .serializers import (
     MeetingRecordingSerializer, MeetingChatSerializer, MeetingActionSerializer,
     MeetingJoinSerializer
 )
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from drf_spectacular.utils import extend_schema as swagger_auto_schema, OpenApiParameter, OpenApiTypes, OpenApiResponse
 import logging
 import uuid
 
@@ -87,13 +86,13 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return context
 
     @swagger_auto_schema(
-        operation_description="List all accessible meetings",
-        manual_parameters=[
-            openapi.Parameter('status', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('type', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('from_date', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('to_date', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('search', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        description="List all accessible meetings",
+        parameters=[
+            OpenApiParameter('status', OpenApiTypes.STR),
+            OpenApiParameter('type', OpenApiTypes.STR),
+            OpenApiParameter('from_date', OpenApiTypes.STR),
+            OpenApiParameter('to_date', OpenApiTypes.STR),
+            OpenApiParameter('search', OpenApiTypes.STR),
         ],
         responses={200: MeetingListSerializer(many=True)}
     )
@@ -101,8 +100,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Create a new meeting",
-        request_body=MeetingCreateSerializer,
+        description="Create a new meeting",
+        request=MeetingCreateSerializer,
         responses={201: MeetingDetailSerializer()}
     )
     def create(self, request, *args, **kwargs):
@@ -136,15 +135,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
         )
 
     @swagger_auto_schema(
-        operation_description="Get meeting details",
+        description="Get meeting details",
         responses={200: MeetingDetailSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_description="Update meeting",
-        request_body=MeetingCreateSerializer,
+        description="Update meeting",
+        request=MeetingCreateSerializer,
         responses={200: MeetingDetailSerializer()}
     )
     def update(self, request, *args, **kwargs):
@@ -165,7 +164,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        operation_description="Delete meeting",
+        description="Delete meeting",
         responses={204: "No Content"}
     )
     def destroy(self, request, *args, **kwargs):
@@ -182,19 +181,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Start a meeting",
-        request_body=MeetingActionSerializer,
-        responses={200: openapi.Response(
-            description="Meeting started",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING),
-                    'status': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Start a meeting",
+        responses={200: OpenApiResponse(description="Meeting started")}
     )
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
@@ -221,19 +209,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         })
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="End a meeting",
-        request_body=MeetingActionSerializer,
-        responses={200: openapi.Response(
-            description="Meeting ended",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING),
-                    'duration': openapi.Schema(type=openapi.TYPE_INTEGER)
-                }
-            )
-        )}
+        description="End a meeting",
+        responses={200: OpenApiResponse(description="Meeting ended")}
     )
     @action(detail=True, methods=['post'])
     def end(self, request, pk=None):
@@ -260,21 +237,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         })
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Join a meeting",
-        request_body=MeetingJoinSerializer,
-        responses={200: openapi.Response(
-            description="Join information",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING),
-                    'meeting': openapi.Schema(type=openapi.TYPE_OBJECT),
-                    'participant': openapi.Schema(type=openapi.TYPE_OBJECT),
-                    'signaling': openapi.Schema(type=openapi.TYPE_OBJECT)
-                }
-            )
-        )}
+        description="Join a meeting",
+        responses={200: OpenApiResponse(description="Join information")}
     )
     @action(detail=False, methods=['post'], url_path='join')
     def join_meeting(self, request):
@@ -369,8 +333,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         })
 
     @swagger_auto_schema(
-        method='get',
-        operation_description="Get meeting participants",
+        description="Get meeting participants",
         responses={200: MeetingParticipantSerializer(many=True)}
     )
     @action(detail=True, methods=['get'])
@@ -381,19 +344,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Invite users to meeting",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['user_ids'],
-            properties={
-                'user_ids': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_STRING)
-                ),
-                'message': openapi.Schema(type=openapi.TYPE_STRING)
-            }
-        ),
+        description="Invite users to meeting",
         responses={200: MeetingInvitationSerializer(many=True)}
     )
     @action(detail=True, methods=['post'])
@@ -449,19 +400,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Request recording",
-        responses={202: openapi.Response(
-            description="Recording requested",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING),
-                    'recording_id': openapi.Schema(type=openapi.TYPE_STRING),
-                    'task_id': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Request recording",
+        responses={202: OpenApiResponse(description="Recording requested")}
     )
     @action(detail=True, methods=['post'])
     def request_recording(self, request, pk=None):
@@ -494,8 +434,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         }, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(
-        method='get',
-        operation_description="Get meeting recordings",
+        description="Get meeting recordings",
         responses={200: MeetingRecordingSerializer(many=True)}
     )
     @action(detail=True, methods=['get'])
@@ -506,17 +445,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Send chat message",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['content'],
-            properties={
-                'content': openapi.Schema(type=openapi.TYPE_STRING),
-                'recipient_id': openapi.Schema(type=openapi.TYPE_STRING),
-                'message_type': openapi.Schema(type=openapi.TYPE_STRING, enum=['text', 'private'])
-            }
-        ),
+        description="Send chat message",
         responses={201: MeetingChatSerializer()}
     )
     @action(detail=True, methods=['post'])
@@ -571,10 +500,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        method='get',
-        operation_description="Get chat history",
-        manual_parameters=[
-            openapi.Parameter('limit', openapi.IN_QUERY, type=openapi.TYPE_INTEGER, description='Number of messages to return'),
+        description="Get chat history",
+        parameters=[
+            OpenApiParameter('limit', OpenApiTypes.INT, description='Number of messages to return'),
         ],
         responses={200: MeetingChatSerializer(many=True)}
     )
@@ -666,17 +594,8 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
         ).select_related('meeting', 'invited_user', 'invited_by')
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Accept meeting invitation",
-        responses={200: openapi.Response(
-            description="Invitation accepted",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Accept meeting invitation",
+        responses={200: OpenApiResponse(description="Invitation accepted")}
     )
     @action(detail=True, methods=['post'])
     def accept(self, request, pk=None):
@@ -710,17 +629,8 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
         return Response({'message': 'Invitation accepted'})
 
     @swagger_auto_schema(
-        method='post',
-        operation_description="Decline meeting invitation",
-        responses={200: openapi.Response(
-            description="Invitation declined",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Decline meeting invitation",
+        responses={200: OpenApiResponse(description="Invitation declined")}
     )
     @action(detail=True, methods=['post'])
     def decline(self, request, pk=None):

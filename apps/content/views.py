@@ -5,10 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 
 from .models import (
@@ -65,27 +63,24 @@ class ContentCategoryViewSet(viewsets.ReadOnlyModelViewSet):
         ).prefetch_related('children')
     
     @swagger_auto_schema(
-        operation_description="Get materials under this category and its subcategories",
-        manual_parameters=[
-            openapi.Parameter(
+        description="Get materials under this category and its subcategories",
+        parameters=[
+            OpenApiParameter(
                 'type', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Filter by material type",
-                type=openapi.TYPE_STRING,
                 enum=['article', 'video', 'tutorial', 'exercise', 'quiz', 'document']
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'difficulty', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Filter by difficulty level",
-                type=openapi.TYPE_STRING,
                 enum=['beginner', 'intermediate', 'advanced', 'expert']
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'search', 
-                openapi.IN_QUERY, 
-                description="Search in title, description, and tags",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Search in title, description, and tags"
             ),
         ]
     )
@@ -170,45 +165,39 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         return context
     
     @swagger_auto_schema(
-        operation_description="List learning materials with optional filters",
-        manual_parameters=[
-            openapi.Parameter(
+        description="List learning materials with optional filters",
+        parameters=[
+            OpenApiParameter(
                 'category', 
-                openapi.IN_QUERY, 
-                description="Filter by category slug",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Filter by category slug"
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'type', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Filter by material type",
-                type=openapi.TYPE_STRING,
                 enum=['article', 'video', 'tutorial', 'exercise', 'quiz', 'document']
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'difficulty', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Filter by difficulty level",
-                type=openapi.TYPE_STRING,
                 enum=['beginner', 'intermediate', 'advanced', 'expert']
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'search', 
-                openapi.IN_QUERY, 
-                description="Search in title, description, content, and tags",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Search in title, description, content, and tags"
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'featured', 
-                openapi.IN_QUERY, 
-                description="Filter featured materials only",
-                type=openapi.TYPE_BOOLEAN
+                OpenApiTypes.BOOL, 
+                description="Filter featured materials only"
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'sort', 
-                openapi.IN_QUERY, 
-                description="Sort field (created_at, -created_at, title, -title, views_count, -views_count, average_rating, -average_rating)",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Sort field (created_at, -created_at, title, -title, views_count, -views_count, average_rating, -average_rating)"
             ),
         ]
     )
@@ -263,7 +252,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    @swagger_auto_schema(operation_description="Retrieve a learning material by slug")
+    @swagger_auto_schema(description="Retrieve a learning material by slug")
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         
@@ -293,16 +282,8 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         return ip
     
     @swagger_auto_schema(
-        operation_description="Bookmark or unbookmark a material",
-        responses={200: openapi.Response(
-            description="Bookmark status",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'bookmarked': openapi.Schema(type=openapi.TYPE_BOOLEAN)
-                }
-            )
-        )}
+        description="Bookmark or unbookmark a material",
+        responses={200: OpenApiResponse(description="Bookmark status")}
     )
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def bookmark(self, request, slug=None):
@@ -320,17 +301,8 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'bookmarked': True})
     
     @swagger_auto_schema(
-        operation_description="Like or unlike a material",
-        responses={200: openapi.Response(
-            description="Like status",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'liked': openapi.Schema(type=openapi.TYPE_BOOLEAN),
-                    'likes_count': openapi.Schema(type=openapi.TYPE_INTEGER)
-                }
-            )
-        )}
+        description="Like or unlike a material",
+        responses={200: OpenApiResponse(description="Like status")}
     )
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def like(self, request, slug=None):
@@ -352,23 +324,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'liked': True, 'likes_count': material.likes_count})
     
     @swagger_auto_schema(
-        operation_description="Rate a material",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['rating'],
-            properties={
-                'rating': openapi.Schema(
-                    type=openapi.TYPE_INTEGER, 
-                    description='Rating from 1 to 5',
-                    minimum=1,
-                    maximum=5
-                ),
-                'review': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description='Optional review text'
-                )
-            }
-        ),
+        description="Rate a material",
         responses={200: MaterialRatingSerializer}
     )
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
@@ -412,13 +368,12 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
     
     @swagger_auto_schema(
-        operation_description="Get comments for a material",
-        manual_parameters=[
-            openapi.Parameter(
+        description="Get comments for a material",
+        parameters=[
+            OpenApiParameter(
                 'page', 
-                openapi.IN_QUERY, 
-                description='Page number',
-                type=openapi.TYPE_INTEGER
+                OpenApiTypes.INT, 
+                description='Page number'
             ),
         ]
     )
@@ -461,32 +416,28 @@ class LearningPathViewSet(viewsets.ReadOnlyModelViewSet):
         return context
     
     @swagger_auto_schema(
-        operation_description="List learning paths with optional filters",
-        manual_parameters=[
-            openapi.Parameter(
+        description="List learning paths with optional filters",
+        parameters=[
+            OpenApiParameter(
                 'category', 
-                openapi.IN_QUERY, 
-                description="Filter by category slug",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Filter by category slug"
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'difficulty', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Filter by difficulty level",
-                type=openapi.TYPE_STRING,
                 enum=['beginner', 'intermediate', 'advanced', 'expert']
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'search', 
-                openapi.IN_QUERY, 
-                description="Search in title, description, and tags",
-                type=openapi.TYPE_STRING
+                OpenApiTypes.STR, 
+                description="Search in title, description, and tags"
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 'featured', 
-                openapi.IN_QUERY, 
-                description="Filter featured paths only",
-                type=openapi.TYPE_BOOLEAN
+                OpenApiTypes.BOOL, 
+                description="Filter featured paths only"
             ),
         ]
     )
@@ -530,16 +481,8 @@ class LearningPathViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
     
     @swagger_auto_schema(
-        operation_description="Enroll in a learning path",
-        responses={200: openapi.Response(
-            description="Enrollment status",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'enrolled': openapi.Schema(type=openapi.TYPE_BOOLEAN)
-                }
-            )
-        )}
+        description="Enroll in a learning path",
+        responses={200: OpenApiResponse(description="Enrollment status")}
     )
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def enroll(self, request, slug=None):
@@ -579,13 +522,12 @@ class GlossaryViewSet(viewsets.ReadOnlyModelViewSet):
         return GlossaryTerm.objects.all().order_by('term')
     
     @swagger_auto_schema(
-        operation_description="Search glossary terms",
-        manual_parameters=[
-            openapi.Parameter(
+        description="Search glossary terms",
+        parameters=[
+            OpenApiParameter(
                 'q', 
-                openapi.IN_QUERY, 
+                OpenApiTypes.STR, 
                 description="Search query (minimum 2 characters)", 
-                type=openapi.TYPE_STRING,
                 required=True
             ),
         ]
@@ -619,16 +561,8 @@ class FAQViewSet(viewsets.ReadOnlyModelViewSet):
         return FAQ.objects.filter(is_published=True).order_by('order', '-created_at')
     
     @swagger_auto_schema(
-        operation_description="Track FAQ view",
-        responses={200: openapi.Response(
-            description="View count",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'views_count': openapi.Schema(type=openapi.TYPE_INTEGER)
-                }
-            )
-        )}
+        description="Track FAQ view",
+        responses={200: OpenApiResponse(description="View count")}
     )
     @action(detail=True, methods=['post'], url_path='track-view')
     def track_view(self, request, pk=None):
@@ -676,16 +610,8 @@ class AnnouncementViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
     
     @swagger_auto_schema(
-        operation_description="Get count of unread announcements",
-        responses={200: openapi.Response(
-            description="Unread count",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'unread_count': openapi.Schema(type=openapi.TYPE_INTEGER)
-                }
-            )
-        )}
+        description="Get count of unread announcements",
+        responses={200: OpenApiResponse(description="Unread count")}
     )
     @action(detail=False, methods=['get'], url_path='unread')
     def unread_count(self, request):
@@ -723,7 +649,7 @@ class MaterialBookmarkViewSet(viewsets.ReadOnlyModelViewSet):
         return context
     
     @swagger_auto_schema(
-        operation_description="Clear all bookmarks",
+        description="Clear all bookmarks",
         responses={204: 'No content'}
     )
     @action(detail=False, methods=['delete'], url_path='clear')
@@ -775,16 +701,16 @@ class MaterialCommentViewSet(viewsets.ModelViewSet):
         instance.save()
     
     @swagger_auto_schema(
-        operation_description="Update a comment",
-        request_body=MaterialCommentSerializer
+        description="Update a comment",
+        request=MaterialCommentSerializer
     )
     def update(self, request, *args, **kwargs):
         """Update a comment (owner only)."""
         return super().update(request, *args, **kwargs)
     
     @swagger_auto_schema(
-        operation_description="Partially update a comment",
-        request_body=MaterialCommentSerializer
+        description="Partially update a comment",
+        request=MaterialCommentSerializer
     )
     def partial_update(self, request, *args, **kwargs):
         """Partially update a comment (owner only)."""

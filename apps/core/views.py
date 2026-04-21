@@ -6,10 +6,8 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from django.conf import settings
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import os
 import logging
 
@@ -99,16 +97,8 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         return context
     
     @swagger_auto_schema(
-        operation_description="Mark a notification as read",
-        responses={200: openapi.Response(
-            description="Notification marked as read",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'status': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Mark a notification as read",
+        responses={200: OpenApiResponse(description="Notification marked as read")}
     )
     @action(detail=True, methods=['post'])
     def mark_read(self, request, pk=None):
@@ -131,16 +121,8 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'status': 'marked as read'})
     
     @swagger_auto_schema(
-        operation_description="Mark all notifications as read",
-        responses={200: openapi.Response(
-            description="All notifications marked as read",
-            schema=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'status': openapi.Schema(type=openapi.TYPE_STRING)
-                }
-            )
-        )}
+        description="Mark all notifications as read",
+        responses={200: OpenApiResponse(description="All notifications marked as read")}
     )
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
@@ -179,14 +161,14 @@ class SystemSettingViewSet(viewsets.ReadOnlyModelViewSet):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     
     @swagger_auto_schema(
-        operation_description="List all public system settings",
+        description="List all public system settings",
         responses={200: SystemSettingSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
     @swagger_auto_schema(
-        operation_description="Retrieve a specific system setting",
+        description="Retrieve a specific system setting",
         responses={200: SystemSettingSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
@@ -206,13 +188,13 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         return super().get_queryset()
     
     @swagger_auto_schema(
-        operation_description="List audit logs",
-        manual_parameters=[
-            openapi.Parameter('user_id', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('action', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('app_name', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('from_date', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('to_date', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        description="List audit logs",
+        parameters=[
+            OpenApiParameter('user_id', OpenApiTypes.STR),
+            OpenApiParameter('action', OpenApiTypes.STR),
+            OpenApiParameter('app_name', OpenApiTypes.STR),
+            OpenApiParameter('from_date', OpenApiTypes.STR),
+            OpenApiParameter('to_date', OpenApiTypes.STR),
         ],
         responses={200: AuditLogSerializer(many=True)}
     )
@@ -262,10 +244,10 @@ class ErrorLogViewSet(viewsets.ReadOnlyModelViewSet):
         return super().get_queryset()
     
     @swagger_auto_schema(
-        operation_description="List error logs",
-        manual_parameters=[
-            openapi.Parameter('level', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('from_date', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        description="List error logs",
+        parameters=[
+            OpenApiParameter('level', OpenApiTypes.STR),
+            OpenApiParameter('from_date', OpenApiTypes.STR),
         ],
         responses={200: ErrorLogSerializer(many=True)}
     )
@@ -302,11 +284,11 @@ class APILogViewSet(viewsets.ReadOnlyModelViewSet):
         return super().get_queryset()
     
     @swagger_auto_schema(
-        operation_description="List API logs",
-        manual_parameters=[
-            openapi.Parameter('path', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('method', openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter('status', openapi.IN_QUERY, type=openapi.TYPE_INTEGER),
+        description="List API logs",
+        parameters=[
+            OpenApiParameter('path', OpenApiTypes.STR),
+            OpenApiParameter('method', OpenApiTypes.STR),
+            OpenApiParameter('status', OpenApiTypes.INT),
         ],
         responses={200: APILogSerializer(many=True)}
     )
