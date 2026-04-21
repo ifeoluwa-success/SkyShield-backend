@@ -7,7 +7,6 @@ from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
-from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import os
 import logging
 
@@ -96,7 +95,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         context['user'] = self.request.user
         return context
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Mark a notification as read",
         responses={200: OpenApiResponse(description="Notification marked as read")}
     )
@@ -120,7 +119,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         
         return Response({'status': 'marked as read'})
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Mark all notifications as read",
         responses={200: OpenApiResponse(description="All notifications marked as read")}
     )
@@ -160,14 +159,14 @@ class SystemSettingViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SystemSetting.objects.filter(is_public=True, is_active=True)
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all public system settings",
         responses={200: SystemSettingSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Retrieve a specific system setting",
         responses={200: SystemSettingSerializer()}
     )
@@ -187,7 +186,7 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
             return AuditLog.objects.none()
         return super().get_queryset()
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List audit logs",
         parameters=[
             OpenApiParameter('user_id', OpenApiTypes.STR),
@@ -243,7 +242,7 @@ class ErrorLogViewSet(viewsets.ReadOnlyModelViewSet):
             return ErrorLog.objects.none()
         return super().get_queryset()
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List error logs",
         parameters=[
             OpenApiParameter('level', OpenApiTypes.STR),
@@ -283,7 +282,7 @@ class APILogViewSet(viewsets.ReadOnlyModelViewSet):
             return APILog.objects.none()
         return super().get_queryset()
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List API logs",
         parameters=[
             OpenApiParameter('path', OpenApiTypes.STR),

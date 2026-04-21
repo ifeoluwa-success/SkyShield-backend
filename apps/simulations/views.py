@@ -19,7 +19,6 @@ from .serializers import (
     SubmitDecisionSerializer, CompleteSimulationSerializer, HintRequestSerializer,
     SimulationSummarySerializer, CertificationSerializer
 )
-from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 import json
 
@@ -103,7 +102,7 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         context['user'] = self.request.user
         return context
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all scenarios with optional filters",
         parameters=[
             OpenApiParameter('category', OpenApiTypes.STR,
@@ -122,14 +121,14 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get detailed scenario information",
         responses={200: ScenarioDetailSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get personalized scenario recommendations",
         responses={200: ScenarioListSerializer(many=True)}
     )
@@ -175,7 +174,7 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Toggle bookmark for a scenario",
         responses={200: OpenApiResponse(description="Bookmark status")}
     )
@@ -194,7 +193,7 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({'bookmarked': False})
         return Response({'bookmarked': True})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get all bookmarked scenarios for the user",
         responses={200: ScenarioListSerializer(many=True)}
     )
@@ -235,7 +234,7 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
             user=user
         ).select_related('scenario')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Start a new simulation session",
         request=StartSimulationSerializer,
         responses={
@@ -309,7 +308,7 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Submit a decision for the current step",
         request=SubmitDecisionSerializer,
         responses={
@@ -467,7 +466,7 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Request a hint for the current step",
         request=HintRequestSerializer,
         responses={
@@ -533,7 +532,7 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Abandon an in-progress simulation",
         responses={200: OpenApiResponse(description="Simulation abandoned")}
     )
@@ -554,7 +553,7 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get decision history for a completed session",
         responses={
             200: OpenApiResponse(description="Session history"),
@@ -814,14 +813,14 @@ class CommentViewSet(viewsets.ModelViewSet):
             user=user
         ).select_related('user').order_by('-created_at')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List comments for a scenario",
         responses={200: ScenarioCommentSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create a new comment",
         request=ScenarioCommentSerializer,
         responses={201: ScenarioCommentSerializer()}
@@ -829,14 +828,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Retrieve a specific comment",
         responses={200: ScenarioCommentSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update a comment",
         request=ScenarioCommentSerializer,
         responses={200: ScenarioCommentSerializer()}
@@ -844,7 +843,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Partially update a comment",
         request=ScenarioCommentSerializer,
         responses={200: ScenarioCommentSerializer()}
@@ -852,7 +851,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Delete a comment",
         responses={204: "No Content"}
     )
@@ -897,14 +896,14 @@ class AchievementViewSet(viewsets.ReadOnlyModelViewSet):
             user=user
         ).select_related('scenario').order_by('-earned_at')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List user achievements",
         responses={200: ScenarioAchievementSerializer(many=True)}
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get achievement statistics",
         responses={200: OpenApiResponse(description="Achievement stats")}
     )

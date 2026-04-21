@@ -6,7 +6,6 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
-from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 
 from .models import (
@@ -62,7 +61,7 @@ class ContentCategoryViewSet(viewsets.ReadOnlyModelViewSet):
             parent__isnull=True
         ).prefetch_related('children')
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get materials under this category and its subcategories",
         parameters=[
             OpenApiParameter(
@@ -164,7 +163,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         context['user'] = self.request.user
         return context
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List learning materials with optional filters",
         parameters=[
             OpenApiParameter(
@@ -252,7 +251,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    @swagger_auto_schema(description="Retrieve a learning material by slug")
+    @extend_schema(description="Retrieve a learning material by slug")
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         
@@ -281,7 +280,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
             ip = request.META.get('REMOTE_ADDR')
         return ip
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Bookmark or unbookmark a material",
         responses={200: OpenApiResponse(description="Bookmark status")}
     )
@@ -300,7 +299,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         
         return Response({'bookmarked': True})
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Like or unlike a material",
         responses={200: OpenApiResponse(description="Like status")}
     )
@@ -323,7 +322,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         material.save(update_fields=['likes_count'])
         return Response({'liked': True, 'likes_count': material.likes_count})
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Rate a material",
         responses={200: MaterialRatingSerializer}
     )
@@ -367,7 +366,7 @@ class LearningMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = MaterialRatingSerializer(rating, context=self.get_serializer_context())
         return Response(serializer.data)
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get comments for a material",
         parameters=[
             OpenApiParameter(
@@ -415,7 +414,7 @@ class LearningPathViewSet(viewsets.ReadOnlyModelViewSet):
         context['user'] = self.request.user
         return context
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="List learning paths with optional filters",
         parameters=[
             OpenApiParameter(
@@ -480,7 +479,7 @@ class LearningPathViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Enroll in a learning path",
         responses={200: OpenApiResponse(description="Enrollment status")}
     )
@@ -521,7 +520,7 @@ class GlossaryViewSet(viewsets.ReadOnlyModelViewSet):
             return GlossaryTerm.objects.none()
         return GlossaryTerm.objects.all().order_by('term')
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Search glossary terms",
         parameters=[
             OpenApiParameter(
@@ -560,7 +559,7 @@ class FAQViewSet(viewsets.ReadOnlyModelViewSet):
             return FAQ.objects.none()
         return FAQ.objects.filter(is_published=True).order_by('order', '-created_at')
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Track FAQ view",
         responses={200: OpenApiResponse(description="View count")}
     )
@@ -609,7 +608,7 @@ class AnnouncementViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get count of unread announcements",
         responses={200: OpenApiResponse(description="Unread count")}
     )
@@ -648,7 +647,7 @@ class MaterialBookmarkViewSet(viewsets.ReadOnlyModelViewSet):
         context['user'] = self.request.user
         return context
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Clear all bookmarks",
         responses={204: 'No content'}
     )
@@ -700,7 +699,7 @@ class MaterialCommentViewSet(viewsets.ModelViewSet):
         instance.is_deleted = True
         instance.save()
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update a comment",
         request=MaterialCommentSerializer
     )
@@ -708,7 +707,7 @@ class MaterialCommentViewSet(viewsets.ModelViewSet):
         """Update a comment (owner only)."""
         return super().update(request, *args, **kwargs)
     
-    @swagger_auto_schema(
+    @extend_schema(
         description="Partially update a comment",
         request=MaterialCommentSerializer
     )

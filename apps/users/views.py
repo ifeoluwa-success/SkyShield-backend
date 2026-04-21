@@ -22,7 +22,6 @@ from .serializers import (
     UserActivitySerializer, UserNotificationSerializer, UserDeviceSerializer,
     UserSessionSerializer
 )
-from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 
 logger = logging.getLogger(__name__)
@@ -246,7 +245,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    @swagger_auto_schema(
+    @extend_schema(
         request=UserProfileSerializer,
         responses={200: UserProfileSerializer},
         description="Update user profile"
@@ -254,7 +253,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         request=UserProfileSerializer,
         responses={200: UserProfileSerializer},
         description="Partially update user profile"
@@ -262,7 +261,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={200: UserProfileSerializer},
         description="Get user profile"
     )
@@ -463,7 +462,7 @@ class UserActivityView(generics.ListAPIView):
             return UserActivity.objects.none()
         return UserActivity.objects.filter(user=self.request.user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         parameters=[
             OpenApiParameter('limit', OpenApiTypes.INT,
                               description='Number of activities to return'),
@@ -501,7 +500,7 @@ class UserNotificationViewSet(viewsets.ReadOnlyModelViewSet):
             return UserNotification.objects.none()
         return UserNotification.objects.filter(user=self.request.user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Mark notification as read",
         responses={200: OpenApiResponse(
             description="Notification marked as read"
@@ -514,7 +513,7 @@ class UserNotificationViewSet(viewsets.ReadOnlyModelViewSet):
         notification.save()
         return Response({"message": "Notification marked as read"})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Mark all notifications as read",
         responses={200: OpenApiResponse(
             description="All notifications marked as read"
@@ -539,7 +538,7 @@ class UserDeviceViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Trust a device",
         responses={200: OpenApiResponse(
             description="Device trusted"
@@ -552,7 +551,7 @@ class UserDeviceViewSet(viewsets.ModelViewSet):
         device.save()
         return Response({"message": "Device trusted"})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Untrust a device",
         responses={200: OpenApiResponse(
             description="Device untrusted"
@@ -576,7 +575,7 @@ class UserSessionsViewSet(viewsets.ReadOnlyModelViewSet):
             return UserSession.objects.none()
         return UserSession.objects.filter(user=self.request.user).order_by('-login_time')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Terminate a specific session",
         responses={200: OpenApiResponse(
             description="Session terminated"
@@ -593,7 +592,7 @@ class UserSessionsViewSet(viewsets.ReadOnlyModelViewSet):
         except UserSession.DoesNotExist:
             return Response({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Terminate all other sessions",
         responses={200: OpenApiResponse(
             description="All other sessions terminated"

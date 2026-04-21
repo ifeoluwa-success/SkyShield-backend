@@ -21,7 +21,6 @@ from .serializers import (
     ReportSerializer, TraineeExerciseSerializer
 )
 from .report_generator import generate_report
-from drf_spectacular.utils import extend_schema as swagger_auto_schema
 import logging
 import uuid
 
@@ -74,7 +73,7 @@ class TutorProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = TutorProfileSerializer
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get or update tutor profile",
         responses={
             200: TutorProfileSerializer,
@@ -84,7 +83,7 @@ class TutorProfileView(generics.RetrieveUpdateAPIView):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         request=TutorProfileSerializer,
         description="Update tutor profile",
         responses={
@@ -95,7 +94,7 @@ class TutorProfileView(generics.RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         request=TutorProfileSerializer,
         description="Partially update tutor profile",
         responses={
@@ -124,7 +123,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
             return TeachingMaterial.objects.none()
         return TeachingMaterial.objects.filter(tutor__user=user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all teaching materials",
         parameters=[
             OpenApiParameter('material_type', OpenApiTypes.STR),
@@ -136,7 +135,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create new teaching material",
         request=TeachingMaterialSerializer,
         responses={
@@ -161,7 +160,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Retrieve teaching material details",
         responses={200: TeachingMaterialSerializer}
     )
@@ -172,7 +171,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update teaching material",
         request=TeachingMaterialSerializer,
         responses={200: TeachingMaterialSerializer}
@@ -180,7 +179,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Partially update teaching material",
         request=TeachingMaterialSerializer,
         responses={200: TeachingMaterialSerializer}
@@ -188,14 +187,14 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Delete teaching material",
         responses={204: "No Content"}
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Publish teaching material",
         responses={200: OpenApiResponse(description="Material published successfully")}
     )
@@ -206,7 +205,7 @@ class TeachingMaterialViewSet(viewsets.ModelViewSet):
         material.save()
         return Response({'message': 'Material published successfully'})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Unpublish teaching material",
         responses={200: OpenApiResponse(description="Material unpublished successfully")}
     )
@@ -235,7 +234,7 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
             return TeachingSession.objects.none()
         return TeachingSession.objects.filter(tutor__user=user).select_related('tutor', 'tutor__user', 'internal_meeting').order_by('start_time')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all teaching sessions",
         parameters=[
             OpenApiParameter('status', OpenApiTypes.STR, enum=['upcoming', 'live', 'ended', 'cancelled']),
@@ -248,7 +247,7 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create new teaching session",
         request=TeachingSessionSerializer,
         responses={201: TeachingSessionSerializer, 400: "Bad Request"}
@@ -273,14 +272,14 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Retrieve teaching session details",
         responses={200: TeachingSessionSerializer}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update teaching session",
         request=TeachingSessionSerializer,
         responses={200: TeachingSessionSerializer}
@@ -288,7 +287,7 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Partially update teaching session",
         request=TeachingSessionSerializer,
         responses={200: TeachingSessionSerializer}
@@ -296,14 +295,14 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Delete teaching session",
         responses={204: "No Content"}
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Cancel teaching session",
         responses={200: OpenApiResponse(description="Session cancelled")}
     )
@@ -318,7 +317,7 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
             session.internal_meeting.save()
         return Response({'message': 'Session cancelled'})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Add recording URL to session",
         responses={200: OpenApiResponse(description="Recording added")}
     )
@@ -330,7 +329,7 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
         session.save()
         return Response({'message': 'Recording added'})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create internal meeting for session",
         responses={200: OpenApiResponse(description="Internal meeting created")}
     )
@@ -408,7 +407,7 @@ class StudentProgressViewSet(viewsets.ModelViewSet):
             return StudentProgress.objects.none()
         return StudentProgress.objects.filter(tutor__user=user).select_related('student')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all students under this tutor",
         parameters=[
             OpenApiParameter('search', OpenApiTypes.STR),
@@ -419,7 +418,7 @@ class StudentProgressViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Add notes to student progress",
         responses={200: StudentProgressSerializer}
     )
@@ -431,7 +430,7 @@ class StudentProgressViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(progress)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Track meeting attendance for student",
         responses={200: OpenApiResponse(description="Meeting attendance tracked")}
     )
@@ -448,7 +447,7 @@ class StudentProgressViewSet(viewsets.ModelViewSet):
             progress.save()
         return Response({'message': 'Meeting attendance tracked'})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get detailed progress for a specific student",
         responses={200: StudentProgressSerializer}
     )
@@ -478,7 +477,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
             return Exercise.objects.none()
         return Exercise.objects.filter(tutor__user=user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all exercises",
         parameters=[
             OpenApiParameter('exercise_type', OpenApiTypes.STR),
@@ -489,7 +488,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create new exercise",
         request=ExerciseSerializer,
         responses={201: ExerciseSerializer, 400: "Bad Request"}
@@ -497,14 +496,14 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Retrieve exercise details",
         responses={200: ExerciseSerializer}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update exercise",
         request=ExerciseSerializer,
         responses={200: ExerciseSerializer}
@@ -512,7 +511,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Partially update exercise",
         request=ExerciseSerializer,
         responses={200: ExerciseSerializer}
@@ -520,7 +519,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Delete exercise",
         responses={204: "No Content"}
     )
@@ -561,7 +560,7 @@ class ExerciseAttemptView(generics.ListAPIView):
             queryset = queryset.filter(passed=passed.lower() == 'true')
         return queryset.select_related('student', 'exercise').order_by('-started_at')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all attempts for an exercise",
         parameters=[
             OpenApiParameter('student_id', OpenApiTypes.STR),
@@ -606,7 +605,7 @@ class TutorDashboardView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
-    @swagger_auto_schema(
+    @extend_schema(
         responses={200: TutorDashboardResponseSerializer()}
     )
     def get(self, request):
@@ -682,7 +681,7 @@ class ReportViewSet(viewsets.ModelViewSet):
         tutor = TutorProfile.objects.get(user=self.request.user)
         serializer.save(tutor=tutor, status='draft')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Generate a new report (creates a PDF file)",
         responses={201: ReportSerializer, 400: "Bad Request", 500: "Internal Server Error"}
     )
@@ -716,7 +715,7 @@ class ReportViewSet(viewsets.ModelViewSet):
             report.save()
             return Response({'error': f'Failed to generate report: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Download report file",
         responses={200: OpenApiResponse(description='application/octet-stream'), 404: OpenApiResponse(description='Report not found or file missing')}
     )

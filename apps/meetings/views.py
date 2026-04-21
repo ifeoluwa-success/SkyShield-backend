@@ -14,7 +14,7 @@ from .serializers import (
     MeetingRecordingSerializer, MeetingChatSerializer, MeetingActionSerializer,
     MeetingJoinSerializer
 )
-from drf_spectacular.utils import extend_schema as swagger_auto_schema, OpenApiParameter, OpenApiTypes, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes, OpenApiResponse
 import logging
 import uuid
 
@@ -85,7 +85,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         context['request'] = self.request
         return context
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="List all accessible meetings",
         parameters=[
             OpenApiParameter('status', OpenApiTypes.STR),
@@ -99,7 +99,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Create a new meeting",
         request=MeetingCreateSerializer,
         responses={201: MeetingDetailSerializer()}
@@ -134,14 +134,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get meeting details",
         responses={200: MeetingDetailSerializer()}
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Update meeting",
         request=MeetingCreateSerializer,
         responses={200: MeetingDetailSerializer()}
@@ -163,7 +163,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Delete meeting",
         responses={204: "No Content"}
     )
@@ -180,7 +180,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Start a meeting",
         responses={200: OpenApiResponse(description="Meeting started")}
     )
@@ -208,7 +208,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             'status': meeting.status
         })
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="End a meeting",
         responses={200: OpenApiResponse(description="Meeting ended")}
     )
@@ -236,7 +236,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             'duration': meeting.duration_seconds
         })
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Join a meeting",
         responses={200: OpenApiResponse(description="Join information")}
     )
@@ -332,7 +332,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             }
         })
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get meeting participants",
         responses={200: MeetingParticipantSerializer(many=True)}
     )
@@ -343,7 +343,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer = MeetingParticipantSerializer(participants, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Invite users to meeting",
         responses={200: MeetingInvitationSerializer(many=True)}
     )
@@ -399,7 +399,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer = MeetingInvitationSerializer(invitations, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Request recording",
         responses={202: OpenApiResponse(description="Recording requested")}
     )
@@ -433,7 +433,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             'task_id': task.id
         }, status=status.HTTP_202_ACCEPTED)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get meeting recordings",
         responses={200: MeetingRecordingSerializer(many=True)}
     )
@@ -444,7 +444,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer = MeetingRecordingSerializer(recordings, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Send chat message",
         responses={201: MeetingChatSerializer()}
     )
@@ -499,7 +499,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer = MeetingChatSerializer(chat)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Get chat history",
         parameters=[
             OpenApiParameter('limit', OpenApiTypes.INT, description='Number of messages to return'),
@@ -593,7 +593,7 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
             Q(invited_user=user) | Q(invited_by=user)
         ).select_related('meeting', 'invited_user', 'invited_by')
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Accept meeting invitation",
         responses={200: OpenApiResponse(description="Invitation accepted")}
     )
@@ -628,7 +628,7 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
 
         return Response({'message': 'Invitation accepted'})
 
-    @swagger_auto_schema(
+    @extend_schema(
         description="Decline meeting invitation",
         responses={200: OpenApiResponse(description="Invitation declined")}
     )
