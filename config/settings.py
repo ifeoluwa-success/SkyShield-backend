@@ -239,9 +239,9 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:5174",
-    "http://localhost:5175",
     "http://localhost:5173",
+    "https://skyshieldedu.com",
+    "https://www.skyshieldedu.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
