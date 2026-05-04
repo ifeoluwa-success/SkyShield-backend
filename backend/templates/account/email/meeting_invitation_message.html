@@ -1,0 +1,15 @@
+{% extends "email_base.html" %} {% block content %}
+<h2>Tactical Briefing Invitation</h2>
+<p>Hello,</p>
+<p>A high-fidelity training session has been scheduled. Attendance is recommended for all designated personnel to review emergency response protocols.</p>
+<div style="background-color: #131318; padding: 25px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.07); margin: 25px 0;">
+    <p style="margin: 0; color: #fbbf24; font-size: 18px; font-weight: 600;">{{ meeting.title }}</p>
+    <p style="margin: 10px 0 0 0; color: #f4f4f5;"><strong>Time:</strong> {{ meeting.start_time|date:"F j, Y, g:i a" }}</p>
+    <p style="margin: 5px 0 0 0; color: #a1a1aa;"><strong>Lead Instructor:</strong> {{ meeting.host.get_full_name|default:meeting.host.username }}</p>
+</div>
+<div style="text-align: center;">
+    <a href="{{ frontend_url }}/meetings/{{ meeting.id }}" class="button">Join Briefing</a>
+</div>
+<p class="secondary-text">Ensure all communication hardware is verified before joining the session.</p>
+<p>Safe skies,<br>The SkyShield Team</p>
+{% endblock %}

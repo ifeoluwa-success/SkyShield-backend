@@ -1,0 +1,12 @@
+{% extends "email_base.html" %} {% block content %}
+<h2>Mission Authorization: Verify Email</h2>
+<p>Hello,</p>
+<p>Welcome to the SkyShield Educational Platform. To authorize your access and begin your tactical training simulations, please verify your email address below:</p>
+<div style="text-align: center;">
+    <a href="{{ activate_url }}" class="button">Authorize Account</a>
+</div>
+<p class="secondary-text">If the button above does not function, please copy and paste the following coordinates into your secure browser:</p>
+<p class="secondary-text"><a href="{{ activate_url }}">{{ activate_url }}</a></p>
+<p>If you did not initiate this request, please notify system security immediately.</p>
+<p>Safe skies,<br>The SkyShield Team</p>
+{% endblock %}

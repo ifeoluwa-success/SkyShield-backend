@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyShield Educational Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #07070a;
+            color: #f4f4f5;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #0c0c10;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.75);
+        }
+        
+        .header {
+            background-color: rgba(7, 7, 10, 0.9);
+            padding: 32px 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.08);
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 10px;
+        }
+        
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+        
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+        
+        .logo-edu {
+            color: #fbbf24;
+        }
+        
+        .content {
+            padding: 48px 40px;
+            line-height: 1.7;
+            color: #a1a1aa;
+        }
+        
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #07070a !important;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 24px;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+        
+        .footer {
+            background-color: #07070a;
+            padding: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #52525b;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        
+        .footer-links {
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: #a1a1aa;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .footer-links a:hover {
+            color: #fbbf24;
+        }
+        
+        a {
+            color: #fbbf24;
+            text-decoration: none;
+        }
+        
+        .accent-violet {
+            color: #a78bfa;
+        }
+        
+        .accent-amber {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{{ frontend_url }}" class="logo">
+                <img src="https://skyshield-backend.onrender.com/static/images/email-logo.png" alt="SkyShield Logo" class="logo-mark">
+                <span class="logo-text">SkyShield<span class="logo-edu"> Edu</span></span>
+            </a>
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="footer">
+            <div class="footer-links">
+                <a href="{{ frontend_url }}/about">About</a>
+                <a href="{{ frontend_url }}/privacy">Privacy</a>
+                <a href="{{ frontend_url }}/terms">Terms</a>
+                <a href="mailto:{{ support_email }}">Support</a>
+            </div>
+            <p>&copy; 2024 SkyShield Educational Platform. Aviation-Grade Cybersecurity Training.</p>
+        </div>
+    </div>
+</body>
+
+</html>

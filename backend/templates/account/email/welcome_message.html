@@ -1,0 +1,15 @@
+{% extends "email_base.html" %} {% block content %}
+<h2>Welcome Aboard, {{ user.username }}!</h2>
+<p>Email verification complete. You are now authorized to access the full suite of SkyShield aviation security simulations.</p>
+<p>Our platform uses <span class="accent-violet">Aura Engine</span> technology to intelligently adapt scenarios based on your real-time performance, ensuring you master critical weak areas in GPS spoofing, jamming, and console breaches.</p>
+<div style="text-align: center;">
+    <a href="{{ frontend_url }}/dashboard" class="button">Enter Command Center</a>
+</div>
+<p><strong>Immediate Objectives:</strong></p>
+<ul>
+    <li>Define your role (Pilot, ATC, or Officer) in your profile.</li>
+    <li>Review the latest <span class="accent-violet">Aviation Threat Scenarios</span>.</li>
+    <li>Generate your first <span class="accent-violet">Mission Readiness Index (MRI)</span>.</li>
+</ul>
+<p>Safe skies,<br>The SkyShield Team</p>
+{% endblock %}

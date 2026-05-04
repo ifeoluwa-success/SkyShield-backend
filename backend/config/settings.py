@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "channels",
     "channels_redis",
     "django_extensions",
+    "django_celery_results",
     
     # Django built-in apps
     "django.contrib.admin",
@@ -103,7 +104,7 @@ DATABASES = {
 }
 
 # Redis Cache & Channel Layers
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
 
 CACHES = {
     "default": {
@@ -111,6 +112,10 @@ CACHES = {
         "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,  # Critical for serverless resilience
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+            "RETRY_ON_TIMEOUT": True,
         }
     }
 }
@@ -122,9 +127,24 @@ CHANNEL_LAYERS = {
             "hosts": [REDIS_URL],
             "capacity": 1500,
             "expiry": 10,
+            "symmetric_encryption_keys": [SECRET_KEY],
         },
     },
 }
+
+# Celery Configuration
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = "UTC"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_REDIS_BACKEND_USE_SSL = REDIS_URL.startswith("rediss://")
+CELERY_BROKER_USE_SSL = CELERY_REDIS_BACKEND_USE_SSL
 
 # Meeting/WebRTC Settings
 MEETING_SETTINGS = {
@@ -202,13 +222,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 
 # Email Configuration
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'anymail.backends.sendgrid.EmailBackend')
 ANYMAIL = {
-    "MAILGUN_API_KEY": os.getenv("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": os.getenv("MAILGUN_SENDER_DOMAIN"),
     "SENDGRID_API_KEY": os.getenv("SENDGRID_API_KEY"),
 }
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@skyshieldedu.com')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'SkyShield <noreply@skyshieldedu.com>')
+SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@skyshieldedu.com')
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://skyshieldedu.com')
 
 # dj-rest-auth settings
@@ -441,52 +460,57 @@ Click the Authorize button and enter: `Bearer <your_token>`
     'SWAGGER_UI_STATIC': {
         'customStyle': '''
             .topbar-wrapper { 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #07070a 0%, #131318 100%);
                 padding: 15px 20px;
                 border-radius: 8px;
                 margin-bottom: 20px;
+                border-bottom: 2px solid #fbbf24;
             }
             .topbar-wrapper a {
-                color: white !important;
+                color: #fbbf24 !important;
                 font-size: 1.5em;
-                font-weight: 600;
+                font-weight: 800;
                 text-decoration: none;
+                letter-spacing: 2px;
             }
             .topbar-wrapper span {
-                color: white !important;
+                color: #fbbf24 !important;
             }
             .info { 
-                background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+                background: linear-gradient(135deg, #0c0c10 0%, #131318 100%);
                 padding: 20px;
                 border-radius: 12px;
-                border-left: 4px solid #667eea;
+                border-left: 4px solid #fbbf24;
+                color: #f4f4f5;
             }
             .info h1 { 
-                color: #333;
+                color: #f4f4f5;
                 font-size: 2.2em;
                 margin-bottom: 10px;
             }
             .info .description { 
-                color: #666;
+                color: #a1a1aa;
                 font-size: 1.1em;
                 line-height: 1.6;
             }
             .scheme-container {
-                background: #f8f9fa;
+                background: #1a1a21;
                 border-radius: 8px;
                 padding: 15px;
                 margin: 20px 0;
+                color: #f4f4f5;
             }
             .btn.authorize {
-                background-color: #4CAF50 !important;
-                border-color: #4CAF50 !important;
-                color: white !important;
+                background-color: #fbbf24 !important;
+                border-color: #fbbf24 !important;
+                color: #07070a !important;
                 transition: all 0.3s ease;
+                font-weight: bold;
             }
             .btn.authorize:hover {
-                background-color: #45a049 !important;
+                background-color: #d97706 !important;
                 transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
             }
             .opblock-tag {
                 font-size: 1.3em;
