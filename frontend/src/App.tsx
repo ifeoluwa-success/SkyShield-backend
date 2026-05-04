@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import DashboardLayout from './components/DashboardLayout';
 import TutorDashboardLayout from './components/TutorDashboardLayout';
 
@@ -92,6 +93,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* ====================== PUBLIC ROUTES ====================== */}
           <Route path="/" element={<Layout><HomePage /></Layout>} />
