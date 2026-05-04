@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '@/assets/css/AboutPage.css';
 
 import aboutHero    from '@/assets/images/about-hero.jpg';
@@ -59,6 +60,9 @@ const awards = [
 ];
 
 export default function AboutPage() {
+  const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
+  const dashboardPath = isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard";
+
   return (
     <div className="ab-page">
 
@@ -78,7 +82,9 @@ export default function AboutPage() {
             SkyShield was founded with a singular mission: equip aviation professionals with the training they need to withstand the cyber threats reshaping the industry.
           </p>
           <div className="ab-cta-row">
-            <Link to="/signup" className="ab-btn-primary">Join the Mission</Link>
+            <Link to={isAuthenticated ? dashboardPath : "/signup"} className="ab-btn-primary">
+              {isAuthenticated ? "Go to Dashboard" : "Join the Mission"}
+            </Link>
             <Link to="/simulations" className="ab-btn-ghost">View Simulations</Link>
           </div>
         </div>

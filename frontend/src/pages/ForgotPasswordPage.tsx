@@ -3,6 +3,31 @@ import { Link } from 'react-router-dom';
 import { forgotPassword } from '../services/authService';
 import '../assets/css/AuthPage.css';
 
+const LogoMark = () => (
+  <svg
+    width="26" height="26"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    className="logo__mark"
+  >
+    <path
+      d="M16 3L27.3 9.5V22.5L16 29L4.7 22.5V9.5Z"
+      stroke="#fbbf24"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    />
+    <polyline
+      points="10,21 16,13.5 22,21"
+      stroke="#fbbf24"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,7 +60,7 @@ const ForgotPasswordPage: React.FC = () => {
         <div className="auth-card">
           <div className="auth-header">
             <div className="auth-logo">
-              <span className="logo-icon">🛡️</span>
+              <LogoMark />
               <span className="logo-text">SkyShield Edu</span>
             </div>
             <h1 className="auth-title">Forgot Password</h1>

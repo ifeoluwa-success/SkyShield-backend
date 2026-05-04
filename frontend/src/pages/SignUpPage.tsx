@@ -38,6 +38,18 @@ const SignUpPage: React.FC = () => {
   const [errors, setErrors] = useState<Errors>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleSocialLogin = (provider: 'google' | 'github') => {
+    const GOOGLE_ID = '286908192296-i36j9p9lql614ilg6bjtap02hprfgikh.apps.googleusercontent.com';
+    const GITHUB_ID = 'Ov23lixgmLpdpnwvA1Q5';
+    const CALLBACK_URL = `https://skyshieldedu.com/auth/callback/${provider}`;
+
+    if (provider === 'google') {
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_ID}&redirect_uri=${CALLBACK_URL}&response_type=code&scope=profile%20email`;
+    } else {
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${CALLBACK_URL}&scope=user:email`;
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -195,8 +207,20 @@ const SignUpPage: React.FC = () => {
           <div className="signup-divider"><span>or sign up with</span></div>
 
           <div className="social-signup">
-            <button type="button" disabled={isLoading}>Google</button>
-            <button type="button" disabled={isLoading}>GitHub</button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => handleSocialLogin('google')}
+            >
+              Google
+            </button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => handleSocialLogin('github')}
+            >
+              GitHub
+            </button>
           </div>
 
           <p className="auth-switch-link">

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '@/assets/css/UseCasesPage.css';
 
 import useCasesHero     from '@/assets/images/use-cases-hero.jpg';
@@ -66,6 +67,9 @@ const testimonials = [
 ];
 
 export default function UseCasesPage() {
+  const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
+  const dashboardPath = isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard";
+
   return (
     <div className="uc-page">
 
@@ -85,7 +89,9 @@ export default function UseCasesPage() {
             Aviation organizations worldwide use SkyShield to close the gap between theoretical cybersecurity knowledge and field-ready response capability.
           </p>
           <div className="uc-cta-row">
-            <Link to="/signup" className="uc-btn-primary">Get Started</Link>
+            <Link to={isAuthenticated ? dashboardPath : "/signup"} className="uc-btn-primary">
+              {isAuthenticated ? "Go to Dashboard" : "Get Started"}
+            </Link>
             <Link to="/simulations" className="uc-btn-ghost">View Simulations</Link>
           </div>
         </div>
@@ -177,7 +183,9 @@ export default function UseCasesPage() {
                     <p className="uc-result-text">{c.result}</p>
                   </div>
                   <div className="uc-case-actions">
-                    <Link to="/signup" className="uc-demo-btn">Schedule Demo</Link>
+                    <Link to={isAuthenticated ? dashboardPath : "/signup"} className="uc-demo-btn">
+                      {isAuthenticated ? "Go to Dashboard" : "Schedule Demo"}
+                    </Link>
                     <button className="uc-story-btn">Read Full Story</button>
                   </div>
                 </div>

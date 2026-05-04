@@ -9,6 +9,10 @@ from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
 import uuid
 from datetime import timedelta
 from .models import (
@@ -80,6 +84,21 @@ class TerminateSessionRequestSerializer(serializers.Serializer):
 
 class TerminateOtherSessionsResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
+
+
+# ==============================================================================
+# SOCIAL AUTH VIEWS
+# ==============================================================================
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = "https://skyshieldedu.com/auth/callback/google"
+    client_class = OAuth2Client
+
+class GitHubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    callback_url = "https://skyshieldedu.com/auth/callback/github"
+    client_class = OAuth2Client
 
 
 # ==============================================================================

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '@/assets/css/features.css';
 
 import featuresHero    from '@/assets/images/features-hero.jpg';
@@ -96,6 +97,9 @@ const integrations = [
 ];
 
 export default function FeaturesPage() {
+  const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
+  const dashboardPath = isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard";
+
   return (
     <div className="feat-page">
 
@@ -115,7 +119,9 @@ export default function FeaturesPage() {
             Enterprise-grade simulation, adaptive learning, and analytics — built specifically for aviation cybersecurity professionals.
           </p>
           <div className="feat-cta-row">
-            <Link to="/signup" className="feat-btn-primary">Get Started</Link>
+            <Link to={isAuthenticated ? dashboardPath : "/signup"} className="feat-btn-primary">
+              {isAuthenticated ? "Go to Dashboard" : "Get Started"}
+            </Link>
             <Link to="/simulations" className="feat-btn-ghost">View Simulations</Link>
           </div>
         </div>
@@ -182,7 +188,9 @@ export default function FeaturesPage() {
                 </li>
               ))}
             </ul>
-            <Link to="/signup" className="feat-btn-primary">Explore Dashboard</Link>
+            <Link to={isAuthenticated ? dashboardPath : "/signup"} className="feat-btn-primary">
+              {isAuthenticated ? "Go to Dashboard" : "Explore Dashboard"}
+            </Link>
           </div>
           <div className="feat-preview-image-wrap">
             <img src={dashboardPreview} alt="Dashboard interface" className="feat-preview-img" />

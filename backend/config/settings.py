@@ -249,9 +249,19 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
+        'APP': {
+            'client_id': os.getenv('SOCIAL_AUTH_GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('SOCIAL_AUTH_GOOGLE_SECRET'),
+            'key': ''
+        }
     },
     'github': {
         'SCOPE': ['user', 'repo', 'read:org'],
+        'APP': {
+            'client_id': os.getenv('SOCIAL_AUTH_GITHUB_CLIENT_ID'),
+            'secret': os.getenv('SOCIAL_AUTH_GITHUB_SECRET'),
+            'key': ''
+        }
     }
 }
 

@@ -20,6 +20,7 @@ import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
+import SocialAuthCallback from './pages/SocialAuthCallback';
 import PricingPage from './pages/PricingPage';
 import ContactPage from './pages/ContactPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -123,6 +124,8 @@ function App() {
           <Route path="/forgot-password" element={<Layout><ForgotPasswordPage /></Layout>} />
           <Route path="/reset-password" element={<Layout><ResetPasswordPage /></Layout>} />
           <Route path="/verify-email" element={<Layout><VerifyEmailPage /></Layout>} />
+          <Route path="/auth/callback/google" element={<SocialAuthCallback />} />
+          <Route path="/auth/callback/github" element={<SocialAuthCallback />} />
 
           {/* ====================== TRAINEE DASHBOARD ====================== */}
           <Route

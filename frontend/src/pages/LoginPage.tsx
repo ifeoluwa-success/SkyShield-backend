@@ -62,6 +62,18 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const handleSocialLogin = (provider: 'google' | 'github') => {
+    const GOOGLE_ID = '286908192296-i36j9p9lql614ilg6bjtap02hprfgikh.apps.googleusercontent.com';
+    const GITHUB_ID = 'Ov23lixgmLpdpnwvA1Q5';
+    const CALLBACK_URL = `https://skyshieldedu.com/auth/callback/${provider}`;
+
+    if (provider === 'google') {
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_ID}&redirect_uri=${CALLBACK_URL}&response_type=code&scope=profile%20email`;
+    } else {
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${CALLBACK_URL}&scope=user:email`;
+    }
+  };
+
   const clearMessages = () => { setError(''); setInfoMessage(''); setSuccessMessage(''); };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -202,10 +214,20 @@ const LoginPage: React.FC = () => {
           <div className="login-divider"><span>or continue with</span></div>
 
           <div className="social-login">
-            <button className="social-button" disabled={isLoading}>
+            <button
+              type="button"
+              className="social-button"
+              disabled={isLoading}
+              onClick={() => handleSocialLogin('google')}
+            >
               <Chrome size={17} /><span>Google</span>
             </button>
-            <button className="social-button" disabled={isLoading}>
+            <button
+              type="button"
+              className="social-button"
+              disabled={isLoading}
+              onClick={() => handleSocialLogin('github')}
+            >
               <Github size={17} /><span>GitHub</span>
             </button>
           </div>

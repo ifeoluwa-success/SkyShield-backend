@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '@/assets/css/hero.css';
 
 import studentImage from '@/assets/images/student-image2.png';
 
 export default function Hero() {
+  const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
+  const dashboardPath = isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard";
+
   return (
     <section
       className="hero-section-new"
@@ -29,8 +33,8 @@ export default function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <Link to="/signup" className="btn-primary-sky">
-            Start Your First Simulation
+          <Link to={isAuthenticated ? dashboardPath : "/signup"} className="btn-primary-sky">
+            {isAuthenticated ? "Go to Dashboard" : "Start Your First Simulation"}
           </Link>
           <Link to="/about" className="btn-get-in-touch">
             Learn More

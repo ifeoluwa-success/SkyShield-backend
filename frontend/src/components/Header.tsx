@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import "@/assets/css/header.css";
 
 type NavLink = { href: string; label: string };
@@ -52,6 +53,7 @@ const MoonIcon = () => (
 export default function Header() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('ss-theme') as 'dark' | 'light') ?? 'light';
@@ -108,8 +110,16 @@ export default function Header() {
 
         {/* Desktop actions */}
         <div className="actions">
-          <Link to="/login"  className="btn btn--ghost">Sign In</Link>
-          <Link to="/signup" className="btn btn--primary">Start Training</Link>
+          {isAuthenticated ? (
+            <Link to={isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard"} className="btn btn--primary">
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login"  className="btn btn--ghost">Sign In</Link>
+              <Link to="/signup" className="btn btn--primary">Start Training</Link>
+            </>
+          )}
         </div>
 
         {/* Right controls: theme toggle (always) + hamburger (mobile) */}
@@ -139,8 +149,20 @@ export default function Header() {
         <nav className="mobile-nav">
           {links.map((link) => <NavItem key={link.href} {...link} />)}
           <div className="mobile-actions">
-            <Link to="/login"  className="btn btn--ghost"   onClick={() => setOpen(false)}>Sign In</Link>
-            <Link to="/signup" className="btn btn--primary" onClick={() => setOpen(false)}>Start Training</Link>
+            {isAuthenticated ? (
+              <Link
+                to={isAdmin || isInstructor || isSupervisor ? "/tutor/dashboard" : "/dashboard"}
+                className="btn btn--primary"
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login"  className="btn btn--ghost"   onClick={() => setOpen(false)}>Sign In</Link>
+                <Link to="/signup" className="btn btn--primary" onClick={() => setOpen(false)}>Start Training</Link>
+              </>
+            )}
           </div>
         </nav>
       </div>

@@ -31,7 +31,13 @@ export const login = async (credentials: LoginRequest): Promise<LoginResponse> =
 };
 
 export const register = async (userData: RegisterRequest): Promise<RegisterResponse> => {
-  const response = await api.post<RegisterResponse>('/users/register/', userData);
+  // Map frontend field names to backend serializer field names
+  const payload = {
+    ...userData,
+    company: userData.organization,
+    role: userData.job_title,
+  };
+  const response = await api.post<RegisterResponse>('/users/register/', payload);
   return response.data;
 };
 
