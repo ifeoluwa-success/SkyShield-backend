@@ -1,0 +1,90 @@
+/* ─── Help Page ──────────────────────────────────────────────────────────────── */
+.help-page { padding: 1.5rem; max-width: 860px; margin: 0 auto; animation: fade-in 0.3s ease both; }
+
+.help-header { margin-bottom: 1.5rem; }
+.help-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.2rem; }
+.help-subtitle { font-size: 0.875rem; color: var(--text-secondary); }
+
+/* ─── Tabs ───────────────────────────────────────────────────────────────────── */
+.help-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0; }
+.help-tab {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.6rem 1.1rem; background: none; border: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);
+  cursor: pointer; transition: var(--ease);
+}
+.help-tab:hover { color: var(--text-primary); }
+.help-tab.active { color: var(--violet); border-bottom-color: var(--violet); }
+
+/* ─── Search ─────────────────────────────────────────────────────────────────── */
+.help-search-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 0 1rem; height: 42px;
+  margin-bottom: 1.5rem; transition: var(--ease);
+}
+.help-search-bar:focus-within { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139,92,246,0.12); }
+.help-search-bar svg { color: var(--text-muted); flex-shrink: 0; }
+.help-search-bar input { flex: 1; background: none; border: none; outline: none; color: var(--text-primary); font-size: 0.9rem; }
+.help-search-bar input::placeholder { color: var(--text-muted); }
+
+/* ─── Loading / empty ────────────────────────────────────────────────────────── */
+.help-loading { display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 4rem; color: var(--text-secondary); }
+.help-empty { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 4rem 2rem; color: var(--text-muted); text-align: center; }
+
+/* ─── Glossary ───────────────────────────────────────────────────────────────── */
+.glossary-content { display: flex; flex-direction: column; gap: 1.5rem; }
+.glossary-group { display: flex; gap: 1.25rem; }
+.glossary-letter {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: var(--violet-dim); color: var(--violet);
+  border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 800;
+}
+.glossary-terms { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
+.glossary-term {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 0.9rem 1.1rem;
+  transition: var(--ease);
+}
+.glossary-term:hover { border-color: var(--border-active); }
+.term-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap; }
+.term-name { font-weight: 700; font-size: 0.925rem; color: var(--text-primary); }
+.term-category {
+  font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem;
+  border-radius: 20px; background: var(--violet-dim); color: var(--violet);
+  border: 1px solid rgba(139,92,246,0.2); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.term-definition { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+/* ─── FAQ ────────────────────────────────────────────────────────────────────── */
+.faq-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.faq-item {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); overflow: hidden; transition: var(--ease);
+}
+.faq-item.open { border-color: var(--border-active); }
+.faq-question {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.1rem;
+  background: none; border: none; cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; color: var(--text-primary);
+  text-align: left; transition: var(--ease);
+}
+.faq-question:hover { background: var(--bg-hover); }
+.faq-question svg { flex-shrink: 0; color: var(--text-muted); }
+.faq-answer {
+  padding: 0 1.1rem 1rem;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7;
+  border-top: 1px solid var(--border-muted);
+  padding-top: 0.85rem;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .help-page { padding: 1rem; }
+  .glossary-group { flex-direction: column; gap: 0.5rem; }
+  .glossary-letter { width: 28px; height: 28px; font-size: 0.85rem; }
+}
+@media (max-width: 480px) { .help-page { padding: 0.75rem; } }

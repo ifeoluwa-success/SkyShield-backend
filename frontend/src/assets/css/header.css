@@ -1,0 +1,300 @@
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(7, 7, 10, 0.9);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.header__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 2rem;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────────── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo:hover { text-decoration: none; }
+
+.logo__mark {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.35));
+  transition: filter 0.2s ease;
+}
+
+.logo:hover .logo__mark {
+  filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.55));
+}
+
+.logo__text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.logo__edu { color: var(--cyan); }
+
+/* ── Desktop nav ─────────────────────────────────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.nav__link:hover {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+}
+
+/* Active link — amber text + underline dot */
+.nav__link--active {
+  color: var(--cyan);
+}
+
+.nav__link--active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--cyan);
+}
+
+/* ── Desktop actions ─────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* ── Right controls (theme toggle + hamburger) ───────────────────────────── */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+/* ── Theme toggle ────────────────────────────────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: var(--ease);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: rgba(251, 191, 36, 0.35);
+  color: var(--cyan);
+}
+
+/* ── Shared button styles ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-md);
+  font-size: 0.855rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--ease);
+  border: none;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* Ghost — "Sign In" */
+.btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.btn--ghost:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+}
+
+/* Primary — "Start Training" */
+.btn--primary {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #07070a;
+  box-shadow: 0 2px 12px rgba(251, 191, 36, 0.25);
+}
+
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+  text-decoration: none;
+}
+
+/* ── Hamburger ───────────────────────────────────────────────────────────── */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 1px;
+  transition: var(--ease);
+}
+
+.menu-toggle:hover { border-color: rgba(251, 191, 36, 0.3); }
+.menu-toggle:hover span { background: var(--cyan); }
+
+/* Animated to X when open */
+.menu-toggle--open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.menu-toggle--open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.menu-toggle--open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Mobile menu ─────────────────────────────────────────────────────────── */
+.mobile-menu {
+  display: none;
+  background: rgba(7, 7, 10, 0.98);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mobile-menu--open { display: block; }
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 0.15rem;
+}
+
+.mobile-nav .nav__link {
+  width: 100%;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.mobile-nav .nav__link--active::after { display: none; }
+
+.mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mobile-actions .btn { justify-content: center; width: 100%; padding: 0.65rem 1rem; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .nav     { display: none; }
+  .actions { display: none; }
+  .menu-toggle { display: flex; }
+}
+
+@media (max-width: 480px) {
+  .header__container { padding: 0 1.25rem; }
+}
+
+/* ── Light mode overrides ────────────────────────────────────────────────── */
+:root.light .header {
+  background: rgba(250, 250, 250, 0.92);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:root.light .logo__text { color: #09090b; }
+
+:root.light .nav__link { color: rgba(0, 0, 0, 0.5); }
+:root.light .nav__link:hover { color: rgba(0, 0, 0, 0.85); }
+
+:root.light .btn--ghost {
+  border-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.6);
+}
+:root.light .btn--ghost:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+  color: rgba(0, 0, 0, 0.88);
+}
+
+:root.light .theme-toggle {
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.45);
+}
+:root.light .theme-toggle:hover {
+  border-color: rgba(180, 83, 9, 0.35);
+  color: var(--cyan);
+}
+
+:root.light .menu-toggle {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+:root.light .menu-toggle span {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+:root.light .mobile-menu {
+  background: rgba(250, 250, 250, 0.98);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+:root.light .mobile-nav .nav__link { color: rgba(0, 0, 0, 0.5); }
+:root.light .mobile-nav .nav__link:hover { color: rgba(0, 0, 0, 0.85); }
+:root.light .mobile-actions { border-top-color: rgba(0, 0, 0, 0.06); }

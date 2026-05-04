@@ -1,0 +1,120 @@
+/* ─── Confirmation Modal ──────────────────────────────────────────────────────── */
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,12,27,0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: cm-fade-in 0.15s ease both;
+}
+
+@keyframes cm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cm-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  animation: cm-slide-in 0.2s ease both;
+  position: relative;
+}
+
+@keyframes cm-slide-in {
+  from { transform: translateY(-12px) scale(0.97); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.cm-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.cm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--warning-dim);
+  border: 1px solid rgba(245,158,11,0.25);
+  color: var(--warning);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cm-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: var(--ease);
+  line-height: 0;
+}
+
+.cm-close:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+.cm-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.cm-message {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.cm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.cm-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+  border: none;
+}
+
+.cm-btn-cancel {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.cm-btn-cancel:hover {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.cm-btn-confirm {
+  background: var(--danger);
+  color: #fff;
+}
+
+.cm-btn-confirm:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.35);
+}

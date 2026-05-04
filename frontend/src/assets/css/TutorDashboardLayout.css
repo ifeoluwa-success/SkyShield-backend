@@ -1,0 +1,30 @@
+.tutor-dashboard-layout { display: flex; min-height: 100vh; background: var(--bg-primary); }
+.tutor-main-content { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1); }
+.tutor-content-area { flex: 1; padding: 1.75rem 2rem; overflow-y: auto; }
+
+/* Mobile toggle button — hidden on desktop */
+.tutor-mobile-menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  padding: 0.4rem;
+  cursor: pointer;
+  transition: var(--ease);
+}
+.tutor-mobile-menu-btn:hover { color: var(--text-primary); border-color: var(--border-active); }
+
+@media (max-width: 1024px) {
+  .tutor-main-content { margin-left: 0; width: 100%; }
+  .tutor-content-area { padding: 1.25rem; }
+  .tutor-mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+}
+
+@media (max-width: 768px) {
+  .tutor-content-area { padding: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .tutor-content-area { padding: 1rem 0.75rem; }
+}

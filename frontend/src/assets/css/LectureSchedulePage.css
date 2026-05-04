@@ -1,0 +1,452 @@
+/* ─── Lecture Schedule Page ───────────────────────────────────────────────────── */
+.lecture-schedule-page {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lecture-schedule-page .page-header {
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.lecture-schedule-page .page-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.lecture-schedule-page .page-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Sessions grid */
+.sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Session card */
+.session-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+
+.session-card:hover { border-color: var(--border-active); box-shadow: var(--shadow-cyan); transform: translateY(-2px); }
+
+.session-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.session-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.session-content { flex: 1; display: flex; flex-direction: column; gap: 0.85rem; padding: 1.1rem 1.25rem; }
+
+.session-content h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.975rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.session-details { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.detail svg { color: var(--text-muted); flex-shrink: 0; }
+
+.session-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.session-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Session type badge */
+.session-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 20px;
+  background: var(--cyan-dim);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Session status */
+.session-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.session-status.scheduled {
+  background: var(--info-dim);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: var(--info);
+}
+
+/* Footer / join */
+.session-footer {
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #020c1b;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.join-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3); }
+.join-btn.disabled, .join-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Join meeting modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 27, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.join-modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-hard);
+  overflow: hidden;
+}
+
+.join-modal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.join-modal .modal-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: var(--radius-sm);
+  transition: var(--ease);
+}
+
+.modal-close:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+.modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+.modal-body p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.join-input {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--ease);
+  letter-spacing: 0.05em;
+}
+
+.join-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1); }
+.join-input::placeholder { color: var(--text-muted); }
+
+.join-submit-btn {
+  width: 100%;
+  padding: 0.7rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #020c1b;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.join-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(251, 191, 36, 0.3); }
+.join-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.join-meeting-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--border-active);
+  color: var(--cyan);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.join-meeting-btn:hover { background: var(--cyan-dim); }
+
+.empty-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.empty-join-btn:hover { border-color: var(--border-active); color: var(--text-primary); }
+
+/* Loading / empty */
+.lecture-schedule-page .loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem;
+  color: var(--text-secondary);
+}
+
+.spinner { animation: spin 0.8s linear infinite; }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 0.2rem; }
+
+/* ─── Invitations ─────────────────────────────────────────────────────────────── */
+.invitations-section {
+  margin-bottom: 1.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.invitations-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--violet-dim);
+  border-bottom: 1px solid rgba(139,92,246,0.2);
+  color: var(--violet);
+}
+
+.invitations-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex: 1;
+  color: var(--violet);
+}
+
+.invitations-badge {
+  background: var(--violet);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 20px;
+}
+
+.invitations-list { display: flex; flex-direction: column; }
+
+.invitation-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border-muted);
+  transition: var(--ease);
+  flex-wrap: wrap;
+}
+
+.invitation-card:last-child { border-bottom: none; }
+.invitation-card:hover { background: var(--bg-hover); }
+
+.invitation-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+
+.invitation-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.invitation-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.invitation-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+.invitation-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+.inv-accept-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  background: var(--success-dim);
+  color: var(--success);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.inv-accept-btn:hover:not(:disabled) { background: var(--success); color: #fff; }
+.inv-accept-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.inv-decline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.inv-decline-btn:hover:not(:disabled) { background: var(--danger-dim); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+.inv-decline-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+  .sessions-grid { grid-template-columns: 1fr; }
+  .lecture-schedule-page .page-header { flex-direction: column; }
+}
+
+@media (max-width: 640px) {
+  .lecture-schedule-page { padding: 1rem; }
+  .session-footer { flex-direction: column; align-items: flex-start; }
+  .join-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .lecture-schedule-page { padding: 0.75rem; }
+}

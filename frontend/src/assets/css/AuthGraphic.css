@@ -1,0 +1,92 @@
+/* ─── Auth Graphic — Radar simulation SVG ────────────────────────────────── */
+
+.ag-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.ag-svg {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+}
+
+/* ── Radar sweep rotation ─── */
+.ag-sweep {
+  transform-origin: 160px 160px;
+  animation: ag-rotate 5s linear infinite;
+}
+
+@keyframes ag-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Ambient threat dots — staggered blink ─── */
+.ag-dot { animation: ag-blink 2.8s ease-in-out infinite; }
+.ag-dot-1 { animation-delay: 0s; }
+.ag-dot-2 { animation-delay: 0.9s; }
+.ag-dot-3 { animation-delay: 1.8s; }
+
+@keyframes ag-blink {
+  0%, 100% { opacity: 1; }
+  45%, 55%  { opacity: 0.15; }
+}
+
+/* ── Critical threat — pulse ─── */
+.ag-critical {
+  animation: ag-critical-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes ag-critical-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* ── Ping rings — expand and fade ─── */
+.ag-ping {
+  transform-origin: 200px 228px;
+  animation: ag-ping-expand 2.4s ease-out infinite;
+}
+
+.ag-ping-b { animation-delay: 1.2s; }
+
+@keyframes ag-ping-expand {
+  0%   { transform: scale(1);  opacity: 0.8; }
+  100% { transform: scale(5);  opacity: 0; }
+}
+
+/* ── Status bar ─── */
+.ag-status {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.ag-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 6px rgba(251,191,36,0.6);
+  animation: ag-status-pulse 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ag-status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.ag-status-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

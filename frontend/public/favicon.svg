@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Dark background tile -->
+  <rect width="32" height="32" rx="6" fill="#08080b"/>
+  <!-- Hexagon shield (pointed top) — amber -->
+  <path d="M16 3L27.3 9.5V22.5L16 29L4.7 22.5V9.5Z"
+        fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Upward chevron — flight / ascent -->
+  <polyline points="10,21 16,13.5 22,21"
+            fill="none" stroke="#fbbf24" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

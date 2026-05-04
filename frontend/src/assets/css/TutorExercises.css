@@ -1,0 +1,435 @@
+/* ─── Tutor Exercises Page ───────────────────────────────────────────────────── */
+.tutor-exercises-page {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tutor-exercises-page .page-header {
+  margin-bottom: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tutor-exercises-page .header-content { flex: 1; }
+
+.tutor-exercises-page .page-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.tutor-exercises-page .page-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Search & filter bar */
+.tutor-exercises-page .search-filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tutor-exercises-page .search-box {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.tutor-exercises-page .search-box input {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: var(--ease);
+}
+
+.tutor-exercises-page .search-box input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+}
+
+.tutor-exercises-page .search-box svg {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.tutor-exercises-page .filter-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.tutor-exercises-page .type-filter {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+  transition: var(--ease);
+}
+
+.tutor-exercises-page .type-filter:focus { border-color: var(--cyan); }
+
+/* Table */
+.tutor-exercises-page .table-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.tutor-exercises-page table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.tutor-exercises-page th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.tutor-exercises-page td {
+  padding: 0.85rem 1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-muted);
+  vertical-align: middle;
+}
+
+.tutor-exercises-page tbody tr:hover { background: var(--bg-hover); }
+
+.exercise-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.exercise-info { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.exercise-meta { font-size: 0.78rem; color: var(--text-secondary); }
+
+.exercise-id {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* Action buttons */
+.action-buttons { display: flex; gap: 0.4rem; align-items: center; }
+
+.tutor-exercises-page .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+  transition: var(--ease);
+  color: var(--text-secondary);
+}
+
+.tutor-exercises-page .icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.tutor-exercises-page .icon-btn.edit:hover { border-color: var(--cyan); color: var(--cyan); }
+.tutor-exercises-page .icon-btn.delete:hover { border-color: var(--danger); color: var(--danger); }
+.tutor-exercises-page .icon-btn.stats:hover { border-color: var(--violet); color: var(--violet); }
+.tutor-exercises-page .icon-btn.submissions:hover { border-color: var(--success); color: var(--success); }
+.tutor-exercises-page .icon-btn.view:hover { border-color: var(--info); color: var(--info); }
+
+/* Primary button */
+.tutor-exercises-page .primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #020c1b;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.tutor-exercises-page .primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.35);
+}
+
+/* Export button */
+.tutor-exercises-page .export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--border-active);
+  color: var(--cyan);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.tutor-exercises-page .export-button:hover { background: var(--cyan-dim); }
+
+/* Modal */
+.create-exercise-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 27, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.create-exercise-modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-hard);
+}
+
+.create-exercise-modal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.create-exercise-modal .modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.create-exercise-modal .close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: var(--radius-sm);
+  transition: var(--ease);
+}
+
+.create-exercise-modal .close-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+/* Form */
+.exercise-form { padding: 1.5rem; }
+
+.form-section { margin-bottom: 1.5rem; }
+
+.form-section h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.exercise-form .form-group { margin-bottom: 1rem; }
+
+.exercise-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.exercise-form label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.exercise-form input,
+.exercise-form select,
+.exercise-form textarea {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: var(--ease);
+}
+
+.exercise-form input:focus,
+.exercise-form select:focus,
+.exercise-form textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+}
+
+/* Questions */
+.question-item {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.question-header span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cyan);
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: var(--ease);
+}
+
+.remove-btn:hover { background: var(--danger-dim); }
+
+.add-question-btn {
+  width: 100%;
+  padding: 0.7rem;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--cyan);
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: var(--ease);
+}
+
+.add-question-btn:hover { background: var(--cyan-dim); border-color: var(--cyan); }
+
+/* Form actions */
+.exercise-form .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.exercise-form .submit-btn {
+  padding: 0.65rem 1.4rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #020c1b;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.exercise-form .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35); }
+
+.exercise-form .cancel-btn {
+  padding: 0.65rem 1.4rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.exercise-form .cancel-btn:hover { border-color: var(--border-active); color: var(--text-primary); }
+
+/* Empty / loading states */
+.tutor-exercises-page .empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.tutor-exercises-page .empty-icon { opacity: 0.3; }
+
+.tutor-exercises-page .loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem;
+  color: var(--text-secondary);
+}
+
+.tutor-exercises-page .spinner { animation: spin 0.8s linear infinite; }
+
+.content-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; }
+
+@media (max-width: 768px) {
+  .exercise-form .form-row { grid-template-columns: 1fr; }
+  .tutor-exercises-page .page-header { flex-direction: column; }
+  .tutor-exercises-page .table-container { overflow-x: auto; }
+}
+
+@media (max-width: 640px) {
+  .tutor-exercises-page { padding: 1rem; }
+  .tutor-exercises-page .search-filter-bar { flex-direction: column; align-items: stretch; }
+  .create-exercise-modal { max-width: 100%; border-radius: var(--radius-lg); }
+}
+
+@media (max-width: 480px) {
+  .tutor-exercises-page { padding: 0.75rem; }
+  .exercise-form .form-actions { flex-direction: column; }
+  .exercise-form .submit-btn, .exercise-form .cancel-btn { width: 100%; text-align: center; }
+}

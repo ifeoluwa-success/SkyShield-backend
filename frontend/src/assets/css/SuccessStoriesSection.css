@@ -1,0 +1,189 @@
+/* ─── Success Stories Section ────────────────────────────────────────────────── */
+.stories-section {
+  padding: 6rem 2rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.stories-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Header */
+.stories-header {
+  margin-bottom: 3.5rem;
+}
+
+.stories-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.6rem;
+}
+
+.stories-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Grid — 3 col */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+/* Card */
+.story-card {
+  background: var(--bg-primary);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: background 0.2s ease;
+}
+
+.story-card:hover { background: var(--bg-tertiary); }
+
+/* Card top — avatar + meta + hike */
+.story-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.story-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+}
+
+.story-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.story-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-role {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.story-months {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.story-hike {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 0.1rem;
+}
+
+/* Quote */
+.story-quote {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-style: italic;
+  flex: 1;
+  margin: 0;
+  border-left: 2px solid var(--border-color);
+  padding-left: 1rem;
+}
+
+/* Company transition */
+.story-transition {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.story-company {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.story-company.to {
+  color: var(--text-secondary);
+}
+
+.story-arrow {
+  color: var(--cyan);
+  font-size: 0.85rem;
+}
+
+/* Bottom CTA */
+.stories-cta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.stories-cta-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.stories-cta-link {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.stories-cta-link:hover { opacity: 0.7; text-decoration: none; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .stories-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .stories-section { padding: 3rem 1.25rem; }
+  .stories-header { margin-bottom: 2.5rem; }
+}
+
+@media (max-width: 600px) {
+  .stories-section { padding: 4rem 1.25rem; }
+  .story-card { padding: 1.5rem; }
+  .stories-cta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .stories-section { padding: 2.5rem 1rem; }
+}

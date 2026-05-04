@@ -1,0 +1,173 @@
+/* ─── Login Page — Page-specific styles ──────────────────────────────────── */
+/* Shared .auth-* styles live in AuthShared.css                               */
+
+.login-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* Login header */
+.login-header { margin-bottom: 1.75rem; }
+
+.login-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.02em;
+}
+
+.login-header p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Alert banners */
+.alert-message {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.alert-error   { background: var(--danger-dim);  border: 1px solid rgba(239,68,68,0.3);   color: var(--danger); }
+.alert-info    { background: var(--info-dim);     border: 1px solid rgba(59,130,246,0.3);  color: var(--info); }
+.alert-success { background: var(--success-dim);  border: 1px solid rgba(16,185,129,0.3);  color: var(--success); }
+
+.alert-message span { flex: 1; }
+
+.alert-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: var(--ease);
+}
+
+.alert-close:hover { opacity: 1; }
+
+/* Form */
+.login-form { display: flex; flex-direction: column; gap: 0; }
+
+/* Password wrapper */
+.password-input-wrapper { position: relative; }
+.password-input { padding-right: 2.75rem !important; }
+
+.password-toggle {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: var(--ease);
+  line-height: 0;
+}
+
+.password-toggle:hover { color: var(--cyan); }
+
+/* Options row */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.forgot-link {
+  font-size: 0.82rem;
+  color: var(--cyan);
+  text-decoration: none;
+  transition: var(--ease);
+}
+
+.forgot-link:hover { text-decoration: underline; }
+
+/* Submit button */
+.login-button {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #020c1b;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.login-button:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(251,191,36,0.35); }
+.login-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.spinner { animation: spin 0.8s linear infinite; }
+
+/* Divider */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+/* Social login */
+.social-login { display: flex; gap: 0.5rem; }
+
+.social-button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+  font-family: inherit;
+}
+
+.social-button:hover { border-color: var(--border-active); color: var(--text-primary); background: var(--bg-hover); }
+.social-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-page { flex-direction: column; height: auto; overflow: visible; }
+}
+
+@media (max-width: 480px) {
+  .login-header h2 { font-size: 1.4rem; }
+}

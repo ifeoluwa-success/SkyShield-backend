@@ -1,0 +1,7 @@
+/* ─── TutorSettings (alias) ──────────────────────────────────────────────────── */
+/* This file forwards to TutorSettingsPage styles */
+.tutor-settings {
+  padding: 1.5rem;
+  max-width: 860px;
+  animation: fade-in 0.3s ease both;
+}

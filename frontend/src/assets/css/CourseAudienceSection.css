@@ -1,0 +1,157 @@
+/* ─── Audience Section ───────────────────────────────────────────────────────── */
+.audience-section {
+  padding: 6rem 2rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.audience-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.audience-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 4rem;
+  align-items: end;
+  margin-bottom: 3.5rem;
+  max-width: 860px;
+}
+
+.audience-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.audience-accent { color: var(--cyan); }
+
+.audience-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding-bottom: 0.15rem;
+}
+
+/* 2×2 card grid — 1px gap on border-color bg creates internal grid lines */
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+.audience-card {
+  background: var(--bg-primary);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: background 0.2s ease;
+}
+
+.audience-card:hover { background: var(--bg-tertiary); }
+.audience-card:hover .audience-card-num { color: var(--cyan); opacity: 1; }
+
+.audience-card-top { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.audience-card-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  opacity: 0.7;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.audience-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.audience-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* Feature list */
+.audience-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.audience-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.audience-feature-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* Card CTA */
+.audience-cta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s ease;
+  width: fit-content;
+}
+
+.audience-cta:hover { opacity: 0.65; text-decoration: none; }
+
+/* Bottom row */
+.audience-bottom {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.audience-assess-link {
+  color: var(--cyan);
+  font-weight: 600;
+  text-decoration: none;
+}
+.audience-assess-link:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .audience-section { padding: 4rem 1.25rem; }
+  .audience-header { grid-template-columns: 1fr; gap: 1rem; }
+  .audience-title { white-space: normal; }
+  .audience-grid { grid-template-columns: 1fr; }
+  .audience-card { padding: 1.75rem 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .audience-section { padding: 2.5rem 1rem; }
+  .audience-card { padding: 1.5rem 1rem; }
+}

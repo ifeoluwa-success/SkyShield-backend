@@ -1,0 +1,196 @@
+/* ─── Hero Section ─────────────────────────────────────────────────────────── */
+.hero-section-new {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* Full-cover dark overlay — heavier on left, lighter on right */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg,
+      rgba(7, 7, 10, 0.96) 0%,
+      rgba(7, 7, 10, 0.82) 45%,
+      rgba(7, 7, 10, 0.50) 100%);
+  z-index: 1;
+}
+
+/* Subtle amber glow bottom-left */
+.hero-section-new::before {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: -60px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.07) 0%, transparent 65%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Grid texture */
+.hero-section-new::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(251, 191, 36, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 191, 36, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Content wrapper */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto 0 10%;
+  padding: 7rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── Eyebrow ── */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.22);
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.hero-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: hero-dot-pulse 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes hero-dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ── Headline ── */
+.main-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.gradient-text-sky {
+  background: linear-gradient(135deg, var(--cyan) 0%, #fde68a 60%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Subtitle ── */
+.subtitle-text {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.75;
+  max-width: 560px;
+}
+
+/* ── CTA buttons ── */
+.hero-buttons {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary-sky {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+  color: #07070a;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--ease);
+  box-shadow: 0 4px 24px rgba(251, 191, 36, 0.35);
+  letter-spacing: -0.01em;
+}
+
+.btn-primary-sky:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(251, 191, 36, 0.50);
+  text-decoration: none;
+}
+
+.btn-get-in-touch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--ease);
+  backdrop-filter: blur(8px);
+}
+
+.btn-get-in-touch:hover {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.09);
+  text-decoration: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .hero-inner { margin-left: 6%; max-width: 680px; }
+}
+
+@media (max-width: 768px) {
+  .hero-inner {
+    margin: 0;
+    padding: 6rem 1.5rem 4rem;
+    max-width: 100%;
+  }
+  .main-headline { font-size: 2.4rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-inner { padding: 5rem 1.25rem 3.5rem; gap: 1.4rem; }
+  .main-headline { font-size: 2rem; }
+  .subtitle-text { font-size: 0.95rem; }
+  .hero-buttons { flex-direction: column; }
+  .btn-primary-sky, .btn-get-in-touch { justify-content: center; }
+}

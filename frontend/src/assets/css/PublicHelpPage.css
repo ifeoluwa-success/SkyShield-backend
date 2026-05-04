@@ -1,0 +1,83 @@
+.pub-help-page { background: var(--bg-primary); }
+
+.pub-help-hero {
+  padding: 5rem 1.5rem 3rem;
+  text-align: center;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(251,191,36,0.06) 0%, transparent 70%);
+}
+.pub-help-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2);
+  color: var(--cyan); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.3rem 0.8rem; border-radius: 20px; margin-bottom: 1.25rem;
+}
+.pub-help-hero h1 {
+  font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 800;
+  color: var(--text-primary); line-height: 1.2; margin-bottom: 1rem;
+}
+.pub-help-hero h1 span {
+  background: linear-gradient(135deg, var(--cyan), var(--violet,#8b5cf6));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.pub-help-hero p { font-size: 1rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 2rem; line-height: 1.7; }
+.pub-help-login-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--cyan); color: #020c1b; font-weight: 700; font-size: 0.9rem;
+  padding: 0.75rem 1.5rem; border-radius: var(--radius-md,8px);
+  text-decoration: none; transition: opacity 0.2s;
+}
+.pub-help-login-cta:hover { opacity: 0.85; }
+
+/* Quick links */
+.pub-help-quicklinks {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+@media (max-width: 640px) { .pub-help-quicklinks { grid-template-columns: 1fr; } }
+.ql-card {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 1.25rem; text-align: center;
+  text-decoration: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ql-card:hover { border-color: rgba(251,191,36,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+.ql-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(251,191,36,0.08); display: flex; align-items: center; justify-content: center; color: var(--cyan); margin: 0 auto 0.75rem; }
+.ql-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.ql-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+/* FAQ */
+.pub-help-faq { max-width: 720px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+.pub-help-faq h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1.5rem; }
+.pub-faq-item { border-bottom: 1px solid var(--border-color); }
+.pub-faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; background: none; border: none;
+  padding: 1rem 0; font-size: 0.9rem; font-weight: 600;
+  color: var(--text-primary); cursor: pointer; text-align: left; gap: 1rem;
+}
+.pub-faq-q svg { flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+.pub-faq-q.open svg { transform: rotate(180deg); color: var(--cyan); }
+.pub-faq-a { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; padding-bottom: 1rem; }
+
+/* Still need help */
+.pub-help-cta {
+  background: var(--bg-secondary); border-top: 1px solid var(--border-color);
+  padding: 4rem 1.5rem; text-align: center;
+}
+.pub-help-cta h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; }
+.pub-help-cta p { font-size: 0.9rem; color: var(--text-secondary); max-width: 450px; margin: 0 auto 1.75rem; line-height: 1.7; }
+.pub-help-cta-actions { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.btn-primary-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--cyan); color: #020c1b; font-weight: 700; font-size: 0.9rem;
+  padding: 0.75rem 1.5rem; border-radius: var(--radius-md,8px); text-decoration: none; transition: opacity 0.2s;
+}
+.btn-primary-cta:hover { opacity: 0.85; }
+.btn-ghost-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem;
+  padding: 0.75rem 1.5rem; border-radius: var(--radius-md,8px);
+  border: 1px solid var(--border-color); text-decoration: none; transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost-cta:hover { color: var(--text-primary); border-color: var(--text-muted); }

@@ -1,0 +1,61 @@
+/* ─── Tutor Grading Page ─────────────────────────────────────────────────────── */
+.grading-page { padding: 1.5rem; animation: fade-in 0.3s ease both; }
+.grading-page.loading { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+
+.page-header { margin-bottom: 1.5rem; }
+.page-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.2rem; }
+.page-subtitle { font-size: 0.875rem; color: var(--text-secondary); }
+
+.grading-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.grading-card {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  transition: var(--ease);
+}
+.grading-card:hover { border-color: var(--border-active); }
+
+.exercise-icon {
+  width: 44px; height: 44px; background: var(--violet-dim);
+  border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+  color: var(--violet); flex-shrink: 0;
+}
+.exercise-info { flex: 1; min-width: 0; }
+.grading-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+.grading-card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+.exercise-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.exercise-meta span { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; }
+
+.grading-card-stats { display: flex; gap: 1.25rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-muted); }
+.stat { text-align: center; }
+.stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.stat .num.pending { color: var(--warning); }
+.stat .num.graded  { color: var(--success); }
+.stat .lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+
+.grading-card-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+.grade-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: var(--violet-dim); border: 1px solid rgba(139,92,246,0.25);
+  color: var(--violet); font-size: 0.78rem; font-weight: 600;
+  padding: 0.35rem 0.85rem; border-radius: var(--radius-sm);
+  cursor: pointer; transition: var(--ease); text-decoration: none; white-space: nowrap;
+}
+.grade-btn:hover { background: var(--violet); color: #fff; text-decoration: none; }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 4rem 2rem; color: var(--text-muted); text-align: center; }
+.empty-state svg { opacity: 0.3; }
+.loading-spinner { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 3rem; color: var(--text-secondary); }
+
+@media (max-width: 768px) {
+  .grading-card-stats { flex-wrap: wrap; gap: 1rem; }
+}
+
+@media (max-width: 640px) { .grading-page { padding: 1rem; } .grading-card { flex-direction: column; } .grading-card-actions { flex-direction: row; width: 100%; } }
+
+@media (max-width: 480px) {
+  .grading-page { padding: 0.75rem; }
+  .grading-card-actions { flex-direction: column; }
+  .grade-btn { width: 100%; justify-content: center; }
+}
