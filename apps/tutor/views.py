@@ -232,7 +232,37 @@ class TeachingSessionViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if not user.is_authenticated:
             return TeachingSession.objects.none()
-        return TeachingSession.objects.filter(tutor__user=user).select_related('tutor', 'tutor__user', 'internal_meeting').order_by('start_time')
+
+        queryset = TeachingSession.objects.filter(
+            tutor__user=user
+        ).select_related('tutor', 'tutor__user', 'internal_meeting').order_by('start_time')
+
+        params = self.request.query_params
+        now = timezone.now()
+
+        status_param = params.get('status')
+        if status_param == 'upcoming':
+            queryset = queryset.filter(is_cancelled=False, start_time__gt=now)
+        elif status_param == 'live':
+            queryset = queryset.filter(is_cancelled=False, start_time__lte=now, end_time__gte=now)
+        elif status_param == 'ended':
+            queryset = queryset.filter(is_cancelled=False, end_time__lt=now)
+        elif status_param == 'cancelled':
+            queryset = queryset.filter(is_cancelled=True)
+
+        session_type = params.get('session_type')
+        if session_type:
+            queryset = queryset.filter(session_type=session_type)
+
+        from_date = params.get('from_date')
+        if from_date:
+            queryset = queryset.filter(start_time__date__gte=from_date)
+
+        to_date = params.get('to_date')
+        if to_date:
+            queryset = queryset.filter(start_time__date__lte=to_date)
+
+        return queryset
 
     @extend_schema(
         description="List all teaching sessions",

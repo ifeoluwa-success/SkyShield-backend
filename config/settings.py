@@ -244,6 +244,18 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.skyshieldedu.com",
 ]
 
+# Allow the actual deployed frontend URL set in the environment (Render/Vercel etc.)
+_frontend_url = os.getenv("FRONTEND_URL", "").rstrip("/")
+if _frontend_url and _frontend_url not in CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS.append(_frontend_url)
+
+# Also allow preview/branch deployment URLs from common platforms
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://[\w-]+\.onrender\.com$",
+    r"^https://[\w-]+\.vercel\.app$",
+    r"^https://[\w-]+\.netlify\.app$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Security settings for production
