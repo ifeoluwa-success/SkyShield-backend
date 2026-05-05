@@ -5,6 +5,7 @@ import hmac
 import base64
 from django.core.mail import send_mail
 from django.conf import settings
+import threading
 from .models import SystemSetting
 
 def generate_random_string(length=32):
@@ -29,20 +30,23 @@ def get_setting(key, default=None):
         return default
 
 def send_email_notification(recipients, subject, message, html_message=None):
-    """Send email notification"""
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recipients if isinstance(recipients, list) else [recipients],
-            html_message=html_message,
-            fail_silently=False
-        )
-        return True
-    except Exception as e:
-        print(f"Error sending email: {e}")
-        return False
+    """Send email notification asynchronously"""
+    def send_email_thread():
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=recipients if isinstance(recipients, list) else [recipients],
+                html_message=html_message,
+                fail_silently=False
+            )
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            
+    thread = threading.Thread(target=send_email_thread)
+    thread.start()
+    return True
 
 def format_currency(amount, currency='USD'):
     """Format currency"""

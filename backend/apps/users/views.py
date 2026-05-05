@@ -11,7 +11,6 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 from apps.core.utils import send_email_notification
-from apps.core.tasks import send_async_email
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -152,7 +151,7 @@ class RegisterView(APIView):
                 'activate_url': activate_url,
             }
             html_message = render_to_string('account/email/email_confirmation_message.html', context)
-            send_async_email.delay(
+            send_email_notification(
                 user.email,
                 "Mission Authorization: Verify Email",
                 f"Please verify your email address by visiting: {activate_url}",
@@ -397,7 +396,7 @@ class ForgotPasswordView(APIView):
                     'password_reset_url': password_reset_url,
                 }
                 html_message = render_to_string('account/email/password_reset_key_message.html', context)
-                send_async_email.delay(
+                send_email_notification(
                     user.email,
                     "Access Recovery Protocol",
                     f"Reset your credentials by visiting: {password_reset_url}",
@@ -514,7 +513,7 @@ class ResendVerificationView(APIView):
                     'activate_url': activate_url,
                 }
                 html_message = render_to_string('account/email/email_confirmation_message.html', context)
-                send_async_email.delay(
+                send_email_notification(
                     user.email,
                     "Mission Authorization: Verify Email",
                     f"Please verify your email address by visiting: {activate_url}",
