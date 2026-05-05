@@ -38,7 +38,8 @@ const SocialAuthCallback: React.FC = () => {
         window.location.href = user.role === 'trainee' ? '/dashboard' : '/tutor/dashboard';
       } catch (err: any) {
         console.error('Social login error:', err);
-        setError('Failed to complete social authentication. Please try again.');
+        const detail = err.response?.data?.detail || err.message || 'Unknown error';
+        setError(`Failed to complete social authentication: ${detail}`);
       }
     };
 
@@ -54,7 +55,7 @@ const SocialAuthCallback: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
           <button 
             onClick={() => navigate('/login')}
-            className="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-medium transition-colors"
+            className="w-full py-3 px-4 bg-[#fbbf24] hover:bg-[#d97706] text-[#020c1b] rounded-lg font-bold transition-all shadow-lg hover:shadow-[#fbbf24]/20"
           >
             Back to Login
           </button>
