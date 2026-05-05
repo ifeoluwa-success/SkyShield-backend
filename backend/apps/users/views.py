@@ -30,8 +30,25 @@ from .serializers import (
     UserSessionSerializer
 )
 import logging
+import sendgrid
+from sendgrid.helpers.mail import Mail as SendGridMail, Email, To, Content
 
 logger = logging.getLogger(__name__)
+
+def send_direct_email(to_email, subject, content_html):
+    """Fallback direct SendGrid sender if Anymail/Django backend fails"""
+    try:
+        api_key = os.getenv("SENDGRID_API_KEY") or settings.ANYMAIL.get("SENDGRID_API_KEY")
+        sg = sendgrid.SendGridAPIClient(api_key=api_key)
+        from_email = Email(settings.DEFAULT_FROM_EMAIL)
+        to_email_obj = To(to_email)
+        content = Content("text/html", content_html)
+        mail = SendGridMail(from_email, to_email_obj, subject, content)
+        response = sg.client.mail.send.post(request_body=mail.get())
+        return response.status_code in [200, 201, 202]
+    except Exception as e:
+        logger.error(f"Direct SendGrid error: {str(e)}")
+        return False
 
 
 # ==============================================================================
@@ -98,10 +115,30 @@ class GoogleLogin(SocialLoginView):
     callback_url = "https://skyshieldedu.com/auth/callback/google"
     client_class = OAuth2Client
 
+    def get_response(self):
+        response = super().get_response()
+        if response.status_code == 200:
+            user = self.user
+            if not user.email_verified:
+                user.email_verified = True
+                user.status = 'active'
+                user.save(update_fields=['email_verified', 'status'])
+        return response
+
 class GitHubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     callback_url = "https://skyshieldedu.com/auth/callback/github"
     client_class = OAuth2Client
+
+    def get_response(self):
+        response = super().get_response()
+        if response.status_code == 200:
+            user = self.user
+            if not user.email_verified:
+                user.email_verified = True
+                user.status = 'active'
+                user.save(update_fields=['email_verified', 'status'])
+        return response
 
 
 # ==============================================================================
@@ -142,12 +179,18 @@ class RegisterView(APIView):
                 'activate_url': activate_url,
             }
             html_message = render_to_string('account/email/email_confirmation_message.html', context)
-            send_email_notification(
+            
+            # Try standard notification first
+            sent = send_email_notification(
                 user.email,
                 "Mission Authorization: Verify Email",
                 f"Please verify your email address by visiting: {activate_url}",
                 html_message=html_message
             )
+            
+            # Fallback to direct SendGrid if standard fails
+            if not sent:
+                send_direct_email(user.email, "Mission Authorization: Verify Email", html_message)
 
             return Response({
                 'message': 'Registration successful. Please verify your email.',
@@ -387,12 +430,16 @@ class ForgotPasswordView(APIView):
                     'password_reset_url': password_reset_url,
                 }
                 html_message = render_to_string('account/email/password_reset_key_message.html', context)
-                send_email_notification(
+                
+                sent = send_email_notification(
                     user.email,
                     "Access Recovery Protocol",
                     f"Reset your credentials by visiting: {password_reset_url}",
                     html_message=html_message
                 )
+                
+                if not sent:
+                    send_direct_email(user.email, "Access Recovery Protocol", html_message)
 
             # Always return success to prevent email enumeration
             return Response({
