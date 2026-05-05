@@ -8,6 +8,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.db.models import Q
+from django.template.loader import render_to_string
+from django.conf import settings
+from apps.core.utils import send_email_notification
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -131,6 +134,20 @@ class RegisterView(APIView):
             )
 
             logger.info(f"New user registered: {user.email}")
+
+            # Send verification email
+            activate_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
+            context = {
+                'user': user,
+                'activate_url': activate_url,
+            }
+            html_message = render_to_string('account/email/email_confirmation_message.html', context)
+            send_email_notification(
+                user.email,
+                "Mission Authorization: Verify Email",
+                f"Please verify your email address by visiting: {activate_url}",
+                html_message=html_message
+            )
 
             return Response({
                 'message': 'Registration successful. Please verify your email.',
@@ -363,6 +380,20 @@ class ForgotPasswordView(APIView):
                 )
                 logger.info(f"Password reset requested for: {user.email}")
 
+                # Send password reset email
+                password_reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
+                context = {
+                    'user': user,
+                    'password_reset_url': password_reset_url,
+                }
+                html_message = render_to_string('account/email/password_reset_key_message.html', context)
+                send_email_notification(
+                    user.email,
+                    "Access Recovery Protocol",
+                    f"Reset your credentials by visiting: {password_reset_url}",
+                    html_message=html_message
+                )
+
             # Always return success to prevent email enumeration
             return Response({
                 "message": "If an account exists with this email, you will receive a password reset link."
@@ -465,6 +496,20 @@ class ResendVerificationView(APIView):
                     expires_at=timezone.now() + timedelta(hours=24)
                 )
                 logger.info(f"Verification email resent to: {user.email}")
+
+                # Send verification email
+                activate_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
+                context = {
+                    'user': user,
+                    'activate_url': activate_url,
+                }
+                html_message = render_to_string('account/email/email_confirmation_message.html', context)
+                send_email_notification(
+                    user.email,
+                    "Mission Authorization: Verify Email",
+                    f"Please verify your email address by visiting: {activate_url}",
+                    html_message=html_message
+                )
 
             return Response({
                 "message": "If your email is unverified, you will receive a verification link."

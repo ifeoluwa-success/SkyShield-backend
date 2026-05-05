@@ -18,24 +18,31 @@ const SocialAuthCallback: React.FC = () => {
       const provider = location.pathname.includes('google') ? 'google' : 'github';
 
       if (!code) {
-        setError('No authorization code found in the URL.');
+        console.error('No code found in URL search params:', location.search);
+        setError('No authorization code found in the URL. Please try logging in again.');
         return;
       }
 
+      console.log(`Exchanging ${provider} code for tokens...`);
       try {
         const apiBase = import.meta.env.VITE_API_URL ?? 'https://skyshield-backend.onrender.com/api';
         const response = await axios.post(`${apiBase}/users/${provider}/`, { code });
         
+        console.log('Backend response:', response.data);
         const { access, refresh, user } = response.data;
         
+        if (!access || !user) {
+          throw new Error('Invalid response from server: missing access token or user profile');
+        }
+
         // Store tokens and user info
         localStorage.setItem('access_token', access);
         localStorage.setItem('refresh_token', refresh);
         localStorage.setItem('user', JSON.stringify(user));
         
-        // Update auth context by reloading or navigating to dashboard
-        // The AuthProvider will pick up the user from localStorage on init
-        window.location.href = user.role === 'trainee' ? '/dashboard' : '/tutor/dashboard';
+        const destination = user.role === 'trainee' ? '/dashboard' : '/tutor/dashboard';
+        console.log(`Authentication successful. Redirecting to ${destination}...`);
+        window.location.href = destination;
       } catch (err: any) {
         console.error('Social login error:', err);
         const detail = err.response?.data?.detail || err.message || 'Unknown error';
