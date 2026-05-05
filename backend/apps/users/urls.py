@@ -14,6 +14,10 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Social Authentication
+    path('google/', views.GoogleLogin.as_view(), name='google_login'),
+    path('github/', views.GitHubLogin.as_view(), name='github_login'),
     
     # Profile
     path('profile/', views.ProfileView.as_view(), name='profile'),
