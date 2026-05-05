@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 from apps.core.utils import send_email_notification
+from apps.core.tasks import send_async_email
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiTypes
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -18,37 +19,9 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 import uuid
 from datetime import timedelta
-from .models import (
-    User, UserActivity, PasswordResetToken, EmailVerificationToken,
-    UserNotification, UserDevice, UserSession
-)
-from .serializers import (
-    UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer,
-    ChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer,
-    VerifyEmailSerializer, ResendVerificationSerializer, TokenResponseSerializer,
-    UserActivitySerializer, UserNotificationSerializer, UserDeviceSerializer,
-    UserSessionSerializer
-)
 import logging
-import sendgrid
-from sendgrid.helpers.mail import Mail as SendGridMail, Email, To, Content
 
 logger = logging.getLogger(__name__)
-
-def send_direct_email(to_email, subject, content_html):
-    """Fallback direct SendGrid sender if Anymail/Django backend fails"""
-    try:
-        api_key = os.getenv("SENDGRID_API_KEY") or settings.ANYMAIL.get("SENDGRID_API_KEY")
-        sg = sendgrid.SendGridAPIClient(api_key=api_key)
-        from_email = Email(settings.DEFAULT_FROM_EMAIL)
-        to_email_obj = To(to_email)
-        content = Content("text/html", content_html)
-        mail = SendGridMail(from_email, to_email_obj, subject, content)
-        response = sg.client.mail.send.post(request_body=mail.get())
-        return response.status_code in [200, 201, 202]
-    except Exception as e:
-        logger.error(f"Direct SendGrid error: {str(e)}")
-        return False
 
 
 # ==============================================================================
@@ -172,25 +145,19 @@ class RegisterView(APIView):
 
             logger.info(f"New user registered: {user.email}")
 
-            # Send verification email
+            # Send verification email asynchronously
             activate_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
             context = {
                 'user': user,
                 'activate_url': activate_url,
             }
             html_message = render_to_string('account/email/email_confirmation_message.html', context)
-            
-            # Try standard notification first
-            sent = send_email_notification(
+            send_async_email.delay(
                 user.email,
                 "Mission Authorization: Verify Email",
                 f"Please verify your email address by visiting: {activate_url}",
                 html_message=html_message
             )
-            
-            # Fallback to direct SendGrid if standard fails
-            if not sent:
-                send_direct_email(user.email, "Mission Authorization: Verify Email", html_message)
 
             return Response({
                 'message': 'Registration successful. Please verify your email.',
@@ -423,23 +390,19 @@ class ForgotPasswordView(APIView):
                 )
                 logger.info(f"Password reset requested for: {user.email}")
 
-                # Send password reset email
+                # Send password reset email asynchronously
                 password_reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
                 context = {
                     'user': user,
                     'password_reset_url': password_reset_url,
                 }
                 html_message = render_to_string('account/email/password_reset_key_message.html', context)
-                
-                sent = send_email_notification(
+                send_async_email.delay(
                     user.email,
                     "Access Recovery Protocol",
                     f"Reset your credentials by visiting: {password_reset_url}",
                     html_message=html_message
                 )
-                
-                if not sent:
-                    send_direct_email(user.email, "Access Recovery Protocol", html_message)
 
             # Always return success to prevent email enumeration
             return Response({
@@ -544,14 +507,14 @@ class ResendVerificationView(APIView):
                 )
                 logger.info(f"Verification email resent to: {user.email}")
 
-                # Send verification email
+                # Send verification email asynchronously
                 activate_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
                 context = {
                     'user': user,
                     'activate_url': activate_url,
                 }
                 html_message = render_to_string('account/email/email_confirmation_message.html', context)
-                send_email_notification(
+                send_async_email.delay(
                     user.email,
                     "Mission Authorization: Verify Email",
                     f"Please verify your email address by visiting: {activate_url}",
