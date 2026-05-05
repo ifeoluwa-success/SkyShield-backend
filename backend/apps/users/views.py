@@ -16,6 +16,30 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+
+from .serializers import (
+    UserRegistrationSerializer,
+    UserLoginSerializer,
+    UserProfileSerializer,
+    ChangePasswordSerializer,
+    ForgotPasswordSerializer,
+    ResetPasswordSerializer,
+    VerifyEmailSerializer,
+    ResendVerificationSerializer,
+    UserActivitySerializer,
+    UserNotificationSerializer,
+    UserDeviceSerializer,
+    UserSessionSerializer,
+)
+from .models import (
+    UserSession,
+    UserActivity,
+    PasswordResetToken,
+    EmailVerificationToken,
+    UserNotification,
+    UserDevice
+)
+
 import uuid
 from datetime import timedelta
 import logging
