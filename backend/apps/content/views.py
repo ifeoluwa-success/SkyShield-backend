@@ -464,10 +464,11 @@ class LearningPathViewSet(viewsets.ReadOnlyModelViewSet):
         if featured and featured.lower() == 'true':
             queryset = queryset.filter(is_featured=True)
         
-        # Annotate with counts
+        # Annotate with counts (cannot name annotation `enrolled_count` — it
+        # conflicts with the real `LearningPath.enrolled_count` model field).
         queryset = queryset.annotate(
             material_count=Count('materials', distinct=True),
-            enrolled_count=Count('enrollments', distinct=True)
+            enrollment_aggregate=Count('enrollments', distinct=True),
         )
         
         # Paginate response

@@ -326,6 +326,7 @@ class LearningPathListSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
     author_name = serializers.SerializerMethodField()
     material_count = serializers.SerializerMethodField()
+    enrolled_count = serializers.SerializerMethodField()
     user_enrolled = serializers.SerializerMethodField()
     user_progress = serializers.SerializerMethodField()
 
@@ -348,7 +349,17 @@ class LearningPathListSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_material_count(self, obj):
+        annotated = getattr(obj, 'material_count', None)
+        if annotated is not None:
+            return annotated
         return obj.get_material_count()
+
+    @extend_schema_field(serializers.IntegerField())
+    def get_enrolled_count(self, obj):
+        live = getattr(obj, 'enrollment_aggregate', None)
+        if live is not None:
+            return live
+        return obj.enrolled_count
 
     @extend_schema_field(serializers.BooleanField())
     def get_user_enrolled(self, obj):
