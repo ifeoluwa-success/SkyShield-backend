@@ -61,7 +61,8 @@ const TutorSettingsPage: React.FC = () => {
   const handleTrustToggle = async (device: UserDevice) => {
     setTogglingDevice(device.id);
     try {
-      device.is_trusted ? await untrustDevice(device.id) : await trustDevice(device.id);
+      if (device.is_trusted) await untrustDevice(device.id);
+      else await trustDevice(device.id);
       setDevices(prev => prev.map(d => (d.id === device.id ? { ...d, is_trusted: !d.is_trusted } : d)));
       setToast({ type: 'success', message: device.is_trusted ? 'Device untrusted' : 'Device trusted' });
     } catch {

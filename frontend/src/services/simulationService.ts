@@ -3,9 +3,18 @@ import type {
   Scenario,
   SimulationSession,
   SimulationSessionDetail,
+  ScenarioWithSteps,
   SubmitDecisionRequest,
   HintRequest,
+  ScenarioComment,
+  CreateCommentRequest,
+  UpdateCommentRequest,
 } from '../types/simulation';
+import type {
+  GenieGenerateRequest,
+  GenieStatusResponse,
+  GenieVariationRequest,
+} from '../types/incident';
 import type { Meeting } from '../types/tutor';
 
 // ─── Scenarios ────────────────────────────────────────────────────────────────
@@ -21,8 +30,8 @@ export const getScenarios = async (params?: {
   return response.data.results;
 };
 
-export const getScenario = async (id: string): Promise<Scenario> => {
-  const response = await api.get<Scenario>(`/simulations/scenarios/${id}/`);
+export const getScenario = async (id: string): Promise<ScenarioWithSteps> => {
+  const response = await api.get<ScenarioWithSteps>(`/simulations/scenarios/${id}/`);
   return response.data;
 };
 
@@ -43,6 +52,37 @@ export const getBookmarkedScenarios = async (): Promise<Scenario[]> => {
   return response.data;
 };
 
+// ─── Scenario Comments ───────────────────────────────────────────────────────
+
+export const getScenarioComments = async (scenarioId: string): Promise<ScenarioComment[]> => {
+  const response = await api.get<ScenarioComment[]>(`/simulations/scenarios/${scenarioId}/comments/`);
+  return response.data;
+};
+
+export const createScenarioComment = async (
+  scenarioId: string,
+  data: CreateCommentRequest,
+): Promise<ScenarioComment> => {
+  const response = await api.post<ScenarioComment>(`/simulations/scenarios/${scenarioId}/comments/`, data);
+  return response.data;
+};
+
+export const updateScenarioComment = async (
+  scenarioId: string,
+  commentId: string,
+  data: UpdateCommentRequest,
+): Promise<ScenarioComment> => {
+  const response = await api.put<ScenarioComment>(
+    `/simulations/scenarios/${scenarioId}/comments/${commentId}/`,
+    data,
+  );
+  return response.data;
+};
+
+export const deleteScenarioComment = async (scenarioId: string, commentId: string): Promise<void> => {
+  await api.delete(`/simulations/scenarios/${scenarioId}/comments/${commentId}/`);
+};
+
 // ─── Simulation Sessions ──────────────────────────────────────────────────────
 
 export const startSimulation = async (scenarioId: string): Promise<SimulationSession> => {
@@ -61,9 +101,17 @@ export const getCurrentSession = async (
   scenarioId?: string,
 ): Promise<SimulationSession | null> => {
   const params = scenarioId ? { scenario_id: scenarioId } : {};
-  const response = await api.get<SimulationSession[]>('/simulations/sessions/', { params });
-  const inProgress = response.data.find(s => s.status === 'in_progress');
-  return inProgress ?? response.data[0] ?? null;
+  const response = await api.get<
+    SimulationSession[] | { results: SimulationSession[] }
+  >('/simulations/sessions/', { params });
+  const data = response.data;
+  const list: SimulationSession[] = Array.isArray(data)
+    ? data
+    : data && 'results' in data && Array.isArray(data.results)
+      ? data.results
+      : [];
+  const inProgress = list.find(s => s.status === 'in_progress');
+  return inProgress ?? list[0] ?? null;
 };
 
 /**
@@ -334,5 +382,54 @@ export const submitExerciseAttempt = async (
     '/tutor/trainee/exercises/submit/',
     { exercise_id: exerciseId, answers },
   );
+  return response.data;
+};
+
+// ─── Incident missions (REST) — re-exported for /simulations/ API parity ──────
+
+export {
+  abandonMission,
+  acknowledgeBriefing,
+  applyIntervention,
+  getActiveRuns,
+  getFinalScore,
+  getIncidentEvents,
+  getIncidentRun,
+  getMissionState,
+  getParticipants,
+  getTimeline,
+  joinMissionRun,
+  listIncidentRuns,
+  startMission,
+  submitAction,
+} from './incidentService';
+
+/** Mission incident hint (POST …/incidents/…/actions/). Distinct from session `requestHint` above. */
+export { requestHint as requestMissionHint } from './incidentService';
+
+// ─── Genie (AI scenario generation) ───────────────────────────────────────────
+
+export const generateGenieScenario = async (
+  payload: GenieGenerateRequest,
+): Promise<Record<string, unknown>> => {
+  const response = await api.post<Record<string, unknown>>(
+    '/simulations/genie/generate/',
+    payload,
+  );
+  return response.data;
+};
+
+export const generateGenieVariation = async (
+  payload: GenieVariationRequest,
+): Promise<Record<string, unknown>> => {
+  const response = await api.post<Record<string, unknown>>(
+    '/simulations/genie/variation/',
+    payload,
+  );
+  return response.data;
+};
+
+export const getGenieStatus = async (): Promise<GenieStatusResponse> => {
+  const response = await api.get<GenieStatusResponse>('/simulations/genie/status/');
   return response.data;
 };

@@ -231,6 +231,10 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'SkyShield <noreply@skyshie
 SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@skyshieldedu.com')
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://skyshieldedu.com')
 
+# Genie / Gemini API (DeepMind scenario generation)
+GENIE_API_KEY = os.environ.get('GENIE_API_KEY', '')
+GENIE_ENABLED = os.environ.get('GENIE_ENABLED', 'false').lower() == 'true'
+
 # dj-rest-auth settings
 REST_AUTH = {
     'USE_JWT': True,

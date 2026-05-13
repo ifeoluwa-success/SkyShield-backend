@@ -4,6 +4,8 @@ import type { User } from '../types/auth';
 
 export interface AuthContextType {
   user: User | null;
+  /** JWT access token from localStorage when a user session exists; refreshes on each render if logged in. */
+  token: string | null;
   login: (identifier: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   updateUser: (updatedData: Partial<User>) => void;

@@ -257,6 +257,60 @@ export interface JoinMeetingResponse {
   };
 }
 
+// ─── Meeting Participants ────────────────────────────────────────────────────
+
+export interface MeetingParticipant {
+  id: string;
+  user: string;
+  user_name: string;
+  user_email: string;
+  role: 'host' | 'participant';
+  status: 'active' | 'waiting' | 'left';
+  video_enabled: boolean;
+  audio_enabled: boolean;
+  screen_sharing: boolean;
+  joined_at: string;
+  left_at?: string;
+}
+
+// ─── Meeting Chat ────────────────────────────────────────────────────────────
+
+export interface MeetingChatMessage {
+  id: string;
+  meeting: string;
+  sender: string;
+  sender_name: string;
+  recipient?: string;
+  recipient_name?: string;
+  content: string;
+  message_type: 'text' | 'system' | 'file';
+  timestamp: string;
+  is_private: boolean;
+}
+
+export interface SendChatMessageRequest {
+  content: string;
+  recipient_id?: string;
+  message_type?: 'text' | 'system' | 'file';
+}
+
+// ─── Meeting Recordings ──────────────────────────────────────────────────────
+
+export interface MeetingRecording {
+  id: string;
+  meeting: string;
+  meeting_title: string;
+  requested_by: string;
+  requested_by_name: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  file_path?: string;
+  file_url?: string;
+  duration?: number;
+  file_size?: number;
+  created_at: string;
+  completed_at?: string;
+}
+
 export type ScheduleItem =
   | (TeachingSession & { type: 'session' })
   | (Meeting & { type: 'meeting' });

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
 import uuid
 
@@ -45,6 +46,10 @@ class Scenario(models.Model):
     correct_actions = models.JSONField(help_text="Expected correct actions")
     hints = models.JSONField(default=list, blank=True)
     learning_objectives = models.JSONField(default=list)
+    graph = models.JSONField(default=dict)
+    escalation_rules = models.JSONField(default=list)
+    is_genie_generated = models.BooleanField(default=False)
+    genie_template_id = models.CharField(max_length=100, null=True, blank=True)
     
     # Media
     thumbnail = models.ImageField(upload_to='scenarios/thumbnails/', null=True, blank=True)
@@ -242,3 +247,328 @@ class ScenarioBookmark(models.Model):
     class Meta:
         db_table = 'scenario_bookmarks'
         unique_together = ['user', 'scenario']
+
+
+class IncidentRun(models.Model):
+    """
+    New mission-level session for the simulation engine.
+    SimulationSession is kept untouched for backward compatibility.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    scenario = models.ForeignKey(Scenario, on_delete=models.PROTECT, related_name='incident_runs')
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='MissionParticipant',
+        related_name='incident_runs'
+    )
+    phase = models.CharField(
+        max_length=20,
+        default='briefing',
+        choices=[
+            ('briefing', 'Briefing'),
+            ('detection', 'Detection'),
+            ('investigation', 'Investigation'),
+            ('containment', 'Containment'),
+            ('recovery', 'Recovery'),
+            ('review', 'Review'),
+        ]
+    )
+    status = models.CharField(
+        max_length=20,
+        default='not_started',
+        choices=[
+            ('not_started', 'Not Started'),
+            ('in_progress', 'In Progress'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed'),
+            ('abandoned', 'Abandoned'),
+            ('paused', 'Paused'),
+        ]
+    )
+    session_state = models.JSONField(default=dict)
+    phase_started_at = models.DateTimeField(null=True, blank=True)
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    score = models.FloatField(null=True, blank=True)
+    passed = models.BooleanField(null=True, blank=True)
+    genie_scenario_data = models.JSONField(default=dict)
+    is_genie_generated = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-started_at']
+
+    def __str__(self):
+        return f"IncidentRun {self.id} — {self.scenario.title}"
+
+
+class MissionParticipant(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    run = models.ForeignKey(IncidentRun, on_delete=models.CASCADE, related_name='mission_participants')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='mission_participations'
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=[
+            ('lead_operator', 'Lead Operator'),
+            ('support_operator', 'Support Operator'),
+            ('observer', 'Observer'),
+            ('supervisor', 'Supervisor'),
+        ]
+    )
+    joined_at = models.DateTimeField(auto_now_add=True)
+    last_seen = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_ready = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = [('run', 'user')]
+
+    def __str__(self):
+        return f"{self.user.username} in run {self.run.id} as {self.role}"
+
+
+class IncidentEvent(models.Model):
+    """
+    Append-only event log for a mission run.
+    NEVER update or delete records from this model.
+    """
+    EVENT_TYPES = [
+        ('action_submitted', 'Action Submitted'),
+        ('phase_changed', 'Phase Changed'),
+        ('escalation_triggered', 'Escalation Triggered'),
+        ('hint_requested', 'Hint Requested'),
+        ('intervention_applied', 'Intervention Applied'),
+        ('participant_joined', 'Participant Joined'),
+        ('participant_left', 'Participant Left'),
+        ('timeout_occurred', 'Timeout Occurred'),
+        ('genie_event', 'Genie Event'),
+        ('system', 'System'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    run = models.ForeignKey(IncidentRun, on_delete=models.CASCADE, related_name='events')
+    event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='incident_events'
+    )
+    payload = models.JSONField(default=dict)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"{self.event_type} @ {self.timestamp} in run {self.run.id}"
+
+
+class ThreatNode(models.Model):
+    """
+    A node in the branching threat graph for a scenario.
+    Represents an attack that can escalate or branch based on decisions.
+    """
+    SEVERITY_CHOICES = [
+        (1, 'Low'),
+        (2, 'Medium'),
+        (3, 'High'),
+        (4, 'Critical'),
+        (5, 'Catastrophic'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE, related_name='threat_nodes')
+    label = models.CharField(max_length=200)
+    severity = models.IntegerField(choices=SEVERITY_CHOICES)
+    trigger_condition = models.JSONField()
+    consequence_payload = models.JSONField()
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='children'
+    )
+    phase = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.label} (severity {self.severity})"
+
+
+class Course(models.Model):
+    """
+    A structured course created by a supervisor/instructor.
+    Contains ordered modules. Trainee must complete all modules
+    in order to earn a certificate.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    thumbnail = models.ImageField(
+        upload_to='course_thumbnails/', null=True, blank=True)
+    threat_focus = models.CharField(max_length=100)
+    # e.g. 'GPS Spoofing', 'ADS-B Injection', 'Radar Jamming'
+    difficulty = models.IntegerField(
+        choices=[(1, 'Beginner'), (2, 'Intermediate'),
+                 (3, 'Advanced'), (4, 'Expert')],
+        default=1)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, related_name='created_courses')
+    is_published = models.BooleanField(default=False)
+    estimated_hours = models.FloatField(default=1.0)
+    passing_threshold = models.FloatField(default=70.0)
+    # minimum average score across all simulation modules to earn cert
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class CourseModule(models.Model):
+    """
+    A single module inside a Course. Ordered by position.
+    Can be either a reading module (content only) or a
+    simulation checkpoint (requires passing a scenario).
+    """
+    MODULE_TYPES = [
+        ('reading', 'Reading'),
+        ('simulation', 'Simulation Checkpoint'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name='modules')
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    module_type = models.CharField(
+        max_length=20, choices=MODULE_TYPES, default='reading')
+    position = models.PositiveIntegerField(default=0)
+    # position determines order — 0 is first
+
+    # For reading modules:
+    content_body = models.TextField(blank=True)
+    # Rich text / markdown content written by supervisor
+
+    # For simulation modules:
+    scenario = models.ForeignKey(
+        'Scenario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='course_modules')
+    minimum_passing_score = models.FloatField(default=70.0)
+    # trainee must score >= this to unlock next module
+    max_simulation_attempts = models.IntegerField(default=3)
+
+    class Meta:
+        ordering = ['position']
+        unique_together = [('course', 'position')]
+
+    def __str__(self):
+        return f"{self.course.title} — {self.title} ({self.module_type})"
+
+
+class CourseEnrollment(models.Model):
+    """
+    Tracks a trainee's enrollment in a Course.
+    Created when trainee enrolls. Tracks overall progress.
+    """
+    STATUS_CHOICES = [
+        ('enrolled', 'Enrolled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('certificate_issued', 'Certificate Issued'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name='enrollments')
+    trainee = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='course_enrollments')
+    status = models.CharField(
+        max_length=30, choices=STATUS_CHOICES, default='enrolled')
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    current_module = models.ForeignKey(
+        CourseModule, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='+')
+    # tracks which module the trainee is currently on
+    average_simulation_score = models.FloatField(null=True, blank=True)
+    # recomputed after each simulation module is passed
+
+    class Meta:
+        unique_together = [('course', 'trainee')]
+
+    def __str__(self):
+        return f"{self.trainee.username} in {self.course.title}"
+
+
+class ModuleProgress(models.Model):
+    """
+    Tracks a trainee's progress on a single CourseModule.
+    One record per trainee per module.
+    """
+    STATUS_CHOICES = [
+        ('locked', 'Locked'),
+        ('unlocked', 'Unlocked'),
+        ('in_progress', 'In Progress'),
+        ('passed', 'Passed'),
+        ('failed', 'Failed'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    enrollment = models.ForeignKey(
+        CourseEnrollment, on_delete=models.CASCADE,
+        related_name='module_progresses')
+    module = models.ForeignKey(
+        CourseModule, on_delete=models.CASCADE,
+        related_name='progresses')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='locked')
+    attempts = models.IntegerField(default=0)
+    best_score = models.FloatField(null=True, blank=True)
+    passed_at = models.DateTimeField(null=True, blank=True)
+    # For reading modules: marked passed when trainee clicks "Mark Complete"
+    # For simulation modules: marked passed when SimulationSession
+    #   completes with score >= module.minimum_passing_score
+    linked_session = models.ForeignKey(
+        'SimulationSession', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='module_progresses')
+    # the session that achieved the passing score
+
+    class Meta:
+        unique_together = [('enrollment', 'module')]
+
+    def __str__(self):
+        return (f"{self.enrollment.trainee.username} — "
+                f"{self.module.title}: {self.status}")
+
+
+class CourseCertificate(models.Model):
+    """
+    Issued automatically when a trainee completes all modules
+    in a course with average_simulation_score >= course.passing_threshold.
+    One certificate per enrollment.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    enrollment = models.OneToOneField(
+        CourseEnrollment, on_delete=models.CASCADE,
+        related_name='certificate')
+    issued_at = models.DateTimeField(auto_now_add=True)
+    certificate_number = models.CharField(
+        max_length=50, unique=True)
+    # format: SKY-{YEAR}-{UUID4 first 8 chars uppercase}
+    final_score = models.FloatField()
+    # average across all simulation modules
+    issued_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='issued_certificates')
+    # null = auto-issued by system
+
+    def __str__(self):
+        return (f"Certificate {self.certificate_number} — "
+                f"{self.enrollment.trainee.username} — "
+                f"{self.enrollment.course.title}")

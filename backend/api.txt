@@ -1,0 +1,1303 @@
+Optimized tool selectionScanning the backend routing and realtime modules to extract exact API endpoints and event definitions.
+
+Searched for regex `urlpatterns|router\.register|DefaultRouter|SimpleRouter|path\(|re_path\(|websocket_urlpatterns|URLRouter|consumer` (`**/*.py`), 134 results
+
+Searched for regex `class .*ViewSet|class .*APIView|APIView|viewsets\.|@action|def .*get|def .*post|def .*put|def .*patch|def .*delete` (`**/*.py`), 200 results
+
+Collecting endpoint definitions and handler logic from the main API modules.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/config/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/users/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/users/views.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/views.py#1-1), lines 1 to 420
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/views.py#420-420), lines 420 to 820
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/views.py#820-820), lines 820 to 1140
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/views.py#1140-1140), lines 1140 to 1205
+
+Gathering serializers and model definitions to accurately document API fields and data models.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/analytics/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/analytics/views.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/analytics/serializers.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/meetings/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/meetings/consumers.py#1-1), lines 1 to 420
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/meetings/consumers.py#420-420), lines 420 to 556
+
+Reading the remaining API modules and data model definitions now.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/meetings/views.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/content/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/content/views.py#1-1), lines 1 to 760
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/core/urls.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/core/views.py#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/core/views.py#260-260), lines 260 to 511
+
+Inspecting core data models for simulation and event sourcing structure.
+
+Searched for regex `class User\(|class Scenario\(|class SimulationSession\(|class UserDecision\(|class ScenarioEvent\(|class IncidentRun\(|class Meeting|class MeetingParticipant|class UserPerformance|class PerformanceTrend|class SkillAssessment` (`**/models.py`), 13 results
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/users/models.py#1-1), lines 1 to 220
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/models.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/analytics/models.py)
+
+Reviewing meeting models and searching for replay/event sourcing modules now.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/meetings/models.py)
+
+Scanning tutor and any remaining API modules for additional endpoints.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/tutor/urls.py)
+
+Searched for regex `replay|event_sourc|event-sourc|EventSource|EventSourced|event_type|action_submitted|phase_changed|escalation_triggered|intervention_applied|participant_joined|participant_left` (`**/*.py`), 1 result
+
+Collecting serializer definitions for request/response fields now.
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/users/serializers.py)
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/simulations/serializers.py)
+
+Reading tutor API view definitions to include their exact endpoints.
+
+Searched for regex `class Tutor|class Teaching|class Exercise|class StudentProgress|class Report|class TraineeExercise|def post|def get` (`**/apps/tutor/views.py`), 34 results
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/tutor/views.py#1-1), lines 1 to 320
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/tutor/views.py#320-320), lines 320 to 860
+
+Read [](file:///c%3A/Users/user/Documents/Mr%20Busoye/SkyShield-edu/backend/apps/tutor/views.py#860-860), lines 860 to 901
+
+Checking whether the adaptive difficulty service is defined in code.
+
+Searched for regex `class AdaptiveLearningService|def update_user_profile|AdaptiveLearningService` (`**/*.py`), 5 results
+
+## 1. OVERVIEW
+
+**System purpose**
+- SkyShield Edu is an aviation cybersecurity simulation backend built with Django, Django REST Framework, Django Channels, PostgreSQL, and JWT auth.
+- It supports mission-based cyber range training for airport personnel through scenario simulations, real-time meetings, analytics, and legacy LMS-style content.
+
+**Core architecture**
+- urls.py exposes API namespaces:
+  - `/api/auth/`
+  - `/api/users/`
+  - `/api/content/`
+  - `/api/tutor/`
+  - `/api/simulations/` (includes scenarios, sessions, structured **courses**, enrollments, course certificates, incidents, genie)
+  - `/api/analytics/`
+  - `/api/core/`
+  - `/api/meetings/`
+- WebSockets are mounted separately in ASGI:
+  - `/ws/meeting/<room_name>/`
+
+**Authentication method**
+- JWT authentication using `djangorestframework-simplejwt`.
+- Custom login endpoint returns JWT access + refresh tokens.
+- Social login supports Google and GitHub via `dj_rest_auth` and `allauth`.
+- Email verification and password reset are implemented with token models.
+
+**Role system**
+- User roles defined in models.py:
+  - `trainee`
+  - `supervisor`
+  - `admin`
+  - `instructor`
+- Role enforcement exists in:
+  - meeting host checks
+  - tutor/trainer filtering
+  - custom view behavior
+- There is no explicit API endpoint in code for assigning roles; role changes appear managed outside these API routes.
+
+**Real-time components**
+- The meeting real-time channel is under `/ws/meeting/<room_name>/`.
+- Real-time behavior supports meeting join/waiting-room, WebRTC signaling, chat, media state, and admission controls.
+- A separate mission real-time channel exists for simulation incident runs:
+  - `/ws/mission/<run_id>/`
+
+---
+
+## 2. AUTHENTICATION APIs
+
+### `/api/users/register/`
+- Method: `POST`
+- Description: Register a new user account and send verification email.
+- Request body:
+  - `email` (string, required)
+  - `username` (string, required)
+  - `password` (string, required)
+  - `password2` (string, required)
+  - `first_name` (string, optional)
+  - `last_name` (string, optional)
+  - `company` (maps to `organization`, optional)
+  - `role` (maps to `job_title`, optional)
+- Response:
+  ```json
+  {
+    "message": "Registration successful. Please verify your email.",
+    "user": {
+      "id": "...",
+      "email": "...",
+      "username": "...",
+      "first_name": "...",
+      "last_name": "...",
+      "role": "...",
+      "status": "pending",
+      ...
+    }
+  }
+  ```
+- Errors:
+  - `400 Bad Request` for validation errors
+- Auth: none
+
+### `/api/users/login/`
+- Method: `POST`
+- Description: Login with username or email + password.
+- Request body:
+  - `identifier` (string, required)
+  - `password` (string, required)
+- Response:
+  ```json
+  {
+    "access": "...",
+    "refresh": "...",
+    "user": { ... }
+  }
+  ```
+- Errors:
+  - `401 Unauthorized` on invalid credentials, locked account, or unverified email
+- Auth: none
+
+### `/api/users/logout/`
+- Method: `POST`
+- Description: Logout current user and blacklist refresh token if provided.
+- Request body:
+  - `refresh` (string, optional)
+- Response:
+  ```json
+  {
+    "message": "Successfully logged out"
+  }
+  ```
+- Errors:
+  - `400 Bad Request` if logout processing fails
+- Auth: required
+
+### `/api/users/token/refresh/`
+- Method: `POST`
+- Description: Refresh JWT access token.
+- Request body (SimpleJWT default):
+  - `refresh` (string)
+- Response:
+  ```json
+  {
+    "access": "..."
+  }
+  ```
+- Auth: none (refresh token only)
+
+### `/api/users/google/`
+- Method: `POST`
+- Description: Social auth using Google via `dj_rest_auth` / allauth.
+- Request body: standard allauth social login payload
+- Response: standard social auth response, with `user.email_verified` forced true
+- Auth: none
+
+### `/api/users/github/`
+- Method: `POST`
+- Description: Social auth using GitHub.
+- Response: same behavior as Google login
+- Auth: none
+
+### `/api/users/forgot-password/`
+- Method: `POST`
+- Description: Request a password reset email.
+- Request body:
+  - `email` (string)
+- Response:
+  ```json
+  {
+    "message": "If an account exists with this email, you will receive a password reset link."
+  }
+  ```
+- Errors:
+  - `400 Bad Request` if provided email is invalid
+- Auth: none
+
+### `/api/users/reset-password/`
+- Method: `POST`
+- Description: Reset password using token.
+- Request body:
+  - `token` (string)
+  - `new_password` (string)
+  - `new_password2` (string)
+- Response:
+  ```json
+  {
+    "message": "Password reset successful"
+  }
+  ```
+- Errors:
+  - `400 Bad Request` for invalid or expired token, password mismatch, or weak password
+- Auth: none
+
+### `/api/users/verify-email/`
+- Method: `POST`
+- Description: Verify email address using token.
+- Request body:
+  - `token` (string)
+- Response:
+  ```json
+  {
+    "message": "Email verified successfully"
+  }
+  ```
+- Auth: none
+
+### `/api/users/resend-verification/`
+- Method: `POST`
+- Description: Resend email verification link.
+- Request body:
+  - `email` (string)
+- Response:
+  ```json
+  {
+    "message": "If your email is unverified, you will receive a verification link."
+  }
+  ```
+- Auth: none
+
+### Included auth routes
+- `/api/auth/` includes `dj_rest_auth.urls`
+- `/api/auth/registration/` includes `dj_rest_auth.registration.urls`
+- `/api/auth/social/` includes `allauth.socialaccount.urls`
+- These paths are present in urls.py but their internal route definitions come from external packages.
+
+---
+
+## 3. USER & ROLE MANAGEMENT APIs
+
+### `/api/users/profile/`
+- Methods: `GET`, `PUT`, `PATCH`
+- Description: Get or update current user profile.
+- PUT/PATCH request body can include profile fields.
+- Response: serialized user profile
+- Auth: required
+
+### `/api/users/change-password/`
+- Method: `POST`
+- Description: Change password for authenticated user.
+- Request body:
+  - `old_password`
+  - `new_password`
+  - `new_password2`
+- Response:
+  ```json
+  { "message": "Password changed successfully" }
+  ```
+- Auth: required
+
+### `/api/users/activities/`
+- Method: `GET`
+- Description: Get current user activity history.
+- Query params:
+  - `limit`
+  - `activity_type`
+- Auth: required
+
+### `/api/users/notifications/`
+- Methods: `GET`
+- Description: List notifications for current user.
+- Auth: required
+
+#### `/api/users/notifications/{pk}/mark_read/`
+- Method: `POST`
+- Description: Mark notification as read.
+
+#### `/api/users/notifications/mark_all_read/`
+- Method: `POST`
+- Description: Mark all notifications as read.
+
+### `/api/users/devices/`
+- Methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`
+- Description: Manage registered devices for current user.
+- Auth: required
+
+#### `/api/users/devices/{pk}/trust/`
+- Method: `POST`
+- Description: Trust a device.
+
+#### `/api/users/devices/{pk}/untrust/`
+- Method: `POST`
+- Description: Untrust a device.
+
+### `/api/users/sessions/`
+- Methods: `GET` and read-only session list
+- Description: List active sessions for current user.
+- Auth: required
+
+#### `/api/users/sessions/{pk}/terminate/`
+- Method: `POST`
+- Description: Terminate a specific session.
+
+#### `/api/users/sessions/terminate_others/`
+- Method: `POST`
+- Description: Terminate all other sessions.
+
+### Legacy session endpoints
+- `/api/users/sessions/list/` `GET`
+- `/api/users/sessions/<uuid:session_id>/terminate/` `POST`
+- `/api/users/sessions/terminate-others/` `POST`
+
+### Role behavior
+- `role` is part of `User` model and is not mutated by a dedicated API route in code.
+- Role constraints appear in meeting and trainee-tutor filtering logic.
+
+---
+
+## 4. SIMULATION SYSTEM APIs (CORE MODULE)
+
+### Scenario endpoints
+
+#### `/api/simulations/scenarios/`
+- Method: `GET`
+- Description: List active scenarios.
+- Query params:
+  - `category`
+  - `difficulty`
+  - `threat_type`
+  - `search`
+  - `featured`
+- Response: list of scenarios with summary fields
+
+#### `/api/simulations/scenarios/{pk}/`
+- Method: `GET`
+- Description: Get full scenario detail, including `steps`, `hints`, `initial_state`, and metadata.
+
+#### `/api/simulations/scenarios/recommended/`
+- Method: `GET`
+- Description: Recommended scenarios based on user weak areas; falls back to beginner scenarios if no weak areas exist.
+
+#### `/api/simulations/scenarios/{pk}/bookmark/`
+- Method: `POST`
+- Description: Toggle bookmark status for scenario.
+
+#### `/api/simulations/scenarios/bookmarks/`
+- Method: `GET`
+- Description: List all bookmarked scenarios for current user.
+
+#### `/api/simulations/scenarios/{scenario_pk}/comments/`
+- Methods: `GET`, `POST`
+- Description: List or create comments for a scenario.
+- `POST` request body: comment fields including content.
+
+#### `/api/simulations/scenarios/{scenario_pk}/comments/{pk}/`
+- Methods: `GET`, `PUT`, `DELETE`
+- Description: Retrieve, update, or delete a scenario comment.
+- Delete permission: comment owner or admin/supervisor only.
+
+### Session endpoints
+
+#### `/api/simulations/sessions/`
+- Standard DRF `ModelViewSet` endpoints exist for session list/retrieve/update/delete.
+- Auth: required
+- These endpoints expose session records for current user only.
+
+#### `/api/simulations/sessions/start/`
+- Method: `POST`
+- Description: Start a new simulation session for a scenario.
+- Request body:
+  - `scenario_id` (UUID, required)
+- Behavior:
+  - Rejects if scenario inactive or max attempts exceeded.
+  - Reuses existing in-progress session if present.
+  - Creates `SimulationSession` with `status='in_progress'`, `session_state=scenario.initial_state`.
+  - Creates `UserActivity(activity_type='simulation_start')`.
+- Response: serialized `SimulationSession`.
+
+#### `/api/simulations/sessions/submit_decision/`
+- Method: `POST`
+- Description: Submit a decision for the current simulation step.
+- Request body:
+  - `session_id` (UUID)
+  - `step_number` (int)
+  - `decision_type` (choice)
+  - `decision_data` (JSON)
+  - `time_taken` (int)
+- Behavior:
+  - Validates active session and current step.
+  - Determines correctness via `correct_actions` in the current scenario step.
+  - Persists `UserDecision`.
+  - Updates session metrics:
+    - `total_choices`
+    - `correct_choices`
+    - `time_spent`
+    - adds mistake details to `session_state['mistakes']` if wrong
+    - updates `session_state` via `update_state`
+    - recalculates `accuracy_rate`
+  - If more steps remain, increments `current_step` and returns `next_step`.
+  - If final step reached:
+    - Sets `status='completed'`
+    - Sets `completed_at`
+    - Calls `calculate_score()`
+    - Updates user level stats and scenario stats
+    - Creates achievements
+    - Calls `AdaptiveLearningService.update_user_profile(user, session)` if available
+    - **Course pipeline:** when `session.status == 'completed'`, calls `CourseService.record_simulation_result(session.id, request.user)` so linked course modules can advance; failures are logged and never block the completion response.
+- Response:
+  - if continuing:
+    ```json
+    {
+      "correct": true,
+      "feedback": { ... },
+      "next_step": { "number": 1, "title": "...", "description": "...", "options": [...] },
+      "session": { ... }
+    }
+    ```
+  - if completed:
+    ```json
+    {
+      "completed": true,
+      "score": 85.5,
+      "passed": true,
+      "feedback": { ... },
+      "summary": { ... },
+      "session": { ... }
+    }
+    ```
+- Errors:
+  - `404 Active session not found`
+  - `400 Simulation already completed`
+  - `500 Invalid step data`
+
+##### Scoring formula
+- `base_score = (correct_choices / max(total_choices, 1)) * 100`
+- `time_penalty = max(0, (time_spent - scenario.estimated_time*60)/60) * 0.5`
+- `hint_penalty = hints_used * 2`
+- `final_score = max(0, base_score - time_penalty - hint_penalty)`
+- `passed = score >= scenario.passing_score`
+
+##### Accuracy formula
+- `accuracy_rate = (correct_choices / total_choices) * 100`
+
+#### `/api/simulations/sessions/request_hint/`
+- Method: `POST`
+- Description: Request a hint for the current step.
+- Request body:
+  - `session_id` (UUID)
+  - `step_number` (int)
+- Behavior:
+  - Validates session and step alignment.
+  - Uses `scenario.steps[step_number]['hints']`.
+  - Increments `hints_used`.
+- Response:
+  ```json
+  {
+    "hint": "...",
+    "hints_used": 1,
+    "hints_remaining": 2
+  }
+  ```
+- Errors:
+  - `404 Active session not found`
+  - `400 Invalid step number`
+
+#### `/api/simulations/sessions/{pk}/abandon/`
+- Method: `POST`
+- Description: Abandon an in-progress session.
+- Response: `{ "message": "Simulation abandoned successfully" }`
+- Errors:
+  - `404 Active session not found`
+
+#### `/api/simulations/sessions/{pk}/history/`
+- Method: `GET`
+- Description: Get decision history for a completed session.
+- Response:
+  ```json
+  {
+    "session": { ... },
+    "decisions": [ ... ]
+  }
+  ```
+- Errors:
+  - `404 Completed session not found`
+
+### Achievements endpoints
+
+#### `/api/simulations/achievements/`
+- Method: `GET`
+- Description: List achievements for current user.
+
+#### `/api/simulations/achievements/stats/`
+- Method: `GET`
+- Description: Get achievement statistics: total, counts by type, recent achievements.
+
+### Feedback endpoint
+
+#### `/api/simulations/feedback/`
+- Methods: `GET`, `POST`
+- Description:
+  - `GET` returns current user's feedback for a scenario if `scenario` query param is provided.
+  - `POST` submits or updates feedback for a scenario.
+- POST request body:
+  - `scenario` (UUID)
+  - `rating`
+  - `difficulty_rating`
+  - `comments`
+- Response: feedback object
+
+### Certifications endpoint
+
+#### `/api/simulations/certifications/`
+- Method: `GET`
+- Description: Returns award-like certification progress for current user using completed simulation counts.
+- Response: list of certification summary objects.
+
+### Structured courses (Course pipeline)
+
+These endpoints manage published **courses** (`Course`), ordered **modules** (`CourseModule`: reading or simulation checkpoint), **enrollments** (`CourseEnrollment`), **module progress** (`ModuleProgress`), and issued **course certificates** (`CourseCertificate`). Trainees only see **published** courses in list/detail unless enrolled. Simulation completion from `/api/simulations/sessions/submit_decision/` updates linked module progress via `CourseService.record_simulation_result` when the session matches a course module scenario.
+
+#### `/api/simulations/courses/`
+- Methods: `GET`, `POST`
+- Auth: required
+- **GET:** Trainees: published courses only. `supervisor`, `admin`, `instructor`: all courses (including unpublished).
+- **POST:** Create course. Allowed roles: `supervisor`, `admin`, `instructor`. Sets `created_by` to the current user.
+- Response: list or created course including nested `modules`, `module_count`, `created_by_username`.
+
+#### `/api/simulations/courses/{pk}/`
+- Methods: `GET`, `PUT`, `PATCH`, `DELETE`
+- Auth: required
+- **GET:** Same visibility rules as course list.
+- **PUT/PATCH:** Same roles as create; only the course author may edit unless the user is `admin`.
+
+#### `/api/simulations/courses/{pk}/enroll/`
+- Method: `POST`
+- Auth: required (trainee enrolls self)
+- Description: Enrolls the current user via `CourseService.enroll`. Requires course `is_published`. Creates `ModuleProgress` rows (first module unlocked, others locked) when enrollment is new.
+- Success: `201` with `CourseEnrollmentSerializer` payload.
+- Errors: `400` with `{ "error": "..." }` (e.g. not published, not found).
+
+#### `/api/simulations/courses/{pk}/my-progress/`
+- Method: `GET`
+- Auth: required
+- Description: Current user’s enrollment for this course. Returns full `CourseEnrollmentSerializer` data, or `{ "enrolled": false }` if not enrolled.
+
+#### `/api/simulations/courses/{pk}/modules/{module_id}/complete/`
+- Method: `POST`
+- Auth: required (trainee)
+- Description: Marks a **reading** module complete (`CourseService.mark_reading_complete`). Returns `ModuleProgressSerializer` or `400` / `403` (not enrolled).
+
+#### `/api/simulations/courses/{pk}/modules/{module_id}/reset/`
+- Method: `POST`
+- Auth: required
+- Body: `trainee_id` (user id of the trainee whose attempt is reset).
+- Description: Supervisor-style reset of a failed simulation module (`CourseService.reset_module_attempts`). Allowed caller roles: `supervisor`, `admin`, `instructor`. Returns updated module progress or `403`/`404`.
+
+#### `/api/simulations/courses/{pk}/enrollments/`
+- Method: `GET`
+- Auth: required
+- Description: Lists all enrollments for this course with trainee and module progress. Allowed roles: `supervisor`, `admin`, `instructor`. Returns `403` otherwise.
+
+#### `/api/simulations/enrollments/`
+- Method: `GET`
+- Auth: required
+- Description: List enrollments. Trainees: own only. `supervisor`, `admin`, `instructor`: all.
+
+#### `/api/simulations/enrollments/{pk}/`
+- Method: `GET`
+- Auth: required
+- Description: Retrieve one enrollment (same visibility as list).
+
+#### `/api/simulations/certificates/` (course certificates)
+- Method: `GET`
+- Auth: required
+- Description: Lists **course completion certificates** (`CourseCertificate`), distinct from `/api/simulations/certifications/`. Trainees: own certificates. `supervisor`, `admin`: all.
+
+#### `/api/simulations/certificates/{pk}/`
+- Method: `GET`
+- Auth: required
+- Description: Retrieve one course certificate (same visibility as list).
+
+### Local dev: seed demo data
+
+- Command (from project `backend/` directory): `python manage.py seed_demo`
+- Options: `--password`, `--reset-password`, `--no-enroll`, `--complete-reading`
+- Creates demo users (`demo.*@skyshield.demo`), a demo scenario, published demo courses (intro + reading-only), and by default enrolls the demo trainee via `CourseService`.
+
+- **Bulk course catalog:** `python manage.py seed_courses`
+  - Creates **five** published courses titled with prefix `[SEED]` (mixed `threat_focus`), **4–6 modules** each (reading + simulation linked to real or auto-created scenarios), enrolls `demo.trainee@skyshield.demo` in all, and issues **two** sample `CourseCertificate` rows (shortcut for UI testing).
+  - Options: `--purge` (delete all `[SEED]` courses and reseed), `--password` (when creating demo users).
+  - Use **`GET /api/simulations/courses/<id>/my-progress/`** (hyphen in `my-progress`); the legacy underscore URL is not registered.
+
+### Incident mission endpoints (IncidentRun engine)
+
+#### `/api/simulations/incidents/`
+- Methods: `POST`, `GET`
+- Description:
+  - `POST` starts a new mission run (optionally Genie-generated) and returns `run_id`, `ws_url`, and briefing payload.
+  - `GET` lists incident runs visible to the current user (supervisor/admin sees all).
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/`
+- Method: `GET`
+- Description: Retrieve full incident run details.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/actions/`
+- Method: `POST`
+- Description: Submit an action payload to the mission engine.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/state/`
+- Method: `GET`
+- Description: Get current mission snapshot (phase, participants, last events, threats, score).
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/events/`
+- Method: `GET`
+- Description: List mission events for the run.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/timeline/`
+- Method: `GET`
+- Description: Full ordered mission timeline.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/acknowledge/`
+- Method: `POST`
+- Description: Mark participant ready; may transition phase to detection when all ready.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/abandon/`
+- Method: `POST`
+- Description: Abandon the mission run.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/intervention/`
+- Method: `POST`
+- Description: Supervisor/admin interventions (inject threat, pause, force phase, override, reduce timer).
+- Auth: supervisor/admin only
+
+#### `/api/simulations/incidents/{id}/participants/`
+- Method: `GET`
+- Description: List mission participants.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/join/`
+- Method: `POST`
+- Description: Join a run as a participant.
+- Auth: required
+
+#### `/api/simulations/incidents/{id}/score/`
+- Method: `GET`
+- Description: Final score breakdown (only when run is completed/failed).
+- Auth: required
+
+### Genie / AI scenario endpoints
+
+#### `/api/simulations/genie/generate/`
+- Method: `POST`
+- Description: Generate a new incident scenario payload via Genie/Gemini.
+- Auth: required
+
+#### `/api/simulations/genie/variation/`
+- Method: `POST`
+- Description: Generate a variation of an existing scenario via Genie/Gemini.
+- Auth: required
+
+#### `/api/simulations/genie/status/`
+- Method: `GET`
+- Description: Genie/Gemini connectivity health check.
+- Auth: required
+
+---
+
+## 5. REAL-TIME / WEBSOCKET APIs
+
+### WebSocket URL
+- `/ws/meeting/<room_name>/`
+- `/ws/mission/<run_id>/`
+
+### Connection auth
+- Auth via query string token:
+  - `?token=<JWT access token>`
+- The backend uses `rest_framework_simplejwt.tokens.AccessToken` to resolve the user.
+- Invalid or missing token closes the connection with code `4001`.
+
+### Connection behavior
+- On connect:
+  - validates token
+  - resolves meeting by `room_name`
+  - fetches current user role
+  - if meeting missing: close code `4004`
+  - if participant record cannot be created: close code `4003`
+  - if waiting room is enabled and user is a `trainee`, places them into waiting room
+  - if admitted, adds them to meeting group and broadcasts join events
+
+### Incoming message types
+- `offer`
+  - fields: `type`, `target`, `offer`
+- `answer`
+  - fields: `type`, `target`, `answer`
+- `ice_candidate`
+  - fields: `type`, `target`, `candidate`
+- `chat`
+  - fields: `type`, content, optional `recipient_id`, optional `message_type`
+- `admit`
+  - fields: `type`, `participant_id`
+- `get_participants`
+  - fields: `type`
+- `media_state`
+  - fields: `type`, `videoEnabled`, `audioEnabled`
+- `screen_share`
+  - fields: `type`, `sharing`
+
+### Outgoing event formats
+- `room_info`
+  - sent on successful connection
+  - payload includes participants and meeting metadata
+- `waiting`
+  - sent to waiting-room trainees
+- `user_joined`
+- `user_left`
+- `admitted`
+- `waiting_room_update`
+- `participant_list`
+- `chat`
+- `media_state`
+- `screen_share`
+- `offer`
+- `answer`
+- `ice_candidate`
+
+### Real-time mission channels
+- Simulations define a mission real-time channel:
+  - Group name: `mission_{run_id}`
+  - Auth: `?token=<JWT access token>`
+  - Close codes:
+    - `4001` invalid/missing token
+    - `4004` run not found
+    - `4003` user not a mission participant
+
+### Mission WebSocket incoming message types
+- `submit_action`
+- `acknowledge_briefing`
+- `request_hint`
+- `abandon`
+- `supervisor_intervention`
+- `get_state`
+
+### Mission WebSocket outgoing message types
+- `state_snapshot` (sent on connect and on `get_state`)
+- `mission_event` (broadcast to group)
+- `state_update` (broadcast full snapshot to group)
+- `timer_warning` (broadcast when 15 seconds remain)
+
+---
+
+## 6. ANALYTICS APIs
+
+### `/api/analytics/dashboard/`
+- Method: `GET`
+- Description: User dashboard analytics.
+- Response fields:
+  - `total_simulations`
+  - `completed_simulations`
+  - `average_score`
+  - `total_time`
+  - `weekly_simulations`
+  - `category_stats`
+  - `recent_activity`
+  - `trend_data`
+  - `weak_areas`
+  - `strong_areas`
+  - `recommended_scenarios`
+  - `skill_level`
+
+### `/api/analytics/performance/`
+- Method: `GET`
+- Description: Retrieve current `UserPerformance` object for authenticated user.
+- Response: user performance metrics including `category_scores`, `learning_curve`, `recommended_scenarios`, and `skill_levels`.
+
+### `/api/analytics/trends/`
+- Method: `GET`
+- Description: List user performance trends.
+- Query params:
+  - `period` (`daily` default)
+  - `days` (default `30`)
+- Response: list of `PerformanceTrend` records
+
+### `/api/analytics/skills/`
+- Method: `GET`
+- Description: List `SkillAssessment` entries for current user.
+
+### `/api/analytics/learning-path/`
+- Method: `GET`
+- Description: Return scenario-based learning path recommendations based on weak areas or beginner fallback.
+
+### `/api/analytics/comparison/`
+- Method: `GET`
+- Description: Compare user performance to global and peer group.
+- Response includes:
+  - `user`
+  - `global`
+  - `peers`
+  - `percentile`
+
+### Analytics formulas
+- Percentile:
+  - `percentile = 100 - (better_users / total_other_users * 100)`
+  - default `50` if no peer data
+- No dedicated "readiness score" endpoint is implemented.
+- Certification/recommendation logic is derived from weak area lists and scenario difficulty.
+
+---
+
+## 7. COMMAND CENTER APIs (SUPERVISOR SYSTEM)
+
+### Summary
+- There is no dedicated `command center` module or explicit `/api/command-center/` routes in code.
+- Supervisory control is implemented via:
+  - `/api/meetings/` endpoints
+  - `/api/analytics/dashboard/`
+  - `/api/meetings/ws/...` real-time meeting control
+
+### `/api/meetings/meetings/`
+- Standard CRUD via `MeetingViewSet`:
+  - `GET /api/meetings/meetings/`
+  - `POST /api/meetings/meetings/`
+  - `GET /api/meetings/meetings/{pk}/`
+  - `PUT/PATCH /api/meetings/meetings/{pk}/`
+  - `DELETE /api/meetings/meetings/{pk}/`
+
+### `/api/meetings/meetings/{pk}/start/`
+- Method: `POST`
+- Description: Host starts the meeting.
+- Permission: only meeting host
+
+### `/api/meetings/meetings/{pk}/end/`
+- Method: `POST`
+- Description: Host ends the meeting.
+- Permission: only meeting host
+
+### `/api/meetings/meetings/join/`
+- Method: `POST`
+- Description: Join a meeting by meeting code.
+- Request body:
+  - `meeting_code`
+  - `password` (if private)
+  - `video_enabled`
+  - `audio_enabled`
+  - `client_info`
+- Response includes WebSocket URL and ICE server info.
+
+### `/api/meetings/meetings/{pk}/participants/`
+- Method: `GET`
+- Description: List active participants in meeting.
+
+### `/api/meetings/meetings/{pk}/invite/`
+- Method: `POST`
+- Description: Invite users to a meeting.
+- Request body:
+  - `user_ids`
+  - `message`
+- Side effect: creates `MeetingInvitation` and user notifications.
+
+### `/api/meetings/meetings/{pk}/request_recording/`
+- Method: `POST`
+- Description: Request meeting recording
+- Side effect: creates `MeetingRecording` and enqueues Celery task `process_meeting_recording.delay(...)`
+
+### `/api/meetings/meetings/{pk}/recordings/`
+- Method: `GET`
+- Description: List meeting recordings
+
+### `/api/meetings/meetings/{pk}/chat/`
+- Method: `POST`
+- Description: Send a chat message in the meeting.
+
+### `/api/meetings/meetings/{pk}/chat_history/`
+- Method: `GET`
+- Description: Retrieve chat history (public + private for user)
+
+### `/api/meetings/upcoming/`
+- Method: `GET`
+- Description: Return upcoming meetings for current user.
+
+### `/api/meetings/invitations/`
+- Standard CRUD via `MeetingInvitationViewSet`
+- Extra actions:
+  - `POST /api/meetings/invitations/{pk}/accept/`
+  - `POST /api/meetings/invitations/{pk}/decline/`
+
+---
+
+## 8. CONTENT / LEGACY LMS APIs
+
+> Marked legacy: content implements LMS-style content, materials, learning paths, bookmarks, comments.
+
+### `/api/content/categories/`
+- Methods: `GET`
+- Description: List content categories.
+
+#### `/api/content/categories/{slug}/materials/`
+- Method: `GET`
+- Description: Materials for category and children
+- Query params: `type`, `difficulty`, `search`
+
+### `/api/content/materials/`
+- Methods: `GET` list, `GET /{slug}/` retrieve
+- Query params: `category`, `type`, `difficulty`, `search`, `featured`, `sort`
+
+#### `/api/content/materials/{slug}/bookmark/`
+- Method: `POST`
+- Description: Toggle bookmark for material
+
+#### `/api/content/materials/{slug}/like/`
+- Method: `POST`
+- Description: Toggle like for material
+
+#### `/api/content/materials/{slug}/rate/`
+- Method: `POST`
+- Request body:
+  - `rating`
+  - `review`
+- Description: Rate material and update average rating
+
+#### `/api/content/materials/{slug}/comments/`
+- Method: `GET`
+- Description: List comments
+
+### `/api/content/paths/`
+- Methods: `GET`, `GET /{slug}/`
+- Description: Learning paths list/detail
+
+#### `/api/content/paths/{slug}/enroll/`
+- Method: `POST`
+- Description: Enroll in learning path
+
+### `/api/content/glossary/`
+- Methods: `GET`, `GET /{term}/`
+- Extra action:
+  - `GET /api/content/glossary/search/`
+
+### `/api/content/faqs/`
+- Methods: `GET`
+- Extra action:
+  - `POST /api/content/faqs/{pk}/track-view/`
+
+### `/api/content/announcements/`
+- Methods: `GET`, `GET /{pk}/`
+- Extra action:
+  - `GET /api/content/announcements/unread/`
+
+### `/api/content/bookmarks/`
+- Methods: `GET`
+- Extra action:
+  - `DELETE /api/content/bookmarks/clear/`
+
+### `/api/content/materials/{material_pk}/comments/`
+- Methods: `GET`, `POST`
+
+### `/api/content/materials/{material_pk}/comments/{pk}/`
+- Methods: `GET`, `PUT`, `DELETE`
+
+### `/api/content/search/`
+- Method: `GET`
+- Query params:
+  - `q`
+  - `type` (`all`, `materials`, `paths`, `glossary`, `faqs`)
+- Description: search across published content
+
+---
+
+## 9. REPLAY SYSTEM APIs
+
+- No dedicated replay or event reconstruction endpoints found in the backend code.
+- There is no explicit `/api/replay/` or replay timeline route.
+- The closest available replay-like data is:
+  - decision history via `/api/simulations/sessions/{pk}/history/`
+  - session state via `SimulationSession.session_state`
+- Conclusion: replay system endpoints are not implemented or ambiguous in this codebase.
+
+---
+
+## 10. ERROR HANDLING
+
+### Standard patterns
+- Validation errors return `400 Bad Request` with DRF error dictionary.
+- Custom errors often use:
+  ```json
+  { "error": "..." }
+  ```
+- Unauthorized access uses `401 Unauthorized` from DRF or custom auth checks.
+- Permission violations use `403 Forbidden`.
+- Not found resources return `404 Not Found`.
+
+### Common error formats
+- DRF validation:
+  ```json
+  {
+    "email": ["This field is required."]
+  }
+  ```
+- custom:
+  ```json
+  { "error": "Scenario not found" }
+  ```
+
+### Simulation-specific errors
+- `Simulation already completed`
+- `Active session not found`
+- `Invalid step number`
+- `Maximum attempts reached`
+
+---
+
+## 11. DATA MODELS (IMPORTANT)
+
+### `User`
+- Fields:
+  - `id`, `email`, `username`, `first_name`, `last_name`
+  - `role`, `status`
+  - `organization`, `department`, `phone_number`, `profile_picture`, `bio`
+  - `job_title`, `employee_id`, `clearance_level`
+  - training/analytics fields: `certifications`, `training_level`, `total_score`, `simulations_completed`, `average_response_time`, `accuracy_rate`, `weak_areas`, `strong_areas`
+  - security fields: `email_notifications`, `two_factor_enabled`, `login_attempts`, `last_login_ip`, `account_locked_until`, `password_changed_at`, `email_verified`
+- Relationships:
+  - sessions, activities, performance, created scenarios, meetings, invitations
+- Purpose: source-of-truth user account
+- Type: source-of-truth
+
+### `Scenario`
+- Fields:
+  - `id`, `title`, `description`
+  - `category`, `threat_type`, `difficulty`
+  - `initial_state`, `steps`, `correct_actions`, `hints`, `learning_objectives`
+  - `estimated_time`, `points_possible`, `passing_score`, `max_attempts`
+  - `times_completed`, `average_score`, `average_time`
+- Purpose: defines simulation incidents
+- Type: source-of-truth
+
+### `SimulationSession`
+- Fields:
+  - `id`, `user`, `scenario`
+  - `status`, `current_step`, `session_state`, `decisions`
+  - `score`, `time_spent`, `correct_choices`, `total_choices`, `accuracy_rate`, `hints_used`
+  - `attempt_number`, `passed`, `feedback`, `mistakes`
+- Purpose: live simulation session state
+- Type: derived/current-state
+- Notes: not a full event store, but holds state and stored decisions
+
+### `UserDecision`
+- Fields:
+  - `session`, `step_number`, `decision_type`, `decision_data`
+  - `is_correct`, `time_taken`, `feedback`
+- Purpose: records each submitted decision
+- Type: event-like persisted history
+- Notes: closest available event sourcing unit for simulations
+
+### `ScenarioFeedback`
+- Fields: `user`, `scenario`, `rating`, `difficulty_rating`, `comments`
+- Purpose: post-scenario feedback
+- Type: derived/user-provided
+
+### `ScenarioAchievement`
+- Fields: `user`, `scenario`, `achievement_type`
+- Purpose: badge/achievement tracking
+- Type: derived
+
+### `ScenarioComment`
+- Fields: `user`, `scenario`, content
+- Purpose: scenario discussion/comments
+- Type: derived
+
+### `ScenarioBookmark`
+- Fields: `user`, `scenario`
+- Purpose: scenario bookmarks
+- Type: derived
+
+### `Meeting`
+- Fields:
+  - `id`, `title`, `description`
+  - `meeting_code`, `room_name`
+  - `host`, `tutor_profile`
+  - `meeting_type`, `status`
+  - schedule fields, private settings, recording flags
+  - `participant_count`, `peak_participants`
+- Purpose: real-time meeting session definition
+- Type: source-of-truth for meeting sessions
+
+### `MeetingParticipant`
+- Fields:
+  - `meeting`, `user`, `role`, `status`
+  - `channel_name`, `session_id`, `peer_id`
+  - `video_enabled`, `audio_enabled`, `screen_sharing`
+- Purpose: live meeting connection state
+- Type: current-state
+
+### `MeetingInvitation`
+- Fields:
+  - `meeting`, `invited_user`, `invited_by`, `status`, `token`, `expires_at`
+- Purpose: meeting invite tracking
+- Type: source-of-truth
+
+### `MeetingRecording`
+- Fields:
+  - `meeting`, `requested_by`, `status`, `file_path`, `task_id`
+- Purpose: recording request/process tracking
+- Type: derived
+
+### `MeetingChat`
+- Fields:
+  - `meeting`, `sender`, `recipient`, content, `message_type`
+- Purpose: meeting chat persistence
+- Type: event-like
+
+### `UserPerformance`
+- Fields:
+  - `user`, `total_simulations`, `average_score`, `category_scores`, `weak_areas`, `recommended_scenarios`
+- Purpose: analytics profile
+- Type: derived
+
+### `PerformanceTrend`
+- Fields:
+  - `user`, `period`, `date`, `average_score`, `simulations_completed`
+- Purpose: trend time series
+- Type: derived
+
+### `SkillAssessment`
+- Fields:
+  - `user`, `skill`, `level`, `score`, `progress`
+- Purpose: skill metrics
+- Type: derived
+
+---
+
+## 12. REAL-TIME EVENT MODEL (CRITICAL)
+
+### Event types present
+- `offer`
+- `answer`
+- `ice_candidate`
+- `chat`
+- `admit`
+- `get_participants`
+- `media_state`
+- `screen_share`
+
+### Broadcast/notification types
+- `room_info`
+- `waiting`
+- `user_joined`
+- `user_left`
+- `admitted`
+- `waiting_room_update`
+- `participant_list`
+- `chat`
+- `media_state`
+- `screen_share`
+
+### Event payload structure
+- `offer` / `answer` / `ice_candidate`
+  - `type`
+  - `target`
+  - `offer` / `answer` / `candidate`
+- `chat`
+  - `type: "chat"`
+  - content
+  - optionally `recipient_id`
+  - optionally `message_type`
+- `admit`
+  - `type: "admit"`
+  - `participant_id`
+- `media_state`
+  - `type: "media_state"`
+  - `videoEnabled`
+  - `audioEnabled`
+- `screen_share`
+  - `type: "screen_share"`
+  - `sharing`
+
+### Lifecycle flow
+1. client connects with `token` query string
+2. backend validates user and meeting
+3. user enters live room or waiting room
+4. backend sends `room_info` or `waiting`
+5. connect triggers `user_joined` broadcast for live users
+6. host uses `admit` to move waiting trainees into room
+7. offer/answer/ice_candidate relay peer signaling
+8. chat/media events are broadcast group-wide
+
+### Missing event types
+- Meeting WebSocket does not use these names, but the mission engine persists them as `IncidentEvent.event_type` values:
+  - `action_submitted`
+  - `phase_changed`
+  - `escalation_triggered`
+  - `hint_requested`
+  - `intervention_applied`
+  - `participant_joined`
+  - `participant_left`
+  - `timeout_occurred`
+  - `genie_event`
+  - `system`
+
+---
+
+## 13. SYSTEM BEHAVIOR RULES
+
+### Simulation state updates
+- State updates are stored in `SimulationSession.session_state`.
+- `update_state()` merges `step_data['state_updates']` and tracks visited steps.
+- Each decision persists as `UserDecision`.
+
+### Event sourcing rules
+- There is no explicit event sourcing layer or replay timeline API.
+- Session history is reconstructed from `SimulationSession` and `UserDecision` items.
+
+### Replay logic assumptions
+- `history` endpoint is the only replay-like access.
+- No dedicated timeline reconstruction endpoint exists.
+
+### Concurrency behavior
+- User sessions and simulation sessions are scoped by `request.user`.
+- No explicit locking or transaction manager is visible beyond standard Django ORM operations.
+- Meeting WebSocket state is persisted into `MeetingParticipant` and broadcast through channel groups.
+
+### Role-based access constraints
+- Authenticated access is required for nearly all API routes.
+- Some endpoints use `permissions.IsAdminUser`.
+- Meeting host checks are enforced in meeting actions.
+- Trainee-specific logic exists in tutor and meeting flows.
+- No dedicated role assignment API route exists.
+
+---
+
+## 14. NOTES / GAPS IDENTIFIED
+
+- **Replay system**: no dedicated replay/reconstruction endpoints found.
+- **Command center**: no separate command-center API; supervisor control is implemented through meetings and analytics.
+- **Adaptive difficulty**: internal update is invoked via `AdaptiveLearningService.update_user_profile(user, session)` if the service exists, but service implementation is not present in searched source.
+- **OAuth routes**: `google` and `github` social login endpoints are custom; default `dj_rest_auth` routes are also mounted.
+- **Legacy LMS**: content exposes materials, paths, glossary, FAQs, announcements, bookmarks, and comments.
+
+If you want, I can next convert this into a structured Markdown API reference file for your frontend and QA teams.

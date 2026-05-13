@@ -8,26 +8,13 @@ import type {
   TutorDashboardStats,
   Meeting,
   Report,
+  JoinMeetingResponse,
+  MeetingParticipant,
+  MeetingChatMessage,
+  SendChatMessageRequest,
+  MeetingRecording,
 } from '../types/tutor';
 import type { User, ProfileUpdateRequest } from '../types/auth';
-
-// =============================================================================
-// JOIN MEETING RESPONSE
-// =============================================================================
-
-export interface JoinMeetingResponse {
-  meeting: Meeting;
-  participant: {
-    id: string;
-    role: string;
-    video_enabled: boolean;
-    audio_enabled: boolean;
-  };
-  signaling: {
-    websocket_url: string;
-    ice_servers: Array<{ urls: string; username?: string; credential?: string }>;
-  };
-}
 
 // =============================================================================
 // EXERCISE ATTEMPT TYPES (EXPORTED)
@@ -293,6 +280,40 @@ export const getUpcomingMeetings = async (): Promise<Meeting[]> => {
   if (Array.isArray(data)) return data;
   if (data && 'results' in data) return data.results;
   return [];
+};
+
+// ─── Meeting Participants ────────────────────────────────────────────────────
+
+export const getMeetingParticipants = async (meetingId: string): Promise<MeetingParticipant[]> => {
+  const response = await api.get<MeetingParticipant[]>(`/meetings/meetings/${meetingId}/participants/`);
+  return response.data;
+};
+
+// ─── Meeting Chat ────────────────────────────────────────────────────────────
+
+export const sendChatMessage = async (
+  meetingId: string,
+  data: SendChatMessageRequest,
+): Promise<MeetingChatMessage> => {
+  const response = await api.post<MeetingChatMessage>(`/meetings/meetings/${meetingId}/chat/`, data);
+  return response.data;
+};
+
+export const getChatHistory = async (
+  meetingId: string,
+  params?: { limit?: number; before?: string },
+): Promise<MeetingChatMessage[]> => {
+  const response = await api.get<MeetingChatMessage[]>(`/meetings/meetings/${meetingId}/chat_history/`, {
+    params,
+  });
+  return response.data;
+};
+
+// ─── Meeting Recordings ──────────────────────────────────────────────────────
+
+export const getMeetingRecordings = async (meetingId: string): Promise<MeetingRecording[]> => {
+  const response = await api.get<MeetingRecording[]>(`/meetings/meetings/${meetingId}/recordings/`);
+  return response.data;
 };
 
 // =============================================================================

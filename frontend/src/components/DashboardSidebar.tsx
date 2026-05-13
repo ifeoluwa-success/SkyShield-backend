@@ -13,6 +13,7 @@ import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { hasAssignedExercises } from '../services/simulationService';
 import { getProfile } from '../services/authService';
+import { useAuth } from '../hooks/useAuth';
 import '../assets/css/DashboardSidebar.css';
 
 const LogoMark = () => (
@@ -27,7 +28,28 @@ interface DashboardSidebarProps {
   onToggle: () => void;
 }
 
+const BookCoursesIcon = ({ size = 20 }: { size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    width={size}
+    height={size}
+    className="w-5 h-5 shrink-0"
+    aria-hidden
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+    />
+  </svg>
+);
+
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onToggle }) => {
+  const { user } = useAuth();
   const [showExercises, setShowExercises] = useState(false);
   const [trainingProgress, setTrainingProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState('Training Progress');
@@ -84,8 +106,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onToggle })
     { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
     { id: 'lecture-schedule', label: 'Lecture Schedule', icon: Calendar, path: '/dashboard/lecture-schedule' },
     { id: 'learning-materials', label: 'Learning Materials', icon: BookOpen, path: '/dashboard/learning-materials' },
+    { id: 'courses', label: 'Courses', icon: BookCoursesIcon, path: '/dashboard/courses' },
     { id: 'simulations', label: 'Simulations', icon: PlayCircle, path: '/dashboard/simulations' },
-    { id: 'certifications', label: 'Certifications', icon: Award, path: '/dashboard/certifications' },
+    { id: 'certifications', label: 'Certifications', icon: Award, path: '/dashboard/certificates' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
     { id: 'reports', label: 'Reports', icon: FileText, path: '/dashboard/reports' },
     { id: 'calendar', label: 'Calendar', icon: Calendar, path: '/dashboard/calendar' },
@@ -93,7 +116,38 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onToggle })
   ];
 
   if (showExercises) {
-    menuItems.splice(5, 0, { id: 'exercises', label: 'Exercises', icon: ClipboardList, path: '/dashboard/exercises' });
+    const certIdx = menuItems.findIndex((i) => i.id === 'certifications');
+    if (certIdx !== -1) {
+      menuItems.splice(certIdx + 1, 0, {
+        id: 'exercises',
+        label: 'Exercises',
+        icon: ClipboardList,
+        path: '/dashboard/exercises',
+      });
+    }
+  }
+
+  if (user?.role === 'supervisor' || user?.role === 'admin') {
+    const WarRoomIcon = ({ size = 20 }: { size?: number }) => (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        className="shrink-0"
+      >
+        <path
+          d="M12 3.5c3.8 0 6.9 3.1 6.9 6.9 0 2.7-1.6 5.1-3.9 6.2l-3 4.1-3-4.1C6.7 15.5 5.1 13.1 5.1 10.4c0-3.8 3.1-6.9 6.9-6.9Z"
+          stroke="#f59e0b"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="10.6" r="2.6" stroke="#f59e0b" strokeWidth="1.6" />
+      </svg>
+    );
+    menuItems.splice(4, 0, { id: 'war-room', label: 'War Room', icon: WarRoomIcon, path: '/dashboard/war-room' });
   }
 
   return (

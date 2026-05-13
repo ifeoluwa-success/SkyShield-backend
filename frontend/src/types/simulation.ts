@@ -76,3 +76,40 @@ export interface SimulationSessionDetail extends SimulationSession {
   current_step_data?: SimulationStep;
   total_steps?: number;
 }
+
+/** Step object returned on `GET /simulations/scenarios/{id}/` when `steps` is populated */
+export interface ScenarioApiStep {
+  number?: number;
+  title?: string;
+  description?: string;
+  question?: string;
+  prompt?: string;
+  options?: Array<{ id?: string | number; text?: string; label?: string }>;
+  time_limit?: number;
+}
+
+export interface ScenarioWithSteps extends Scenario {
+  steps?: ScenarioApiStep[];
+}
+
+// ─── Scenario Comments ───────────────────────────────────────────────────────
+
+export interface ScenarioComment {
+  id: string;
+  user: string;
+  user_name: string;
+  user_email: string;
+  scenario: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  is_author: boolean;
+}
+
+export interface CreateCommentRequest {
+  content: string;
+}
+
+export interface UpdateCommentRequest {
+  content: string;
+}

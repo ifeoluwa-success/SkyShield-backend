@@ -2,15 +2,53 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   getSession,
+  getScenario,
   submitDecision,
   requestHint,
   abandonSimulation,
 } from '../../services/simulationService';
-import type { SimulationSessionDetail, SimulationStep, StepOption } from '../../types/simulation';
+import type {
+  SimulationSessionDetail,
+  SimulationStep,
+  StepOption,
+  ScenarioWithSteps,
+} from '../../types/simulation';
 import Toast from '../../components/Toast';
 import '../../assets/css/SimulationPlayer.css';
 
 const KEYS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+/**
+ * When `GET /simulations/sessions/{id}/` omits `current_step_data` (common with minimal serializers),
+ * derive the active step from `GET /simulations/scenarios/{id}/` + `session.current_step`.
+ */
+function deriveStepFromScenario(
+  session: SimulationSessionDetail,
+  scenario: ScenarioWithSteps,
+): SimulationStep | null {
+  const steps = scenario.steps;
+  if (!steps?.length) return null;
+
+  const cs = session.current_step;
+  const idx = cs <= 0 ? 0 : Math.min(cs - 1, steps.length - 1);
+  const raw = steps[idx];
+  const rawOptions = raw?.options;
+  if (!raw || !rawOptions?.length) return null;
+
+  const options: StepOption[] = rawOptions.map((o, i) => ({
+    id: o.id ?? i,
+    text: (o.text ?? o.label ?? `Option ${i + 1}`).toString(),
+    label: o.label,
+  }));
+
+  return {
+    number: typeof raw.number === 'number' && raw.number > 0 ? raw.number : idx + 1,
+    title: raw.title ?? scenario.title ?? 'Decision',
+    description: (raw.description ?? raw.question ?? raw.prompt ?? '').toString(),
+    options,
+    time_limit: raw.time_limit,
+  };
+}
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -60,15 +98,42 @@ const SimulationPlayerPage: React.FC = () => {
     if (!sessionId) return;
     try {
       const data = await getSession(sessionId);
-      setSession(data);
       setHintsRemaining(Math.max(0, 3 - (data.hints_used ?? 0)));
+
       if (data.status === 'completed' || data.status === 'failed') {
+        setSession(data);
         setCompleted(true);
         setResultData({ passed: data.passed, score: data.score ?? 0 });
-      } else if (data.current_step_data) {
+        return;
+      }
+
+      if (data.current_step_data) {
+        setSession(data);
         setCurrentStep(data.current_step_data);
         stepStartRef.current = Date.now();
+        return;
       }
+
+      if (data.scenario?.id) {
+        try {
+          const detail = await getScenario(data.scenario.id);
+          const merged: SimulationSessionDetail = {
+            ...data,
+            total_steps: data.total_steps ?? detail.steps?.length,
+          };
+          setSession(merged);
+          const derived = deriveStepFromScenario(merged, detail);
+          if (derived) {
+            setCurrentStep(derived);
+            stepStartRef.current = Date.now();
+            return;
+          }
+        } catch {
+          // scenario detail optional; fall through to bare session
+        }
+      }
+
+      setSession(data);
     } catch {
       setToast({ type: 'error', message: 'Failed to load simulation session.' });
     } finally {

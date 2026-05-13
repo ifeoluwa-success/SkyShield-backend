@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -42,6 +42,10 @@ import ExercisesPage from './pages/dashboard/ExercisesPage';
 import SimulationPlayerPage from './pages/dashboard/SimulationPlayerPage';
 import ReportsPage from './pages/dashboard/ReportsPage';
 import HelpPage from './pages/dashboard/HelpPage';
+import MissionPlayerPage from './pages/dashboard/MissionPlayerPage';
+import SupervisorWarRoomPage from './pages/dashboard/SupervisorWarRoomPage';
+import CoursesPage from './pages/dashboard/CoursesPage';
+import CourseDetailPage from './pages/dashboard/CourseDetailPage';
 
 // Tutor Pages
 import TutorDashboardPage from './pages/tutor/TutorDashboardPage';
@@ -53,6 +57,8 @@ import TutorSchedulePage from './pages/tutor/TutorSchedulePage';
 import TutorReportsPage from './pages/tutor/TutorReportsPage';
 import TutorProfilePage from './pages/tutor/TutorProfilePage';
 import TutorSettingsPage from './pages/tutor/TutorSettingsPage';
+import TutorCourseBuilderPage from './pages/tutor/TutorCourseBuilderPage';
+import TutorCourseEnrollmentsPage from './pages/tutor/TutorCourseEnrollmentsPage';
 
 // New Pages
 import TutorExerciseSubmissionsPage from './pages/tutor/TutorExerciseSubmissionsPage';
@@ -129,6 +135,22 @@ function App() {
 
           {/* ====================== TRAINEE DASHBOARD ====================== */}
           <Route
+            path="/dashboard/mission/:runId"
+            element={
+              <ProtectedRoute allowedRoles={['trainee']}>
+                <MissionPlayerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/war-room"
+            element={
+              <ProtectedRoute allowedRoles={['supervisor', 'admin']}>
+                <SupervisorWarRoomPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute allowedRoles={['trainee']}>
@@ -139,9 +161,12 @@ function App() {
             <Route index element={<DashboardPage />} />
             <Route path="lecture-schedule" element={<LectureSchedulePage />} />
             <Route path="learning-materials" element={<LearningMaterialsPage />} />
+            <Route path="courses" element={<CoursesPage />} />
+            <Route path="courses/:courseId" element={<CourseDetailPage />} />
             <Route path="simulations" element={<DashboardSimulationsPage />} />
             <Route path="analytics" element={<DashboardAnalyticsPage />} />
-            <Route path="certifications" element={<CertificationsPage />} />
+            <Route path="certifications" element={<Navigate to="/dashboard/certificates" replace />} />
+            <Route path="certificates" element={<CertificationsPage />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
@@ -181,8 +206,12 @@ function App() {
             <Route path="reports" element={<TutorReportsPage />} />
             <Route path="profile" element={<TutorProfilePage />} />
             <Route path="settings" element={<TutorSettingsPage />} />
+            <Route path="courses" element={<TutorCourseBuilderPage />} />
+            <Route path="courses/:courseId/enrollments" element={<TutorCourseEnrollmentsPage />} />
           </Route>
 
+          
+          
           {/* ====================== ADMIN ROUTES ====================== */}
           <Route
             path="/admin"
@@ -213,8 +242,12 @@ function App() {
             <Route path="reports" element={<TutorReportsPage />} />
             <Route path="profile" element={<TutorProfilePage />} />
             <Route path="settings" element={<TutorSettingsPage />} />
+            <Route path="courses" element={<TutorCourseBuilderPage />} />
+            <Route path="courses/:courseId/enrollments" element={<TutorCourseEnrollmentsPage />} />
             <Route path="stats" element={<AdminDashboardPage />} />
           </Route>
+
+
 
           {/* ====================== MEETING ROOM ====================== */}
           <Route

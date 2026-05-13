@@ -5,7 +5,11 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardSidebar from "./DashboardSidebar";
 import "../assets/css/DashboardLayout.css";
 
-const DashboardLayout: React.FC = () => {
+interface DashboardLayoutProps {
+  children?: React.ReactNode;
+}
+
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -16,7 +20,7 @@ const DashboardLayout: React.FC = () => {
       <div className="dashboard-main">
         <DashboardHeader onMobileToggle={toggleSidebar} />
         <main className="dashboard-content">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
     </div>

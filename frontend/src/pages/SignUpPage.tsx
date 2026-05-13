@@ -29,6 +29,8 @@ interface Errors {
   general?: string;
 }
 
+type RegisterErrorShape = Partial<Record<keyof Errors, string>> & { detail?: string };
+
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
@@ -73,8 +75,9 @@ const SignUpPage: React.FC = () => {
     try {
       await register(formData);
       navigate('/login', { state: { message: 'Registration successful! Please verify your email.' } });
-    } catch (err: any) {
-      if (err.response?.data) setErrors(err.response.data);
+    } catch (err: unknown) {
+      const data = (err as { response?: { data?: unknown } })?.response?.data;
+      if (data && typeof data === 'object') setErrors(data as RegisterErrorShape);
       else setErrors({ general: 'Registration failed. Please try again.' });
     } finally {
       setIsLoading(false);

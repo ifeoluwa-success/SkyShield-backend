@@ -7,6 +7,20 @@ router.register(r'scenarios', views.ScenarioViewSet, basename='scenario')
 router.register(r'sessions', views.SimulationSessionViewSet, basename='session')
 router.register(r'achievements', views.AchievementViewSet, basename='achievement')
 
+# New incident/Genie endpoints (registered via incident_views)
+from .incident_views import IncidentRunViewSet, GenieViewSet
+router.register('incidents', IncidentRunViewSet, basename='incident-run')
+router.register('genie', GenieViewSet, basename='genie')
+
+from .course_views import (
+    CourseViewSet,
+    CourseEnrollmentViewSet,
+    CourseCertificateViewSet,
+)
+router.register('courses', CourseViewSet, basename='course')
+router.register('enrollments', CourseEnrollmentViewSet, basename='enrollment')
+router.register('certificates', CourseCertificateViewSet, basename='certificate')
+
 urlpatterns = [
     path('', include(router.urls)),  # This already includes all router endpoints
     

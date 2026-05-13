@@ -8,7 +8,7 @@ const SocialAuthCallback: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  useAuth();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -43,9 +43,12 @@ const SocialAuthCallback: React.FC = () => {
         const destination = user.role === 'trainee' ? '/dashboard' : '/tutor/dashboard';
         console.log(`Authentication successful. Redirecting to ${destination}...`);
         window.location.href = destination;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Social login error:', err);
-        const detail = err.response?.data?.detail || err.message || 'Unknown error';
+        const detail =
+          (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+          (err as { message?: string })?.message ||
+          'Unknown error';
         setError(`Failed to complete social authentication: ${detail}`);
       }
     };

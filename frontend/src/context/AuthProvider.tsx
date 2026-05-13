@@ -8,10 +8,18 @@ interface Props {
   children: ReactNode;
 }
 
+const readAccessToken = (): string | null => {
+  try {
+    return localStorage.getItem('access_token');
+  } catch {
+    return null;
+  }
+};
+
 const getInitialUser = (): User | null => {
   try {
     const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('access_token');
+    const token = readAccessToken();
     if (storedUser && token) {
       return JSON.parse(storedUser);
     }
@@ -50,6 +58,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const value = {
     user,
+    token: user ? readAccessToken() : null,
     login,
     logout,
     updateUser,

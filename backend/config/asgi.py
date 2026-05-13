@@ -16,12 +16,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django_asgi_app = get_asgi_application()
 
 # Import after Django setup to avoid circular imports
-from apps.meetings import consumers
-
-# WebSocket URL patterns
-websocket_urlpatterns = [
-    path('ws/meeting/<str:room_name>/', consumers.MeetingConsumer.as_asgi()),
-]
+from config.routing import websocket_urlpatterns
 
 application = ProtocolTypeRouter({
     # HTTP requests

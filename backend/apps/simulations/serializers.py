@@ -328,3 +328,94 @@ class CertificationSerializer(serializers.Serializer):
     icon = serializers.CharField()
     color = serializers.CharField()
     requirements = serializers.ListField(child=serializers.CharField())
+
+
+# ==============================================================================
+# NEW: Incident Run Serializers (Mission Engine)
+# ==============================================================================
+
+from .models import IncidentRun, MissionParticipant, IncidentEvent, ThreatNode
+
+
+ScenarioSerializer = ScenarioDetailSerializer
+
+
+class IncidentRunListSerializer(serializers.ModelSerializer):
+    """Lightweight — for list views"""
+    scenario_title = serializers.CharField(source='scenario.title', read_only=True)
+    participant_count = serializers.SerializerMethodField()
+
+    def get_participant_count(self, obj):
+        return obj.mission_participants.filter(is_active=True).count()
+
+    class Meta:
+        model = IncidentRun
+        fields = [
+            'id', 'scenario_title', 'phase', 'status',
+            'started_at', 'score', 'passed', 'participant_count',
+            'is_genie_generated'
+        ]
+
+
+class IncidentRunSerializer(serializers.ModelSerializer):
+    """Full detail — for retrieve and state views"""
+    scenario = ScenarioSerializer(read_only=True)
+    time_remaining = serializers.SerializerMethodField()
+    participant_count = serializers.SerializerMethodField()
+
+    def get_time_remaining(self, obj):
+        from .state_machine import MissionStateMachine
+        sm = MissionStateMachine(obj.phase)
+        return sm.get_time_remaining(obj.phase_started_at)
+
+    def get_participant_count(self, obj):
+        return obj.mission_participants.filter(is_active=True).count()
+
+    class Meta:
+        model = IncidentRun
+        fields = '__all__'
+
+
+class MissionParticipantSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
+
+    class Meta:
+        model = MissionParticipant
+        fields = [
+            'id', 'username', 'email', 'role', 'joined_at',
+            'is_active', 'is_ready'
+        ]
+
+
+class IncidentEventSerializer(serializers.ModelSerializer):
+    actor_username = serializers.CharField(source='actor.username', read_only=True, allow_null=True)
+
+    class Meta:
+        model = IncidentEvent
+        fields = ['id', 'run', 'event_type', 'actor_username', 'payload', 'timestamp']
+        read_only_fields = fields
+
+
+class ThreatNodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThreatNode
+        fields = '__all__'
+
+
+class MissionActionSerializer(serializers.Serializer):
+    """Validates incoming action payload from trainee."""
+    action_type = serializers.CharField(required=True)
+    step_id = serializers.CharField(required=True)
+    decision_data = serializers.JSONField(required=True)
+    timestamp_client = serializers.FloatField(required=False)
+
+
+class SupervisorInterventionSerializer(serializers.Serializer):
+    """Validates supervisor intervention payload."""
+    INTERVENTION_TYPES = [
+        'INJECT_THREAT', 'PAUSE', 'FORCE_PHASE',
+        'OVERRIDE_DECISION', 'REDUCE_TIMER'
+    ]
+    type = serializers.ChoiceField(choices=INTERVENTION_TYPES)
+    data = serializers.JSONField(required=False, default=dict)

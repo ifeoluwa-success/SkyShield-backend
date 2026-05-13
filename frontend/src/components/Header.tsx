@@ -72,7 +72,10 @@ export default function Header() {
     { href: "/about",       label: "About"       },
   ];
 
-  useEffect(() => { setOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    const t = setTimeout(() => setOpen(false), 0);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.hash) {

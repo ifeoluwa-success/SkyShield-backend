@@ -436,3 +436,29 @@ img { max-width: 100%; }
 @media (max-width: 480px) {
   html { font-size: 14px; }
 }
+
+/* ─── Certificate print (single card) ─────────────────────────────────────────── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-certificate.printing-active,
+  .print-certificate.printing-active * {
+    visibility: visible;
+  }
+  .print-certificate.printing-active {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .no-print,
+  .no-print * {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}

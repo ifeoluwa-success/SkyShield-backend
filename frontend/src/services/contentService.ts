@@ -87,6 +87,45 @@ export interface MeetingInvitation {
   created_at: string;
 }
 
+// ─── Content Comments ────────────────────────────────────────────────────────
+
+export interface ContentComment {
+  id: string;
+  user: string;
+  user_name: string;
+  user_email: string;
+  material: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  is_author: boolean;
+}
+
+export interface CreateContentCommentRequest {
+  content: string;
+}
+
+export interface UpdateContentCommentRequest {
+  content: string;
+}
+
+// ─── Content Rating ──────────────────────────────────────────────────────────
+
+export interface ContentRating {
+  id: string;
+  user: string;
+  material: string;
+  rating: number;
+  review?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateRatingRequest {
+  rating: number;
+  review?: string;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function unwrap<T>(data: T[] | { results: T[] }): T[] {
@@ -125,6 +164,49 @@ export const bookmarkContentMaterial = async (slug: string): Promise<{ bookmarke
   return res.data;
 };
 
+// ── Material Comments ─────────────────────────────────────────────────────────
+
+export const getMaterialComments = async (slug: string): Promise<ContentComment[]> => {
+  const res = await api.get<ContentComment[]>(`/content/materials/${slug}/comments/`);
+  return res.data;
+};
+
+export const createMaterialComment = async (
+  slug: string,
+  data: CreateContentCommentRequest,
+): Promise<ContentComment> => {
+  const res = await api.post<ContentComment>(`/content/materials/${slug}/comments/`, data);
+  return res.data;
+};
+
+export const updateMaterialComment = async (
+  slug: string,
+  commentId: string,
+  data: UpdateContentCommentRequest,
+): Promise<ContentComment> => {
+  const res = await api.put<ContentComment>(`/content/materials/${slug}/comments/${commentId}/`, data);
+  return res.data;
+};
+
+export const deleteMaterialComment = async (slug: string, commentId: string): Promise<void> => {
+  await api.delete(`/content/materials/${slug}/comments/${commentId}/`);
+};
+
+// ── Material Likes & Ratings ─────────────────────────────────────────────────
+
+export const likeMaterial = async (slug: string): Promise<{ liked: boolean }> => {
+  const res = await api.post<{ liked: boolean }>(`/content/materials/${slug}/like/`);
+  return res.data;
+};
+
+export const rateMaterial = async (
+  slug: string,
+  data: CreateRatingRequest,
+): Promise<ContentRating> => {
+  const res = await api.post<ContentRating>(`/content/materials/${slug}/rate/`, data);
+  return res.data;
+};
+
 // ── Learning Paths ────────────────────────────────────────────────────────────
 
 export const getLearningPaths = async (): Promise<LearningPath[]> => {
@@ -147,6 +229,11 @@ export const getGlossaryTerms = async (search?: string): Promise<GlossaryTerm[]>
   return unwrap(res.data);
 };
 
+export const searchGlossary = async (query: string): Promise<GlossaryTerm[]> => {
+  const res = await api.get<GlossaryTerm[]>('/content/glossary/search/', { params: { q: query } });
+  return res.data;
+};
+
 // ── FAQs ──────────────────────────────────────────────────────────────────────
 
 export const getFAQs = async (params?: { category?: string; search?: string }): Promise<FAQ[]> => {
@@ -154,11 +241,20 @@ export const getFAQs = async (params?: { category?: string; search?: string }): 
   return unwrap(res.data);
 };
 
+export const trackFAQView = async (faqId: string): Promise<void> => {
+  await api.post(`/content/faqs/${faqId}/track-view/`);
+};
+
 // ── Announcements ─────────────────────────────────────────────────────────────
 
 export const getAnnouncements = async (): Promise<Announcement[]> => {
   const res = await api.get<Announcement[] | { results: Announcement[] }>('/content/announcements/');
   return unwrap(res.data);
+};
+
+export const getUnreadAnnouncements = async (): Promise<Announcement[]> => {
+  const res = await api.get<Announcement[]>('/content/announcements/unread/');
+  return res.data;
 };
 
 export const getUnreadAnnouncementsCount = async (): Promise<number> => {

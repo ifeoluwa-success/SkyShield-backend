@@ -452,6 +452,17 @@ class SimulationSessionViewSet(viewsets.ModelViewSet):
                 except ImportError:
                     logger.warning("AdaptiveLearningService not available for ML update")
 
+                # Course pipeline hook
+                if session.status == 'completed':
+                    try:
+                        from .course_service import CourseService
+                        CourseService().record_simulation_result(session.id, request.user)
+                    except Exception as e:
+                        # Never let course pipeline failure break simulation completion
+                        import logging
+                        logging.getLogger(__name__).error(
+                            f"CourseService hook failed for session {session.id}: {e}")
+
                 # Generate completion summary
                 summary = self.generate_summary(session)
 

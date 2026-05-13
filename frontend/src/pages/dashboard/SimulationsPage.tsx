@@ -1,18 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { PlayCircle, Clock, Award, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { PlayCircle, Clock, Award, Loader2, Sparkles } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { getScenarios, startSimulation, getCurrentSession } from '../../services/simulationService';
 import type { Scenario, SimulationSession } from '../../types/simulation';
 import Toast from '../../components/Toast';
 import '../../assets/css/Simulationdash.css';
+import { startMission } from '../../services/incidentService';
+import { useAuth } from '../../hooks/useAuth';
 
 const DashboardSimulationsPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterDifficulty, setFilterDifficulty] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [userSessions, setUserSessions] = useState<Map<string, SimulationSession>>(new Map());
+  const [launchingScenarioId, setLaunchingScenarioId] = useState<string | null>(null);
+
+  const operatorRole = useMemo(() => {
+    const role = (user as unknown as { role?: string } | null)?.role ?? '';
+    const r = role.toLowerCase();
+    if (r === 'support_operator' || r === 'operations_officer') return 'support_operator';
+    return 'lead_operator';
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +63,18 @@ const DashboardSimulationsPage: React.FC = () => {
       window.location.href = `/dashboard/simulation/${session.id}`;
     } catch {
       setToast({ type: 'error', message: 'Failed to start simulation' });
+    }
+  };
+
+  const handleLaunchMission = async (scenarioId: string) => {
+    try {
+      setLaunchingScenarioId(scenarioId);
+      const result = await startMission({ scenario_id: scenarioId, operator_role: operatorRole });
+      navigate(`/dashboard/mission/${result.run_id}`);
+    } catch {
+      setToast({ type: 'error', message: 'Failed to launch mission' });
+    } finally {
+      setLaunchingScenarioId(null);
     }
   };
 
@@ -183,10 +207,20 @@ const DashboardSimulationsPage: React.FC = () => {
                       Continue
                     </Link>
                   ) : (
-                    <button onClick={() => handleStartSimulation(scenario.id)} className="start-button">
-                      <PlayCircle size={18} />
-                      Start Simulation
-                    </button>
+                    <div className="flex flex-col gap-2">
+                      <button onClick={() => handleStartSimulation(scenario.id)} className="start-button">
+                        <PlayCircle size={18} />
+                        Start Simulation
+                      </button>
+                      <button
+                        onClick={() => handleLaunchMission(scenario.id)}
+                        className="start-button"
+                        disabled={launchingScenarioId === scenario.id}
+                      >
+                        <Sparkles size={18} />
+                        {launchingScenarioId === scenario.id ? 'Launching...' : 'Launch Immersive Mission'}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

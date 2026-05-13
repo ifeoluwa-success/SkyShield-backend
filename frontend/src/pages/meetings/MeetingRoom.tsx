@@ -318,7 +318,7 @@ const MeetingRoom: React.FC = () => {
       }
     };
     void init();
-  }, [code, requestLocalMedia]);
+  }, [code, requestLocalMedia, user?.id]);
 
   // When trainee is admitted, request media
   useEffect(() => {
