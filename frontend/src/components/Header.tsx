@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { applyThemeToDocument, readStoredTheme } from "../lib/theme";
 import "@/assets/css/header.css";
 
 type NavLink = { href: string; label: string };
@@ -55,13 +56,10 @@ export default function Header() {
   const location = useLocation();
   const { isAuthenticated, isAdmin, isInstructor, isSupervisor } = useAuth();
 
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    return (localStorage.getItem('ss-theme') as 'dark' | 'light') ?? 'light';
-  });
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => readStoredTheme());
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
-    localStorage.setItem('ss-theme', theme);
+  useLayoutEffect(() => {
+    applyThemeToDocument(theme);
   }, [theme]);
 
   const links: NavLink[] = [

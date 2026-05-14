@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Users, Search, Filter, Mail, Award, TrendingUp, Loader2 } from 'lucide-react';
+import { Users, Search, Filter, Mail, Award, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getStudents } from '../../services/tutorService';
 import type { StudentProgress } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/TutorStudents.css';
 
 const TutorStudentsPage: React.FC = () => {
@@ -100,7 +101,7 @@ const TutorStudentsPage: React.FC = () => {
 
         <div className="table-container">
           {loading ? (
-            <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading students...</div>
+            <PageLoader message="Loading students…" className="min-h-0 py-12" />
           ) : students.length === 0 ? (
             <div className="empty-state">No students enrolled yet</div>
           ) : (

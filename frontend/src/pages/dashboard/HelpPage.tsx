@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BookOpen, HelpCircle, Search, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { BookOpen, HelpCircle, Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { getGlossaryTerms, getFAQs, type GlossaryTerm, type FAQ } from '../../services/contentService';
 import Toast from '../../components/Toast';
+import { Spinner } from '../../components/ui/Loading';
 import '../../assets/css/HelpPage.css';
 
 const HelpPage: React.FC = () => {
@@ -94,7 +95,7 @@ const HelpPage: React.FC = () => {
 
       {loading ? (
         <div className="help-loading">
-          <Loader2 size={28} className="spinner" /> Loading…
+          <Spinner size="md" /> Loading…
         </div>
       ) : activeTab === 'glossary' ? (
         filteredGlossary.length === 0 ? (

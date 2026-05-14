@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Bell, CheckCheck, MessageSquare, Award, Calendar, Loader2 } from 'lucide-react';
+import { X, Bell, CheckCheck, MessageSquare, Award, Calendar } from 'lucide-react';
 import {
   getNotifications,
   markNotificationRead,
@@ -7,6 +7,7 @@ import {
   type BackendNotification,
 } from '../services/authService';
 import '../assets/css/NotificationPanel.css';
+import { Spinner } from './ui/Loading';
 
 interface NotificationPanelProps {
   isOpen: boolean;
@@ -123,7 +124,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
         <div className="notifications-list">
           {loading ? (
             <div className="empty-state">
-              <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+              <Spinner size="lg" />
               <p>Loading notifications…</p>
             </div>
           ) : error ? (

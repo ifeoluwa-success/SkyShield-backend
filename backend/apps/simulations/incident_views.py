@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status, viewsets, permissions, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -27,8 +29,28 @@ class StartMissionSerializer(serializers.Serializer):
     operator_role = serializers.CharField(required=False, default='lead_operator')
 
 
+logger = logging.getLogger(__name__)
+
+LOBBY_ACTIONS = frozenset(
+    {
+        'join',
+        'state',
+        'participants',
+    }
+)
+
+
 class JoinMissionSerializer(serializers.Serializer):
-    role = serializers.CharField(required=False, default='support_operator')
+    role = serializers.ChoiceField(
+        choices=[
+            ('lead_operator', 'Lead Operator'),
+            ('support_operator', 'Support Operator'),
+            ('observer', 'Observer'),
+            ('supervisor', 'Supervisor'),
+        ],
+        required=False,
+        default='support_operator',
+    )
 
 
 class GenieGenerateSerializer(serializers.Serializer):
@@ -60,17 +82,16 @@ class IncidentRunViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if getattr(user, 'role', None) in ['supervisor', 'admin']:
-            return (
-                IncidentRun.objects.select_related('scenario')
-                .prefetch_related('mission_participants', 'events')
-                .all()
-            )
-        return (
+        base = (
             IncidentRun.objects.select_related('scenario')
             .prefetch_related('mission_participants', 'events')
-            .filter(mission_participants__user=user)
         )
+        if getattr(user, 'role', None) in ['supervisor', 'admin']:
+            return base.all()
+        action = getattr(self, 'action', None) or ''
+        if action in LOBBY_ACTIONS:
+            return base.exclude(status__in=['completed', 'failed', 'abandoned'])
+        return base.filter(mission_participants__user=user)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -215,16 +236,33 @@ class IncidentRunViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=['post'])
     def join(self, request, pk=None):
-        """POST /incidents/{id}/join/"""
-        run = self.get_object()
-        role = request.data.get('role', 'support_operator')
-        participant, created = MissionParticipant.objects.get_or_create(
-            run=run, user=request.user, defaults={'role': role}
+        """POST /incidents/{id}/join/ — idempotent; broadcasts roster via WebSocket."""
+        self.get_object()
+        serializer = JoinMissionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        role = serializer.validated_data.get('role', 'support_operator')
+        orchestrator = ScenarioOrchestrator()
+        try:
+            participant, created = orchestrator.join_mission(pk, request.user, role)
+        except MissionNotFound:
+            return Response({'error': 'Mission not found'}, status=404)
+        except MissionAlreadyComplete:
+            return Response(
+                {'error': 'Mission has ended; new participants are not accepted'},
+                status=400,
+            )
+        logger.info(
+            'mission.http_join run_id=%s user_id=%s created=%s',
+            pk,
+            request.user.pk,
+            created,
         )
+        participants_qs = MissionParticipant.objects.filter(run_id=pk).select_related('user')
         return Response(
             {
                 'joined': created,
                 'participant': MissionParticipantSerializer(participant).data,
+                'participants': MissionParticipantSerializer(participants_qs, many=True).data,
                 'ws_url': f'/ws/mission/{pk}/',
             }
         )

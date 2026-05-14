@@ -1,0 +1,331 @@
+/* Course detail — matches dashboard simulations / courses (CSS variables, light + dark) */
+
+.course-detail-top {
+  margin-bottom: 1.25rem;
+}
+
+.cd-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--ease);
+}
+
+.cd-back-btn:hover {
+  color: var(--cyan);
+}
+
+.course-detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.course-detail-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--ease);
+}
+
+.course-detail-sidebar .course-detail-panel:hover {
+  border-color: var(--border-active);
+  box-shadow: var(--shadow-cyan);
+}
+
+.course-detail-main .course-detail-panel {
+  padding: 1.5rem 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .course-detail-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .course-detail-sidebar {
+    width: 30%;
+    flex-shrink: 0;
+  }
+
+  .course-detail-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .course-detail-main .course-detail-panel {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+.cd-module-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cd-module-btn {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: var(--ease);
+}
+
+.cd-module-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.cd-module-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cd-module-btn--active {
+  background: var(--bg-tertiary);
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cyan) 25%, transparent);
+}
+
+.cd-module-pos {
+  margin-top: 0.125rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.cd-module-emoji {
+  font-size: 1.125rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.cd-module-title {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.cd-module-status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.cd-status-fail {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--danger);
+  font-size: 0.75rem;
+}
+
+.cd-reading-body {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.cd-sim-divider {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cd-sim-divider svg {
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.cd-meta-list {
+  margin: 1rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.cd-meta-list strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cd-msg {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  border: 1px solid var(--border-color);
+}
+
+.cd-msg--warn {
+  background: var(--warning-dim);
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+}
+
+.cd-msg--success {
+  background: var(--success-dim);
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 35%, transparent);
+}
+
+.cd-msg--danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+.cd-cert-banner {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  background: var(--warning-dim);
+}
+
+.cd-cert-banner p {
+  margin: 0;
+  font-weight: 600;
+  color: var(--warning);
+  font-size: 0.95rem;
+}
+
+.cd-cert-banner .review-button {
+  margin-top: 1rem;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 12rem;
+}
+
+.cd-state-wrap {
+  max-width: 28rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cd-state-icon {
+  margin: 0 auto 1rem;
+  display: block;
+  color: var(--cyan);
+}
+
+.cd-state-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
+}
+
+.cd-state-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.cd-state-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.cd-state-actions .start-button {
+  width: 100%;
+  max-width: 16rem;
+}
+
+.cd-icon-muted {
+  color: var(--text-muted);
+}
+
+.cd-icon-success {
+  color: var(--success);
+}
+
+.cd-icon-danger {
+  color: var(--danger);
+}
+
+.cd-icon-progress {
+  color: var(--cyan);
+}
+
+.cd-muted {
+  color: var(--text-muted);
+}
+
+.cd-body {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.cd-actions-row {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.cd-actions-row .start-button {
+  flex: 0 1 auto;
+  min-width: 10rem;
+}
+
+@media (max-width: 480px) {
+  .cd-actions-row .start-button {
+    width: 100%;
+  }
+}
+
+.start-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}

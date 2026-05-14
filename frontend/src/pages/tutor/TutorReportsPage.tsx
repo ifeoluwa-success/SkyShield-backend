@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  FileText, Download, Eye, Calendar, Filter, Search, Plus, X, Loader2, FolderOpen
+  FileText, Download, Eye, Calendar, Filter, Search, Plus, X, FolderOpen
 } from 'lucide-react';
 import { getReports, generateReport, deleteReport, downloadReport } from '../../services/tutorService';
 import type { Report } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import '../../assets/css/TutorReports.css';
 
 const TutorReportsPage: React.FC = () => {
@@ -148,7 +149,7 @@ const TutorReportsPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading reports...</div>
+          <PageLoader message="Loading reports…" className="min-h-0 py-12" />
         ) : reports.length === 0 ? (
           <div className="empty-state-container">
             <FolderOpen size={64} className="empty-icon" />
@@ -251,7 +252,7 @@ const TutorReportsPage: React.FC = () => {
               <div className="form-actions">
                 <button type="button" className="cancel-btn" onClick={() => setShowGenerateModal(false)}>Cancel</button>
                 <button type="submit" className="submit-btn" disabled={generating}>
-                  {generating ? <Loader2 size={18} className="spinner" /> : <Plus size={18} />}
+                  {generating ? <Spinner size="sm" /> : <Plus size={18} />}
                   {generating ? 'Generating...' : 'Generate Report'}
                 </button>
               </div>

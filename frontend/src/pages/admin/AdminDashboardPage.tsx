@@ -1,8 +1,9 @@
 // src/pages/admin/AdminDashboardPage.tsx
 import React, { useState, useEffect } from 'react';
-import { Users, Shield, BarChart2, AlertTriangle, Upload, CheckCircle, Loader2 } from 'lucide-react';
+import { Users, Shield, BarChart2, AlertTriangle, Upload, CheckCircle } from 'lucide-react';
 import api from '../../services/api';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/AdminDashboardPage.css';
 
 interface AdminStats {
@@ -45,8 +46,7 @@ const AdminDashboardPage: React.FC = () => {
   if (loading) {
     return (
       <div className="admin-dashboard loading">
-        <Loader2 size={32} className="spinner" />
-        <span>Loading admin statistics…</span>
+        <PageLoader message="Loading admin statistics…" className="min-h-0 py-12" />
       </div>
     );
   }

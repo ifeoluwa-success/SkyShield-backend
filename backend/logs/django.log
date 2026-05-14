@@ -75,3 +75,42 @@ INFO 2026-04-04 00:03:23,406 views 52208 15736 User logged in: kamzycoded@gmail.
 INFO 2026-04-04 01:04:48,025 views 15424 9448 User logged in: john.doe@example.com (role=trainee)
 INFO 2026-04-04 02:05:14,302 views 16284 44208 User logged in: john.doe@example.com (role=trainee)
 INFO 2026-04-04 02:13:19,555 views 16284 37088 User logged in: kamzycoded@gmail.com (role=instructor)
+INFO 2026-05-13 12:19:31,276 views 17292 16340 User logged in: polaniyan007@gmail.com (role=trainee)
+INFO 2026-05-14 12:16:05,667 views 14364 25292 User logged out: polaniyan007@gmail.com
+INFO 2026-05-14 12:17:03,288 views 14364 1512 User logged in: polaniyan007@gmail.com (role=trainee)
+WARNING 2026-05-14 13:46:21,732 views 700 18776 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 13:47:53,044 views 700 10624 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 13:49:14,218 views 700 25552 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 13:51:56,376 views 700 26032 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 14:08:04,073 views 700 15392 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 16:38:11,987 views 6556 6848 AdaptiveLearningService not available for ML update
+INFO 2026-05-14 16:42:27,905 views 6556 25224 New user registered: theonlypermactech@gmail.com
+INFO 2026-05-14 16:43:13,063 views 6556 25224 User logged in: theonlypermactech@gmail.com (role=trainee)
+WARNING 2026-05-14 17:06:23,705 views 17688 2844 AdaptiveLearningService not available for ML update
+INFO 2026-05-14 18:19:54,579 orchestrator 22532 15064 mission.join_mission run_id=78c49310-5ecf-4afc-ae50-ad60376b8a92 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 username=josh created=True role=support_operator
+INFO 2026-05-14 18:20:05,358 incident_views 22532 15064 mission.http_join run_id=78c49310-5ecf-4afc-ae50-ad60376b8a92 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 created=True
+WARNING 2026-05-14 18:23:33,595 views 22532 8452 AdaptiveLearningService not available for ML update
+WARNING 2026-05-14 18:25:32,277 views 22532 16504 AdaptiveLearningService not available for ML update
+INFO 2026-05-14 18:27:42,628 orchestrator 22532 10564 mission.join_mission run_id=f47220f2-69c9-40b7-9209-aa3c16c629cc user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 username=josh created=True role=support_operator
+INFO 2026-05-14 18:27:47,482 incident_views 22532 10564 mission.http_join run_id=f47220f2-69c9-40b7-9209-aa3c16c629cc user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 created=True
+INFO 2026-05-14 18:30:51,951 orchestrator 22532 15064 mission.join_mission run_id=b3d45260-afa4-4711-91ef-9082105bb086 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 username=josh created=True role=support_operator
+INFO 2026-05-14 18:30:59,787 incident_views 22532 15064 mission.http_join run_id=b3d45260-afa4-4711-91ef-9082105bb086 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 created=True
+INFO 2026-05-14 18:40:03,166 orchestrator 22532 16956 mission.join_mission run_id=130a1b55-69b6-489b-a546-a0af386e6aa9 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 username=josh created=True role=support_operator
+INFO 2026-05-14 18:40:07,816 incident_views 22532 16956 mission.http_join run_id=130a1b55-69b6-489b-a546-a0af386e6aa9 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 created=True
+WARNING 2026-05-14 18:42:55,871 views 22532 24592 AdaptiveLearningService not available for ML update
+INFO 2026-05-14 18:47:21,795 orchestrator 3868 21500 mission.join_mission run_id=b0f78f65-66e7-4eab-94e1-e9fe92e71e04 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 username=josh created=True role=support_operator
+INFO 2026-05-14 18:47:26,713 incident_views 3868 21500 mission.http_join run_id=b0f78f65-66e7-4eab-94e1-e9fe92e71e04 user_id=d06ecab9-ea24-4b12-9cd2-2df1dd16e6c2 created=True
+WARNING 2026-05-14 18:51:55,666 views 3868 26380 AdaptiveLearningService not available for ML update
+INFO 2026-05-14 19:06:21,196 signals 23840 7756 Meeting created: [SEED] Internal: weekly sim debrief room by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:23,239 signals 23840 7756 Meeting created: [SEED] Monday safety sync by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:24,055 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Monday safety sync
+INFO 2026-05-14 19:06:24,733 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Monday safety sync
+INFO 2026-05-14 19:06:25,807 signals 23840 7756 Meeting created: [SEED] Thursday sim cohort debrief by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:26,592 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Thursday sim cohort debrief
+INFO 2026-05-14 19:06:27,267 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Thursday sim cohort debrief
+INFO 2026-05-14 19:06:28,188 signals 23840 7756 Meeting created: [SEED] Office hours — instructor drop-in by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:28,983 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Office hours — instructor drop-in
+INFO 2026-05-14 19:06:29,646 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Office hours — instructor drop-in
+INFO 2026-05-14 19:09:58,267 signals 16952 6496 Meeting created: [SEED] Office hours - instructor drop-in by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:09:59,059 signals 16952 6496 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Office hours - instructor drop-in
+INFO 2026-05-14 19:09:59,728 signals 16952 6496 Participant demo.trainee@skyshield.demo joined meeting [SEED] Office hours - instructor drop-in

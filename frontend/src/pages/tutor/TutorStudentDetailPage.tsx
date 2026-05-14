@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Mail, TrendingUp, BookOpen, ClipboardList, Users,
-  Award, AlertCircle, CheckCircle, Loader2, MessageSquare,
+  Award, AlertCircle, CheckCircle, MessageSquare,
 } from 'lucide-react';
 import { getStudentProgress, addStudentNotes } from '../../services/tutorService';
 import type { StudentProgress } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import '../../assets/css/TutorStudentDetail.css';
 
 const TutorStudentDetailPage: React.FC = () => {
@@ -54,7 +55,7 @@ const TutorStudentDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="student-detail-page loading">
-        <div className="sd-loading"><Loader2 size={32} className="spinner" /> Loading student details…</div>
+        <div className="sd-loading"><PageLoader message="Loading student details…" className="min-h-0 py-12" /></div>
       </div>
     );
   }
@@ -109,7 +110,7 @@ const TutorStudentDetailPage: React.FC = () => {
           <div className="sd-notes-actions">
             <button className="sd-cancel-btn" onClick={() => setShowNotesForm(false)}>Cancel</button>
             <button className="sd-save-btn" onClick={handleSaveNotes} disabled={savingNotes || !notes.trim()}>
-              {savingNotes ? <Loader2 size={14} className="spinner" /> : <CheckCircle size={14} />}
+              {savingNotes ? <Spinner size="xs" /> : <CheckCircle size={14} />}
               Save Notes
             </button>
           </div>

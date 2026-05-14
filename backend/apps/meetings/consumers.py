@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class MeetingConsumer(AsyncWebsocketConsumer):
 
     # =========================================================================
-    # CONNECT / DISCONNECT
+    # CONNECT / DISCONNECT 
     # =========================================================================
 
     async def connect(self):

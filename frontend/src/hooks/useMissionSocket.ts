@@ -101,7 +101,14 @@ export const useMissionSocket = (options: UseMissionSocketOptions): UseMissionSo
       }
 
       if (msg.type === 'state_snapshot' || msg.type === 'state_update') {
-        if ('data' in msg) setMissionState(msg.data);
+        if ('data' in msg && msg.data && typeof msg.data === 'object' && 'run' in msg.data) {
+          setMissionState(msg.data as MissionState);
+          return;
+        }
+        const asRoot = msg as Record<string, unknown>;
+        if (asRoot.run && typeof asRoot.run === 'object') {
+          setMissionState(msg as unknown as MissionState);
+        }
         return;
       }
 
@@ -109,6 +116,15 @@ export const useMissionSocket = (options: UseMissionSocketOptions): UseMissionSo
         if (!('event' in msg)) return;
         const event = msg.event;
         setLastEvent(event);
+
+        const p = event.payload;
+        if (p && typeof p === 'object' && !Array.isArray(p)) {
+          const raw = p as Record<string, unknown>;
+          const embedded = raw.current_state ?? raw.state ?? raw.mission_state;
+          if (embedded && typeof embedded === 'object' && embedded !== null && 'run' in embedded) {
+            setMissionState(embedded as MissionState);
+          }
+        }
 
         if (event.event_type === 'phase_changed') {
           const to = (event.payload?.to as MissionPhase | undefined) ?? undefined;

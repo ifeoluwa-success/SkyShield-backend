@@ -4,7 +4,6 @@ import {
   CheckCircle,
   Clock,
   Link as LinkIcon,
-  Loader2,
   Mail,
   PlayCircle,
   PlusCircle,
@@ -17,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/LectureSchedulePage.css';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import {
   getInvitations,
   acceptInvitation,
@@ -115,7 +115,7 @@ const LectureSchedulePage: React.FC = () => {
   if (loading) {
     return (
       <div className="lecture-schedule-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading schedule...</div>
+        <PageLoader message="Loading schedule…" className="min-h-0 py-12" />
       </div>
     );
   }
@@ -150,7 +150,7 @@ const LectureSchedulePage: React.FC = () => {
                 onClick={handleJoinWithCode}
                 disabled={joining}
               >
-                {joining ? <Loader2 size={18} className="spinner" /> : <PlayCircle size={18} />}
+                {joining ? <Spinner size="sm" /> : <PlayCircle size={18} />}
                 Join Meeting
               </button>
             </div>
@@ -197,7 +197,7 @@ const LectureSchedulePage: React.FC = () => {
                       onClick={() => handleAccept(inv)}
                       disabled={busy}
                     >
-                      {busy ? <Loader2 size={15} className="spinner" /> : <CheckCircle size={15} />}
+                      {busy ? <Spinner size="xs" /> : <CheckCircle size={15} />}
                       Accept
                     </button>
                     <button

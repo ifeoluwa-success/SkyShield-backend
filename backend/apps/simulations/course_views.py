@@ -5,11 +5,24 @@ from rest_framework.response import Response
 from .course_service import CourseService
 from .models import (
     Course,
+    CourseCertificate,
     CourseEnrollment,
     CourseModule,
     ModuleProgress,
-    CourseCertificate,
 )
+
+
+_UUID_PK = (
+    r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+)
+
+_STAFF_COURSE_ROLES = frozenset({'supervisor', 'admin', 'instructor'})
+_STAFF_CERT_ROLES = frozenset({'supervisor', 'admin', 'instructor'})
+
+
+def _user_role(user):
+    return getattr(user, 'role', None) or 'trainee'
 
 
 class CourseModuleSerializer(serializers.ModelSerializer):
@@ -93,27 +106,39 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    # Course.pk is a UUID; reject non-UUID paths here so filters never 500.
+    lookup_value_regex = _UUID_PK
 
     def get_queryset(self):
-        user = self.request.user
-        if user.role in ['supervisor', 'admin', 'instructor']:
+        role = _user_role(self.request.user)
+        if role in _STAFF_COURSE_ROLES:
             return Course.objects.prefetch_related('modules').all()
         return Course.objects.filter(
             is_published=True).prefetch_related('modules')
 
     def perform_create(self, serializer):
-        if self.request.user.role not in ['supervisor', 'admin', 'instructor']:
+        if _user_role(self.request.user) not in _STAFF_COURSE_ROLES:
             raise permissions.PermissionDenied()
         serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):
         course = self.get_object()
         user = self.request.user
-        if user.role not in ['supervisor', 'admin', 'instructor']:
+        role = _user_role(user)
+        if role not in _STAFF_COURSE_ROLES:
             raise permissions.PermissionDenied()
-        if course.created_by != user and user.role != 'admin':
+        if course.created_by != user and role != 'admin':
             raise permissions.PermissionDenied()
         serializer.save()
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        role = _user_role(user)
+        if role not in _STAFF_COURSE_ROLES:
+            raise permissions.PermissionDenied()
+        if instance.created_by != user and role != 'admin':
+            raise permissions.PermissionDenied()
+        instance.delete()
 
     @action(detail=True, methods=['post'])
     def enroll(self, request, pk=None):
@@ -130,7 +155,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'], url_path='enrollments')
     def course_enrollments(self, request, pk=None):
         """GET /courses/{id}/enrollments/ — supervisor view"""
-        if request.user.role not in ['supervisor', 'admin', 'instructor']:
+        if _user_role(request.user) not in _STAFF_COURSE_ROLES:
             return Response({'error': 'Forbidden'}, status=403)
         enrollments = CourseEnrollment.objects.filter(
             course_id=pk
@@ -200,13 +225,17 @@ class CourseEnrollmentViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CourseEnrollmentSerializer
     queryset = CourseEnrollment.objects.all()
+    lookup_value_regex = _UUID_PK
 
     def get_queryset(self):
         user = self.request.user
         qs = CourseEnrollment.objects.select_related(
             'course', 'current_module'
-        ).prefetch_related('module_progresses__module')
-        if user.role in ['supervisor', 'admin', 'instructor']:
+        ).prefetch_related(
+            'module_progresses__module',
+            'certificate',
+        )
+        if _user_role(user) in _STAFF_COURSE_ROLES:
             return qs.all()
         return qs.filter(trainee=user)
 
@@ -214,16 +243,17 @@ class CourseEnrollmentViewSet(viewsets.ReadOnlyModelViewSet):
 class CourseCertificateViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Trainees see their own certificates.
-    Supervisors see all.
+    Supervisors, instructors, and admins see all.
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CourseCertificateSerializer
     queryset = CourseCertificate.objects.all()
+    lookup_value_regex = _UUID_PK
 
     def get_queryset(self):
         user = self.request.user
         qs = CourseCertificate.objects.select_related(
             'enrollment__course', 'enrollment__trainee')
-        if user.role in ['supervisor', 'admin']:
+        if _user_role(user) in _STAFF_CERT_ROLES:
             return qs.all()
         return qs.filter(enrollment__trainee=user)

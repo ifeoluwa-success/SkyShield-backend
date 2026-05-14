@@ -1,9 +1,11 @@
 /* ─── Fonts ──────────────────────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* Night mode only when `.dark` is on <html> — matches `ss-theme` + toggles (default light). */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ─── Design System ──────────────────────────────────────────────────────────── */
 :root {
@@ -117,44 +119,66 @@
 :root.light ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
 :root.light ::selection { background: rgba(180, 83, 9, 0.18); color: #09090b; }
 
-/* ─── Reset ──────────────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── Reset & typography (@layer base — utilities can override when needed) ─── */
+@layer base {
+  /* Box model only; margin/padding left to Tailwind Preflight + utilities */
+  *, *::before, *::after { box-sizing: border-box; }
 
-html {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  scroll-behavior: smooth;
-  font-size: 16px;
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font-family: 'Inter', sans-serif; cursor: pointer; }
+  input, textarea, select { font-family: 'Inter', sans-serif; }
+  img { max-width: 100%; }
+
+  /* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+  ::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.25); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+  ::selection { background: rgba(251, 191, 36, 0.28); color: #fff; }
 }
 
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+/* App-only keyframes (avoid `spin` — Tailwind owns that name for animate-spin) */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(0, 212, 255, 0.12); }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scan-line {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes radar {
+  to { transform: rotate(360deg); }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk', sans-serif;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-a { color: var(--cyan); text-decoration: none; }
-a:hover { text-decoration: underline; }
-button { font-family: 'Inter', sans-serif; cursor: pointer; }
-input, textarea, select { font-family: 'Inter', sans-serif; }
-img { max-width: 100%; }
-
-/* ─── Scrollbar ──────────────────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.25); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
-
-::selection { background: rgba(251, 191, 36, 0.28); color: #fff; }
-
+/* ─── Legacy UI helpers (@layer components — Tailwind m-/p-/animate-* wins) ─── */
+@layer components {
 /* ─── Utility: Card ──────────────────────────────────────────────────────────── */
 .card {
   background: var(--bg-secondary);
@@ -294,28 +318,9 @@ img { max-width: 100%; }
   letter-spacing: 0.04em;
 }
 
-/* ─── Animations ─────────────────────────────────────────────────────────────── */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
-  50%       { box-shadow: 0 0 0 6px rgba(0, 212, 255, 0.12); }
-}
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes scan-line {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-@keyframes radar {
-  to { transform: rotate(360deg); }
-}
-
+/* ─── Animations (use Tailwind’s `spin` keyframe for loaders) ───────────────── */
 .spinner {
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 .fade-in {
   animation: fade-in 0.3s ease both;
@@ -436,6 +441,7 @@ img { max-width: 100%; }
 @media (max-width: 480px) {
   html { font-size: 14px; }
 }
+} /* end @layer components */
 
 /* ─── Certificate print (single card) ─────────────────────────────────────────── */
 @media print {

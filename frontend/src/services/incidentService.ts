@@ -20,6 +20,9 @@ export const startMission = async (
   return response.data;
 };
 
+/** Alias for product UI copy ("Launch Immersive Mission") — same POST as `startMission`. */
+export const startMissionRun = startMission;
+
 export const getActiveRuns = async (): Promise<IncidentRun[]> => {
   return listIncidentRuns({ status: 'in_progress' });
 };

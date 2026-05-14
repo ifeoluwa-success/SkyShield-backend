@@ -2,11 +2,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Upload, Video, BookOpen, FileText, Link as LinkIcon, X, Eye,
-  Edit, Trash2, Search, Loader2, FolderOpen
+  Edit, Trash2, Search, FolderOpen
 } from 'lucide-react';
 import { getMaterials, uploadMaterial, updateMaterial, deleteMaterial, publishMaterial, unpublishMaterial } from '../../services/tutorService';
 import type { TeachingMaterial } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import '../../assets/css/TutorMaterialsPage.css';
 
 const TutorMaterialsPage: React.FC = () => {
@@ -250,7 +251,7 @@ const TutorMaterialsPage: React.FC = () => {
 
       {/* Content */}
       {loading ? (
-        <div className="loading-spinner">Loading materials...</div>
+        <PageLoader message="Loading materials…" className="min-h-0 py-12" />
       ) : materials.length === 0 ? (
         <div className="empty-state-container">
           <FolderOpen size={64} className="empty-icon" />
@@ -456,7 +457,7 @@ const TutorMaterialsPage: React.FC = () => {
                 <button type="submit" className="submit-btn" disabled={uploading}>
                   {uploading ? (
                     <>
-                      <Loader2 size={18} className="spinner" /> {editingMaterial ? 'Saving...' : 'Uploading...'}
+                      <Spinner size="sm" /> {editingMaterial ? 'Saving...' : 'Uploading...'}
                     </>
                   ) : (
                     <>

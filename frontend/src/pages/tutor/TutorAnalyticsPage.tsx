@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Users, Award, Clock, Download, Loader2 } from 'lucide-react';
+import { TrendingUp, Users, Award, Clock, Download } from 'lucide-react';
 import { getTutorDashboardStats } from '../../services/tutorService';
 import type { TutorDashboardStats } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/TutorAnalytics.css';
 
 const fmt = (type: string) =>
@@ -23,10 +24,7 @@ const TutorAnalyticsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="tutor-analytics-page loading">
-        <div className="loading-spinner">
-          <Loader2 size={32} className="spinner" />
-          Loading analytics...
-        </div>
+        <PageLoader message="Loading analytics…" className="min-h-0 py-12" />
       </div>
     );
   }

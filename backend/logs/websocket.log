@@ -25,3 +25,16 @@ INFO 2026-04-03 15:22:37,946 signals 50368 55664 Participant john.doe@example.co
 INFO 2026-04-03 15:54:33,636 signals 18296 2220 Meeting created: local room tester by kamzycoded@gmail.com
 INFO 2026-04-03 15:54:33,637 signals 18296 2220 Participant kamzycoded@gmail.com joined meeting local room tester
 INFO 2026-04-03 15:54:51,040 signals 18296 9236 Participant john.doe@example.com joined meeting local room tester
+INFO 2026-05-14 19:06:21,196 signals 23840 7756 Meeting created: [SEED] Internal: weekly sim debrief room by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:23,239 signals 23840 7756 Meeting created: [SEED] Monday safety sync by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:24,055 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Monday safety sync
+INFO 2026-05-14 19:06:24,733 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Monday safety sync
+INFO 2026-05-14 19:06:25,807 signals 23840 7756 Meeting created: [SEED] Thursday sim cohort debrief by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:26,592 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Thursday sim cohort debrief
+INFO 2026-05-14 19:06:27,267 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Thursday sim cohort debrief
+INFO 2026-05-14 19:06:28,188 signals 23840 7756 Meeting created: [SEED] Office hours — instructor drop-in by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:06:28,983 signals 23840 7756 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Office hours — instructor drop-in
+INFO 2026-05-14 19:06:29,646 signals 23840 7756 Participant demo.trainee@skyshield.demo joined meeting [SEED] Office hours — instructor drop-in
+INFO 2026-05-14 19:09:58,267 signals 16952 6496 Meeting created: [SEED] Office hours - instructor drop-in by demo.supervisor@skyshield.demo
+INFO 2026-05-14 19:09:59,059 signals 16952 6496 Participant demo.supervisor@skyshield.demo joined meeting [SEED] Office hours - instructor drop-in
+INFO 2026-05-14 19:09:59,728 signals 16952 6496 Participant demo.trainee@skyshield.demo joined meeting [SEED] Office hours - instructor drop-in

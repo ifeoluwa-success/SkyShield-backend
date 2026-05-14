@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   getSession,
   getScenario,
@@ -59,6 +60,15 @@ function formatTime(seconds: number): string {
 const SimulationPlayerPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const returnToPath = useMemo(() => {
+    const st = (location.state as { returnTo?: string } | null)?.returnTo;
+    if (typeof st === 'string' && st.startsWith('/')) return st;
+    return null;
+  }, [location.state]);
+
+  const exitAfterSim = returnToPath ?? '/dashboard/simulations';
 
   const [session, setSession] = useState<SimulationSessionDetail | null>(null);
   const [currentStep, setCurrentStep] = useState<SimulationStep | null>(null);
@@ -186,16 +196,20 @@ const SimulationPlayerPage: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedOption || !currentStep || !session) return;
+    if (submitting || feedback) return;
+    if (session.status === 'completed' || session.status === 'failed' || session.status === 'abandoned') return;
 
-    const timeTaken = Math.round((Date.now() - stepStartRef.current) / 1000);
+    const timeTaken = Math.max(0, Math.round((Date.now() - stepStartRef.current) / 1000));
+    const stepNumber = Math.max(0, Number(session.current_step) || 0);
+
     setSubmitting(true);
     setFeedback(null);
 
     try {
       const res = await submitDecision({
         session_id: session.id,
-        step_number: currentStep.number,
-        decision_type: 'multiple_choice',
+        step_number: stepNumber,
+        decision_type: 'choice',
         decision_data: { option_id: selectedOption },
         time_taken: timeTaken,
       });
@@ -223,8 +237,30 @@ const SimulationPlayerPage: React.FC = () => {
           stepStartRef.current = Date.now();
         }, 1800);
       }
-    } catch {
-      setToast({ type: 'error', message: 'Failed to submit your decision. Please try again.' });
+    } catch (err) {
+      const ax = err as AxiosError<
+        | { error?: string; detail?: string }
+        | Record<string, string | string[] | undefined>
+      >;
+      const data = ax.response?.data;
+      let message = 'Failed to submit your decision. Please try again.';
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        if (typeof data.error === 'string') {
+          message = data.error;
+        } else if (typeof (data as { detail?: string }).detail === 'string') {
+          message = (data as { detail: string }).detail;
+        } else {
+          const fieldErrors = Object.entries(data)
+            .map(([key, val]) => {
+              if (val == null) return '';
+              const v = Array.isArray(val) ? val.join(', ') : String(val);
+              return v ? `${key}: ${v}` : '';
+            })
+            .filter(Boolean);
+          if (fieldErrors.length) message = fieldErrors.join(' · ');
+        }
+      }
+      setToast({ type: 'error', message });
     } finally {
       setSubmitting(false);
     }
@@ -234,7 +270,10 @@ const SimulationPlayerPage: React.FC = () => {
     if (!currentStep || !session || hintsRemaining <= 0) return;
     setLoadingHint(true);
     try {
-      const data = await requestHint({ session_id: session.id, step_number: currentStep.number });
+      const data = await requestHint({
+        session_id: session.id,
+        step_number: Math.max(0, Number(session.current_step) || 0),
+      });
       setHint(data.hint);
       setHintsRemaining(data.hints_remaining);
     } catch {
@@ -250,7 +289,7 @@ const SimulationPlayerPage: React.FC = () => {
     try {
       await abandonSimulation(session.id);
     } finally {
-      navigate('/dashboard/simulations');
+      navigate(exitAfterSim);
     }
   };
 
@@ -343,9 +382,9 @@ const SimulationPlayerPage: React.FC = () => {
             <div className="sim-result-actions">
               <button
                 className="sim-result-primary-btn"
-                onClick={() => navigate('/dashboard/simulations')}
+                onClick={() => navigate(exitAfterSim)}
               >
-                Back to Simulations
+                {returnToPath ? 'Return to course' : 'Back to simulations'}
               </button>
               <button
                 className="sim-result-secondary-btn"
@@ -368,8 +407,8 @@ const SimulationPlayerPage: React.FC = () => {
         <div className="sim-no-step">
           <span style={{ fontSize: '2.5rem' }}>⚠️</span>
           <p>Unable to load the current simulation step.</p>
-          <button className="sim-result-secondary-btn" onClick={() => navigate('/dashboard/simulations')}>
-            Return to Simulations
+          <button className="sim-result-secondary-btn" onClick={() => navigate(exitAfterSim)}>
+            {returnToPath ? 'Return to course' : 'Return to simulations'}
           </button>
         </div>
       </div>
@@ -384,7 +423,7 @@ const SimulationPlayerPage: React.FC = () => {
       {/* Header */}
       <div className="sim-header">
         <div className="sim-header-left">
-          <button className="sim-back-btn" onClick={() => navigate('/dashboard/simulations')}>
+          <button className="sim-back-btn" onClick={() => navigate(exitAfterSim)}>
             ← Exit
           </button>
           <span className="sim-scenario-name">{session?.scenario?.title ?? 'Simulation'}</span>

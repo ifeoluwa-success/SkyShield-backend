@@ -12,7 +12,6 @@ import {
   Award, 
   BarChart, 
   Download, 
-  Loader2, 
   FolderOpen,
   Users   // Added for Submissions button
 } from 'lucide-react';
@@ -20,6 +19,7 @@ import {
 import { getExercises, createExercise, deleteExercise } from '../../services/tutorService';
 import type { Exercise, Question } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import '../../assets/css/TutorExercises.css';
 
 const TutorExercisesPage: React.FC = () => {
@@ -302,7 +302,7 @@ const TutorExercisesPage: React.FC = () => {
                   Cancel
                 </button>
                 <button type="submit" className="submit-btn" disabled={creating}>
-                  {creating ? <Loader2 size={18} className="spinner" /> : <Plus size={18} />}
+                  {creating ? <Spinner size="sm" /> : <Plus size={18} />}
                   {creating ? 'Creating...' : 'Create Exercise'}
                 </button>
               </div>
@@ -355,7 +355,7 @@ const TutorExercisesPage: React.FC = () => {
 
         <div className="table-container">
           {loading ? (
-            <div className="loading-spinner"><Loader2 size={24} className="spinner" /> Loading exercises...</div>
+            <PageLoader message="Loading exercises…" className="min-h-0 py-12" />
           ) : exercises.length === 0 ? (
             <div className="empty-state-container">
               <FolderOpen size={64} className="empty-icon" />

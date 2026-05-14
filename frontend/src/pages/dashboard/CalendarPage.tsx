@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMyUpcomingSessions, getAssignedExercises, type UpcomingSession, type AssignedExercise } from '../../services/simulationService';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/CalendarPage.css';
 
 interface CalendarEvent {
@@ -422,7 +423,7 @@ const CalendarPage = () => {
   if (loading) {
     return (
       <div className="calendar-page loading">
-        <div className="loading-spinner">Loading calendar...</div>
+        <PageLoader message="Loading calendar…" className="min-h-0 py-12" />
       </div>
     );
   }

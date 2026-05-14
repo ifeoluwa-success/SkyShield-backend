@@ -320,7 +320,15 @@ class MissionParticipant(models.Model):
     )
     joined_at = models.DateTimeField(auto_now_add=True)
     last_seen = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+    last_heartbeat = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text='Last WebSocket heartbeat or connect; used for is_online presence.',
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text='Still a member of this mission (not removed); not WebSocket presence.',
+    )
     is_ready = models.BooleanField(default=False)
 
     class Meta:
@@ -502,6 +510,7 @@ class CourseEnrollment(models.Model):
 
     class Meta:
         unique_together = [('course', 'trainee')]
+        ordering = ['-enrolled_at']
 
     def __str__(self):
         return f"{self.trainee.username} in {self.course.title}"
@@ -572,3 +581,6 @@ class CourseCertificate(models.Model):
         return (f"Certificate {self.certificate_number} — "
                 f"{self.enrollment.trainee.username} — "
                 f"{self.enrollment.course.title}")
+
+    class Meta:
+        ordering = ['-issued_at']

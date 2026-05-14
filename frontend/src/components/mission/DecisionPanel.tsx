@@ -1,113 +1,183 @@
-import React, { useMemo, useState } from 'react';
-import type { MissionPhase, ScenarioStep } from '../../types/incident';
+"use client"
 
-interface DecisionPanelProps {
-  currentStep: ScenarioStep | null;
-  onSubmitAction: (optionId: string) => void;
-  onRequestHint: () => void;
-  isSubmitting: boolean;
-  hintText: string | null;
-  hintsUsed: number;
-  phase: MissionPhase;
+import { useEffect, useState } from "react"
+import { cn } from "../../lib/utils"
+import { Lightbulb, CheckCircle2, Radio } from "lucide-react"
+import { Spinner } from "../ui/Loading"
+
+interface Option {
+  id: string
+  text: string
 }
 
-export const DecisionPanel: React.FC<DecisionPanelProps> = ({
-  currentStep,
+interface DecisionPanelProps {
+  description?: string
+  options?: Option[]
+  onSubmitAction?: (optionId: string) => void
+  onRequestHint?: () => void
+  isSubmitting?: boolean
+  hintText?: string | null
+  hintsUsed?: number
+  maxHints?: number
+  /** Mission WebSocket connected — used for empty-state copy */
+  channelConnected?: boolean
+  /** After submitting a decision, before next step arrives */
+  awaitingNextStep?: boolean
+}
+
+export function DecisionPanel({
+  description,
+  options = [],
   onSubmitAction,
   onRequestHint,
-  isSubmitting,
-  hintText,
-  hintsUsed,
-  phase,
-}) => {
-  const [selected, setSelected] = useState<string | null>(null);
+  isSubmitting = false,
+  hintText = null,
+  hintsUsed = 0,
+  maxHints = 3,
+  channelConnected = false,
+  awaitingNextStep = false,
+}: DecisionPanelProps) {
+  const [selected, setSelected] = useState<string | null>(null)
 
-  const hidden = phase === 'briefing' || phase === 'review';
+  useEffect(() => {
+    setSelected(null)
+  }, [options])
 
-  const options = useMemo(() => currentStep?.options ?? [], [currentStep]);
-  const canHint = hintsUsed < 3 && !isSubmitting && !hidden;
+  const canHint = hintsUsed < maxHints && !isSubmitting
+  const hasOptions = options.length > 0
 
-  if (hidden) return null;
+  const handleSelect = (optionId: string) => {
+    if (isSubmitting) return
+    setSelected(optionId)
+    onSubmitAction?.(optionId)
+  }
 
   return (
-    <div
-      className="fixed inset-x-0 bottom-0 z-50"
-      style={{ fontFamily: "'Courier New', monospace" }}
-    >
-      <div className="mx-auto max-w-7xl px-4 pb-4">
-        <div className="translate-y-0 rounded-2xl border border-slate-800/70 bg-[#0f1729] shadow-2xl transition-transform">
-          <div className="h-0.5 w-full bg-amber-500" />
-
-          <div className="flex items-center justify-between gap-3 px-5 py-4">
-            <div className="text-xs tracking-[0.24em] text-amber-300">
-              INCIDENT RESPONSE REQUIRED
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="rounded-2xl border border-neutral-200 bg-white shadow-lg overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-6 py-4 border-b border-neutral-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-sm font-medium text-neutral-700 tracking-wide uppercase">
+                Incident Response
+              </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-xs text-slate-200">
-                HINTS USED: <span className="text-amber-200">{hintsUsed}</span>
-              </div>
+              <span className="text-xs text-neutral-500">
+                Hints: <span className="font-semibold text-amber-600">{hintsUsed}/{maxHints}</span>
+              </span>
               <button
                 type="button"
                 disabled={!canHint}
-                onClick={onRequestHint}
-                className={[
-                  'rounded-md border px-3 py-1 text-xs transition',
+                onClick={() => onRequestHint?.()}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
                   canHint
-                    ? 'border-amber-500/50 bg-amber-500/10 text-amber-200 hover:bg-amber-500/15'
-                    : 'cursor-not-allowed border-slate-700/60 bg-slate-900/20 text-slate-500',
-                ].join(' ')}
+                    ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                    : "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                )}
               >
-                REQUEST HINT
+                <Lightbulb className="h-3.5 w-3.5" />
+                Get Hint
               </button>
             </div>
           </div>
+        </div>
 
-          <div className="px-5 pb-5">
-            <div className="rounded-xl border border-amber-500/15 bg-slate-950/30 p-4 text-amber-200">
-              {currentStep?.description ? (
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">{currentStep.description}</div>
-              ) : (
-                <div className="text-sm text-slate-400">Awaiting next incident event...</div>
-              )}
+        {/* Description */}
+        <div className="px-6 py-5">
+          {(awaitingNextStep || isSubmitting) && (
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-xs text-amber-900">
+              <Spinner size="sm" />
+              <span>{awaitingNextStep ? "Locking in decision — syncing mission state…" : "Submitting…"}</span>
             </div>
+          )}
 
-            <div className="mt-4 space-y-2">
-              {options.map(opt => {
-                const isSelected = selected === opt.id;
-                const disabled = isSubmitting || (selected !== null && !isSelected);
+          <div className="rounded-xl bg-neutral-50 border border-neutral-100 p-4">
+            {description ? (
+              <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
+                {description}
+              </p>
+            ) : (
+              <p className="text-sm text-neutral-400 italic">
+                {channelConnected
+                  ? "Awaiting step instructions from mission control…"
+                  : "Reconnect to receive the next incident step."}
+              </p>
+            )}
+          </div>
+
+          {/* Options */}
+          {hasOptions ? (
+            <div className="mt-5 space-y-2">
+              {options.map((opt) => {
+                const isSelected = selected === opt.id
+                const disabled = isSubmitting && !isSelected
+
                 return (
                   <button
                     key={opt.id}
                     type="button"
                     disabled={disabled}
-                    onClick={() => {
-                      setSelected(opt.id);
-                      onSubmitAction(opt.id);
-                    }}
-                    className={[
-                      'w-full rounded-xl border px-4 py-3 text-left text-sm transition',
+                    onClick={() => handleSelect(opt.id)}
+                    className={cn(
+                      "group w-full rounded-xl border px-4 py-3.5 text-left text-sm transition-all duration-200",
                       isSelected
-                        ? 'border-amber-500/70 bg-amber-500/15 text-amber-100'
-                        : 'border-slate-700/60 bg-slate-950/20 text-slate-200 hover:border-amber-500/50 hover:bg-slate-900/30',
-                      disabled && !isSelected ? 'cursor-not-allowed opacity-60' : '',
-                    ].join(' ')}
+                        ? "border-amber-500 bg-amber-50 text-neutral-900 ring-2 ring-amber-500/20"
+                        : "border-neutral-200 bg-white text-neutral-700 hover:border-amber-300 hover:bg-amber-50/50",
+                      disabled && "opacity-50 cursor-not-allowed"
+                    )}
                   >
-                    {opt.text}
+                    <div className="flex items-center justify-between gap-3">
+                      <span>{opt.text}</span>
+                      {isSelected && (
+                        <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0" />
+                      )}
+                    </div>
                   </button>
-                );
+                )
               })}
             </div>
-
-            {hintText && (
-              <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
-                <div className="text-xs tracking-[0.18em] text-amber-300">HINT</div>
-                <div className="mt-1 text-sm text-amber-100">{hintText}</div>
+          ) : (
+            <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-neutral-200 bg-neutral-50/80 px-4 py-10 text-center">
+              <Radio className="h-8 w-8 text-neutral-300" aria-hidden />
+              <div>
+                <p className="text-sm font-medium text-neutral-600">No response options yet</p>
+                <p className="mt-1 text-xs text-neutral-500">
+                  {channelConnected
+                    ? "The next step should appear automatically when the server advances the mission. If this persists, check your connection or wait for the lead operator."
+                    : "Connect to the live channel to receive decision options in real time."}
+                </p>
               </div>
-            )}
-          </div>
+              {(awaitingNextStep || isSubmitting) && (
+                <div className="flex items-center gap-2 text-xs text-amber-800">
+                  <Spinner size="sm" />
+                  Waiting for next step…
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Hint Display */}
+          {hintText && (
+            <div className="mt-5 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-4">
+              <div className="flex items-start gap-3">
+                <div className="rounded-full bg-amber-100 p-1.5">
+                  <Lightbulb className="h-4 w-4 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-1">
+                    Hint
+                  </p>
+                  <p className="text-sm text-amber-900">{hintText}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
-};
-
+  )
+}

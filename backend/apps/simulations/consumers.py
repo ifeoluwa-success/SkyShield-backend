@@ -1,9 +1,11 @@
 import asyncio
 import logging
+from datetime import timedelta
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .orchestrator import (
@@ -32,28 +34,8 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         """
-        1. Extract token from query string (same as meeting consumer)
-        2. Validate JWT and get user — close with code 4001 if invalid
-        3. Get run_id from URL route kwargs
-        4. Fetch IncidentRun — close with code 4004 if not found
-        5. Verify user is a MissionParticipant in this run
-           — close with code 4003 if not
-        6. self.run_id = str(run_id)
-        7. self.group_name = f'mission_{self.run_id}'
-        8. Add to channel group
-        9. Accept connection
-        10. Send current state snapshot to THIS connection only:
-              await self.send_json({
-                'type': 'state_snapshot',
-                'data': orchestrator.get_current_state(self.run_id)
-              })
-        11. Broadcast to group that participant connected:
-              await self.channel_layer.group_send(
-                self.group_name,
-                {'type': 'mission_event',
-                 'event': {'event_type': 'participant_joined',
-                           'user': username}}
-              )
+        Authenticate, ensure MissionParticipant (fallback if HTTP join was skipped),
+        join channel group, send state_snapshot, broadcast roster/state to the group.
         """
         self.user = await self.get_user_from_token()
         if not self.user or isinstance(self.user, AnonymousUser):
@@ -66,9 +48,26 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
             await self.close(code=4004)
             return
 
+        orchestrator = ScenarioOrchestrator()
+        try:
+            await database_sync_to_async(orchestrator.join_mission)(
+                str(run_id), self.user, 'support_operator'
+            )
+        except MissionAlreadyComplete:
+            logger.info(
+                'mission.ws_connect_denied_ended run_id=%s user_id=%s',
+                run_id,
+                self.user.pk,
+            )
+            await self.close(code=4005)
+            return
+        except MissionNotFound:
+            await self.close(code=4004)
+            return
+
         self.participant = await self.get_participant(run_id, self.user.id)
         if not self.participant:
-            await self.close(code=4003)
+            await self.close(code=4004)
             return
 
         self.run_id = str(run_id)
@@ -77,9 +76,6 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
-        await self.mark_participant_connected(run_id, self.user.id)
-
-        orchestrator = ScenarioOrchestrator()
         state = await database_sync_to_async(orchestrator.get_current_state)(self.run_id)
         await self.send_json({'type': 'state_snapshot', 'data': state})
 
@@ -89,18 +85,23 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
                 'type': 'mission_event',
                 'event': {
                     'event_type': 'participant_joined',
-                    'user': self.user.username,
-                }
-            }
+                    'username': self.user.username,
+                    'user_id': self.user.pk,
+                },
+            },
         )
 
         self._timer_task = asyncio.create_task(self._schedule_timer_warning())
+        logger.info(
+            'mission.ws_connected run_id=%s user_id=%s',
+            self.run_id,
+            self.user.pk,
+        )
 
     async def disconnect(self, code):
         """
-        1. Set MissionParticipant.is_active = False for this user+run
-        2. Broadcast participant_left to group
-        3. Remove from channel group
+        Stamp presence offline (last_heartbeat), notify group, push updated mission state,
+        then leave the channel group.
         """
         try:
             if hasattr(self, '_timer_task') and self._timer_task:
@@ -115,11 +116,25 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
                     f'mission_{self.run_id}',
                     {
                         'type': 'mission_event',
-                        'event': {'event_type': 'participant_left', 'user': self.user.username}
-                    }
+                        'event': {
+                            'event_type': 'participant_left',
+                            'username': self.user.username,
+                            'user_id': self.user.pk,
+                        },
+                    },
                 )
             except Exception:
                 pass
+            try:
+                ScenarioOrchestrator().broadcast_mission_state_update(self.run_id)
+            except Exception:
+                logger.exception('mission.ws_disconnect_broadcast_failed run_id=%s', self.run_id)
+            logger.info(
+                'mission.ws_disconnected run_id=%s user_id=%s code=%s',
+                self.run_id,
+                self.user.pk,
+                code,
+            )
 
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -144,6 +159,8 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
                 'abandon': self.handle_abandon,
                 'supervisor_intervention': self.handle_supervisor_intervention,
                 'get_state': self._handle_get_state,
+                'heartbeat': self.handle_heartbeat,
+                'ping': self.handle_heartbeat,
             }
             handler = handlers.get(msg_type)
             if handler:
@@ -229,6 +246,14 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
         state = await database_sync_to_async(orchestrator.get_current_state)(self.run_id)
         await self.send_json({'type': 'state_snapshot', 'data': state})
 
+    async def handle_heartbeat(self, content):
+        """Refresh last_heartbeat; optional light broadcast for presence UIs."""
+        orchestrator = ScenarioOrchestrator()
+        await database_sync_to_async(orchestrator.touch_participant_heartbeat)(
+            self.run_id, self.user
+        )
+        await self.send_json({'type': 'heartbeat_ack', 'ok': True})
+
     async def _schedule_timer_warning(self):
         """
         Background task that schedules a timer warning when 15 seconds remain.
@@ -271,6 +296,15 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
     async def state_update(self, event):
         """Send full state snapshot to all group members."""
         await self.send_json({'type': 'state_update', 'data': event['data']})
+
+    async def participants_updated(self, event):
+        """Roster-only refresh for clients that prefer a smaller payload."""
+        await self.send_json(
+            {
+                'type': 'participants_updated',
+                'participants': event.get('participants') or [],
+            }
+        )
 
     async def timer_warning(self, event):
         """
@@ -320,20 +354,15 @@ class MissionConsumer(AsyncJsonWebsocketConsumer):
             return None
 
     @database_sync_to_async
-    def mark_participant_connected(self, run_id, user_id):
-        try:
-            p = MissionParticipant.objects.get(run_id=run_id, user_id=user_id)
-            p.is_active = True
-            p.save(update_fields=['is_active'])
-        except MissionParticipant.DoesNotExist:
-            return
-
-    @database_sync_to_async
     def mark_participant_disconnected(self, run_id, user_id):
+        """
+        Mark WebSocket presence as stale (does not remove mission membership).
+        """
         try:
-            p = MissionParticipant.objects.get(run_id=run_id, user_id=user_id)
-            p.is_active = False
-            p.save(update_fields=['is_active'])
-        except MissionParticipant.DoesNotExist:
+            stale = timezone.now() - timedelta(seconds=120)
+            MissionParticipant.objects.filter(run_id=run_id, user_id=user_id).update(
+                last_heartbeat=stale
+            )
+        except Exception:
             return
 

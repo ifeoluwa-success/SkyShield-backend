@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { uploadAvatar, updateUserProfile, changePassword } from '../../services/tutorService';
 import { getTutorProfile, updateTutorProfile } from '../../services/tutorService';
-import { User, Camera, Loader2, Plus, X, Eye, EyeOff, ChevronDown } from 'lucide-react';
+import { User, Camera, Plus, X, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import Toast from '../../components/Toast';
+import { Spinner } from '../../components/ui/Loading';
 import SuccessModal from '../../components/SuccessModal';
 import '../../assets/css/TutorProfilePage.css';
 
@@ -457,7 +458,7 @@ const TutorProfilePage: React.FC = () => {
               </div>
             </div>
             <button className="change-avatar-btn" onClick={handleAvatarClick} disabled={avatarLoading}>
-              {avatarLoading ? <Loader2 size={16} className="spinner" /> : <Camera size={16} />}
+              {avatarLoading ? <Spinner size="sm" /> : <Camera size={16} />}
               <span>Change Photo</span>
             </button>
             <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleAvatarChange} />

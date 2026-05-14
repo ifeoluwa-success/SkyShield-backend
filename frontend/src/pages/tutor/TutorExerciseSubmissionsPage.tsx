@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, Clock, Award, CheckCircle, XCircle, Edit2, Save, Loader2, FileText } from 'lucide-react';
+import { ArrowLeft, Users, Clock, Award, CheckCircle, XCircle, Edit2, Save, FileText } from 'lucide-react';
 import { getExerciseAttempts, updateExerciseAttempt, type ExerciseAttemptDetail } from '../../services/tutorService';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/TutorExerciseSubmissions.css';
 
 const TutorExerciseSubmissionsPage: React.FC = () => {
@@ -71,7 +72,7 @@ const TutorExerciseSubmissionsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="submissions-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading submissions...</div>
+        <PageLoader message="Loading submissions…" className="min-h-0 py-12" />
       </div>
     );
   }

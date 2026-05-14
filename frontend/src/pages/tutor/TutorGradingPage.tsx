@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClipboardCheck, Users, Loader2, FileText, ChevronRight } from 'lucide-react';
+import { ClipboardCheck, Users, FileText, ChevronRight } from 'lucide-react';
 import { getExercisesWithAttempts, type ExerciseWithAttempts } from '../../services/tutorService';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/TutorGradingPage.css';
 
 const TutorGradingPage: React.FC = () => {
@@ -32,7 +33,7 @@ const TutorGradingPage: React.FC = () => {
   if (loading) {
     return (
       <div className="grading-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading pending submissions...</div>
+        <PageLoader message="Loading pending submissions…" className="min-h-0 py-12" />
       </div>
     );
   }

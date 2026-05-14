@@ -51,6 +51,8 @@ export default {
       },
       // Figma Animations (subtle for engagement)
       animation: {
+        /** Slightly faster than default 1s — keeps loaders from feeling sluggish app-wide */
+        spin: 'spin 0.5s linear infinite',
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },

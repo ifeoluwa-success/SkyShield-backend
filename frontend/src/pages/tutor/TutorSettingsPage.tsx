@@ -7,8 +7,9 @@ import {
   getActiveSessions, terminateSession, terminateOtherSessions,
   type UserDevice, type UserSession,
 } from '../../services/authService';
-import { Bell, Shield, Smartphone, Monitor, LogOut, Trash2, CheckCircle, Loader2 } from 'lucide-react';
+import { Bell, Shield, Smartphone, Monitor, LogOut, Trash2, CheckCircle } from 'lucide-react';
 import Toast from '../../components/Toast';
+import { Spinner } from '../../components/ui/Loading';
 import SuccessModal from '../../components/SuccessModal';
 import '../../assets/css/SettingsPage.css';
 
@@ -135,7 +136,7 @@ const TutorSettingsPage: React.FC = () => {
           <div className="card-header"><Smartphone size={20} /><h2>Connected Devices</h2></div>
           <div className="card-content">
             {devicesLoading ? (
-              <div className="settings-loading"><Loader2 size={20} className="spinner" /> Loading devices…</div>
+              <div className="settings-loading"><Spinner size="md" /> Loading devices…</div>
             ) : devices.length === 0 ? (
               <p className="settings-empty">No devices registered yet.</p>
             ) : (
@@ -151,7 +152,7 @@ const TutorSettingsPage: React.FC = () => {
                     <div className="device-actions">
                       {device.is_trusted && <span className="trusted-badge"><CheckCircle size={12} /> Trusted</span>}
                       <button className={`btn-xs ${device.is_trusted ? 'btn-danger' : 'btn-secondary'}`} onClick={() => handleTrustToggle(device)} disabled={togglingDevice === device.id}>
-                        {togglingDevice === device.id ? <Loader2 size={12} className="spinner" /> : (device.is_trusted ? 'Untrust' : 'Trust')}
+                        {togglingDevice === device.id ? <Spinner size="xs" /> : (device.is_trusted ? 'Untrust' : 'Trust')}
                       </button>
                       <button className="btn-xs btn-danger" onClick={() => handleRemoveDevice(device.id)}><Trash2 size={12} /></button>
                     </div>
@@ -169,7 +170,7 @@ const TutorSettingsPage: React.FC = () => {
           </div>
           <div className="card-content">
             {sessionsLoading ? (
-              <div className="settings-loading"><Loader2 size={20} className="spinner" /> Loading sessions…</div>
+              <div className="settings-loading"><Spinner size="md" /> Loading sessions…</div>
             ) : sessions.length === 0 ? (
               <p className="settings-empty">No active sessions found.</p>
             ) : (
@@ -183,7 +184,7 @@ const TutorSettingsPage: React.FC = () => {
                     </div>
                     <div className="device-actions">
                       <button className="btn-xs btn-danger" onClick={() => handleTerminateSession(session.id)} disabled={terminatingSession === session.id}>
-                        {terminatingSession === session.id ? <Loader2 size={12} className="spinner" /> : 'Sign out'}
+                        {terminatingSession === session.id ? <Spinner size="xs" /> : 'Sign out'}
                       </button>
                     </div>
                   </div>

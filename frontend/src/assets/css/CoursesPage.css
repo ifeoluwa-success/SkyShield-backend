@@ -1,0 +1,307 @@
+/* Courses library — uses global theme tokens (light / dark via :root / :root.light) */
+
+.courses-search {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 320px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: var(--ease);
+}
+
+.courses-search::placeholder {
+  color: var(--text-muted);
+}
+
+.courses-search:focus {
+  border-color: var(--cyan);
+}
+
+.courses-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.course-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--ease);
+  box-shadow: var(--shadow-sm);
+  animation: course-card-in 0.35s ease both;
+}
+
+.course-card:hover {
+  border-color: var(--border-active);
+  box-shadow: var(--shadow-cyan);
+  transform: translateY(-2px);
+}
+
+@keyframes course-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.course-card-thumb {
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.course-thumb-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.12));
+}
+
+.course-thumb-label {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.03em;
+  border: 1px solid;
+}
+
+.course-certified-ribbon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--warning-dim);
+  color: var(--warning);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+}
+
+.course-card-body {
+  padding: 1rem 1.125rem 1.125rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.course-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.difficulty-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.difficulty-badge.beginner {
+  background: var(--success-dim);
+  color: var(--success);
+}
+
+.difficulty-badge.intermediate {
+  background: var(--info-dim);
+  color: var(--info);
+}
+
+.difficulty-badge.advanced {
+  background: var(--violet-dim);
+  color: var(--violet);
+}
+
+.difficulty-badge.expert {
+  background: var(--danger-dim);
+  color: var(--danger);
+}
+
+.course-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.course-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.course-prog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.course-prog-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.course-prog-track {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.course-prog-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.course-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+}
+
+.course-status-chip--certified {
+  color: var(--warning);
+  background: var(--warning-dim);
+  border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+}
+
+.course-status-chip--progress {
+  color: var(--violet);
+  background: var(--violet-dim);
+  border-color: color-mix(in srgb, var(--violet) 35%, transparent);
+}
+
+.course-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  background: var(--text-muted);
+}
+
+.course-status-chip--certified .course-status-dot {
+  background: var(--warning);
+}
+
+.course-status-chip--progress .course-status-dot {
+  background: var(--violet);
+}
+
+.course-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.courses-btn-ghost {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.courses-btn-ghost:hover:not(:disabled) {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.start-button:disabled,
+.continue-button:disabled,
+.review-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.courses-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-tertiary);
+}
+
+@media (max-width: 640px) {
+  .course-actions {
+    flex-direction: column;
+  }
+
+  .courses-btn-ghost,
+  .start-button,
+  .continue-button,
+  .review-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

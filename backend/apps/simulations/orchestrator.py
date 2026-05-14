@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone, timedelta
 
 from asgiref.sync import async_to_sync
@@ -30,6 +31,13 @@ class MissionAlreadyComplete(Exception):
 
 class PhaseTimedOut(Exception):
     pass
+
+
+logger = logging.getLogger(__name__)
+
+MISSION_PARTICIPANT_ROLES = frozenset(
+    {'lead_operator', 'support_operator', 'observer', 'supervisor'}
+)
 
 
 class ScenarioOrchestrator:
@@ -85,7 +93,12 @@ class ScenarioOrchestrator:
             genie_scenario_data={},
         )
 
-        MissionParticipant.objects.create(run=run, user=user, role=operator_role)
+        MissionParticipant.objects.create(
+            run=run,
+            user=user,
+            role=operator_role,
+            last_heartbeat=datetime.now(timezone.utc),
+        )
 
         IncidentEvent.objects.create(
             run=run,
@@ -172,7 +185,7 @@ class ScenarioOrchestrator:
         if run.status in ['completed', 'failed', 'abandoned']:
             raise MissionAlreadyComplete("Mission is already complete")
 
-        if not MissionParticipant.objects.filter(run=run, user=user, is_active=True).exists():
+        if not MissionParticipant.objects.filter(run=run, user=user).exists():
             raise UnauthorizedAction("User is not authorized for this mission")
 
         sm = MissionStateMachine(run.phase)
@@ -187,10 +200,16 @@ class ScenarioOrchestrator:
 
         steps = run.scenario.steps or []
         current_step_idx = int((run.session_state or {}).get('current_step', 0) or 0)
-        if current_step_idx >= len(steps) and run.phase in VALID_TRANSITIONS:
-            allowed = VALID_TRANSITIONS.get(run.phase) or []
-            next_phase = allowed[0] if allowed else 'review'
-            self.advance_phase(run, next_phase)
+        if current_step_idx >= len(steps):
+            # Timeout can set phase to review without finalize; repair on next action.
+            if run.phase == 'review' and run.status == 'in_progress':
+                self.finalize_mission(run)
+            else:
+                allowed = VALID_TRANSITIONS.get(run.phase) or []
+                if allowed:
+                    next_phase = allowed[0]
+                    if next_phase != run.phase:
+                        self.advance_phase(run, next_phase)
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -227,7 +246,7 @@ class ScenarioOrchestrator:
             forced_next = 'review'
         else:
             allowed = VALID_TRANSITIONS.get(run.phase) or []
-            forced_next = allowed[0] if allowed else 'review'
+            forced_next = allowed[0] if allowed else run.phase
 
         prev = run.phase
         run.phase = forced_next
@@ -250,6 +269,9 @@ class ScenarioOrchestrator:
             f'mission_{run_id}',
             {'type': 'mission_event', 'event': self._serialize_event(phase_event)},
         )
+
+        if forced_next == 'review':
+            self.finalize_mission(run)
 
     def advance_phase(self, run, new_phase):
         """
@@ -291,6 +313,10 @@ class ScenarioOrchestrator:
         """
         Compute final score, update run completion fields, update user analytics profiles, and emit a review event.
         """
+        if run.status in ('completed', 'failed'):
+            engine = SimulationEngine()
+            return engine.compute_final_score(run)
+
         engine = SimulationEngine()
         result = engine.compute_final_score(run)
 
@@ -360,7 +386,7 @@ class ScenarioOrchestrator:
         except IncidentRun.DoesNotExist as exc:
             raise MissionNotFound("Mission run not found") from exc
 
-        if not MissionParticipant.objects.filter(run=run, user=user, is_active=True).exists():
+        if not MissionParticipant.objects.filter(run=run, user=user).exists():
             raise UnauthorizedAction("User is not authorized for this mission")
 
         hints = run.scenario.hints
@@ -398,7 +424,7 @@ class ScenarioOrchestrator:
         except IncidentRun.DoesNotExist as exc:
             raise MissionNotFound("Mission run not found") from exc
 
-        if not MissionParticipant.objects.filter(run=run, user=user, is_active=True).exists():
+        if not MissionParticipant.objects.filter(run=run, user=user).exists():
             raise UnauthorizedAction("User is not authorized for this mission")
 
         run.status = 'abandoned'
@@ -419,6 +445,88 @@ class ScenarioOrchestrator:
         )
 
         return {'run_id': str(run.id), 'status': 'abandoned'}
+
+    def join_mission(self, run_id, user, role='support_operator'):
+        """
+        Idempotently add user as MissionParticipant, log, optionally record event,
+        and broadcast updated mission state to the WebSocket group.
+        """
+        rid = str(run_id)
+        try:
+            run = (
+                IncidentRun.objects.select_related('scenario')
+                .prefetch_related('mission_participants')
+                .get(id=rid)
+            )
+        except IncidentRun.DoesNotExist as exc:
+            raise MissionNotFound("Mission run not found") from exc
+
+        if run.status in ('completed', 'failed', 'abandoned'):
+            raise MissionAlreadyComplete("Mission is no longer accepting participants")
+
+        if role not in MISSION_PARTICIPANT_ROLES:
+            role = 'support_operator'
+
+        now = datetime.now(timezone.utc)
+        participant, created = MissionParticipant.objects.get_or_create(
+            run=run,
+            user=user,
+            defaults={
+                'role': role,
+                'is_active': True,
+                'is_ready': False,
+                'last_heartbeat': now,
+            },
+        )
+        participant.is_active = True
+        participant.last_heartbeat = now
+        participant.save()
+
+        if created:
+            IncidentEvent.objects.create(
+                run=run,
+                event_type='participant_joined',
+                actor=user,
+                payload={'role': participant.role, 'source': 'join'},
+            )
+
+        logger.info(
+            'mission.join_mission run_id=%s user_id=%s username=%s created=%s role=%s',
+            rid,
+            user.pk,
+            getattr(user, 'username', ''),
+            created,
+            participant.role,
+        )
+
+        self.broadcast_mission_state_update(rid)
+        return participant, created
+
+    def touch_participant_heartbeat(self, run_id, user):
+        """Update last_heartbeat for WebSocket presence (best-effort)."""
+        now = datetime.now(timezone.utc)
+        MissionParticipant.objects.filter(run_id=run_id, user=user).update(last_heartbeat=now)
+
+    def broadcast_mission_state_update(self, run_id):
+        """
+        Push full mission snapshot to all sockets in mission_{run_id}.
+        Also emits a lightweight participants_updated payload for UIs that only refresh roster.
+        """
+        rid = str(run_id)
+        try:
+            state = self.get_current_state(rid)
+        except MissionNotFound:
+            return
+        channel_layer = get_channel_layer()
+        participants = state.get('participants') or []
+        async_to_sync(channel_layer.group_send)(
+            f'mission_{rid}',
+            {'type': 'state_update', 'data': state},
+        )
+        async_to_sync(channel_layer.group_send)(
+            f'mission_{rid}',
+            {'type': 'participants_updated', 'participants': participants},
+        )
 
     def apply_supervisor_intervention(self, run_id, supervisor, intervention_type, data):
         """
@@ -589,6 +697,9 @@ class ScenarioOrchestrator:
                     'is_ready': p.is_ready,
                     'joined_at': p.joined_at.isoformat() if p.joined_at else None,
                     'last_seen': p.last_seen.isoformat() if p.last_seen else None,
+                    'last_heartbeat': (
+                        p.last_heartbeat.isoformat() if getattr(p, 'last_heartbeat', None) else None
+                    ),
                 })
             return out
 

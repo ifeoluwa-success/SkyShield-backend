@@ -45,11 +45,15 @@ export interface StartSimulationRequest {
   scenario_id: string;
 }
 
+/** Matches backend `SubmitDecisionSerializer` / `UserDecision.DECISION_TYPES`. */
+export type SimulationDecisionType = 'choice' | 'action' | 'response' | 'escalation';
+
 export interface SubmitDecisionRequest {
   session_id: string;
   step_number: number;
-  decision_type: string;
-  decision_data: Record<string, unknown>;
+  decision_type: SimulationDecisionType;
+  /** JSON object or array (DRF JSONField). */
+  decision_data: Record<string, unknown> | unknown[];
   time_taken: number;
 }
 

@@ -346,7 +346,7 @@ class IncidentRunListSerializer(serializers.ModelSerializer):
     participant_count = serializers.SerializerMethodField()
 
     def get_participant_count(self, obj):
-        return obj.mission_participants.filter(is_active=True).count()
+        return obj.mission_participants.count()
 
     class Meta:
         model = IncidentRun
@@ -369,7 +369,7 @@ class IncidentRunSerializer(serializers.ModelSerializer):
         return sm.get_time_remaining(obj.phase_started_at)
 
     def get_participant_count(self, obj):
-        return obj.mission_participants.filter(is_active=True).count()
+        return obj.mission_participants.count()
 
     class Meta:
         model = IncidentRun
@@ -379,13 +379,26 @@ class IncidentRunSerializer(serializers.ModelSerializer):
 class MissionParticipantSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     email = serializers.CharField(source='user.email', read_only=True)
+    is_online = serializers.SerializerMethodField()
 
     class Meta:
         model = MissionParticipant
         fields = [
             'id', 'username', 'email', 'role', 'joined_at',
-            'is_active', 'is_ready'
+            'is_active', 'is_ready', 'last_seen', 'last_heartbeat', 'is_online',
         ]
+
+    def get_is_online(self, obj):
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        now = timezone.now()
+        if obj.last_heartbeat and (now - obj.last_heartbeat) < timedelta(seconds=90):
+            return True
+        if obj.last_seen and (now - obj.last_seen) < timedelta(seconds=90):
+            return True
+        return False
 
 
 class IncidentEventSerializer(serializers.ModelSerializer):

@@ -7,6 +7,10 @@ interface RadarScopeProps {
   sessionState: Record<string, unknown>;
   glitchActive: boolean;
   isEscalated: boolean;
+  /** Multi-operator: subtle live ring + glow */
+  teamActive?: boolean;
+  /** No mission events yet — show standby copy on scope */
+  standbyMode?: boolean;
 }
 
 type Blip = {
@@ -42,6 +46,8 @@ export const RadarScope: React.FC<RadarScopeProps> = ({
   sessionState,
   glitchActive,
   isEscalated,
+  teamActive = false,
+  standbyMode = false,
 }) => {
   const seedBase = useMemo(() => {
     const raw = JSON.stringify(sessionState ?? {});
@@ -78,6 +84,7 @@ export const RadarScope: React.FC<RadarScopeProps> = ({
           'relative mx-auto aspect-square h-full max-h-[calc(100vh-140px)] w-auto',
           'rounded-full border border-emerald-500/20 shadow-[0_0_40px_rgba(34,197,94,0.08)]',
           glitchActive ? 'animate-[radarGlitch_350ms_ease-in-out_infinite]' : '',
+          teamActive ? 'shadow-[0_0_56px_rgba(34,197,94,0.22)] ring-2 ring-emerald-500/35 animate-[missionLivePulse_2.4s_ease-in-out_infinite]' : '',
         ].join(' ')}
         style={{
           backgroundColor: '#0a1a0a',
@@ -226,6 +233,17 @@ export const RadarScope: React.FC<RadarScopeProps> = ({
           </div>
         </div>
 
+        {standbyMode && !glitchActive && !isEscalated && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center px-2">
+            <div
+              className="max-w-[90%] rounded-md border border-emerald-500/25 bg-emerald-950/40 px-3 py-2 text-center text-[10px] uppercase tracking-[0.2em] text-emerald-200/90 backdrop-blur-sm sm:text-[11px]"
+              style={{ fontFamily: "'Courier New', monospace" }}
+            >
+              Standby — sector scan active · awaiting mission telemetry
+            </div>
+          </div>
+        )}
+
         {(glitchActive || isEscalated) && (
           <div className="absolute left-1/2 top-4 -translate-x-1/2">
             <div
@@ -248,6 +266,7 @@ export const RadarScope: React.FC<RadarScopeProps> = ({
           @keyframes altFlicker { 0% { opacity: 0.25; } 100% { opacity: 1; } }
           @keyframes radarGlitch { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(0.8px,-0.6px); } }
           @keyframes blipDrift { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1px,-1px); } }
+          @keyframes missionLivePulse { 0%, 100% { box-shadow: 0 0 48px rgba(34,197,94,0.18); } 50% { box-shadow: 0 0 72px rgba(34,197,94,0.32); } }
         `}</style>
       </div>
     </div>

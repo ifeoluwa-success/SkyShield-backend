@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../hooks/useAuth';
-import { Shield, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
+import { Spinner } from '../components/ui/Loading';
 
 const SocialAuthCallback: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -77,9 +78,8 @@ const SocialAuthCallback: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="text-center">
-        <div className="relative inline-block mb-6">
-          <div className="h-16 w-16 rounded-full border-4 border-sky-100 dark:border-sky-900 border-t-sky-600 animate-spin"></div>
-          <Shield className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-sky-600" />
+        <div className="mb-6 flex justify-center">
+          <Spinner size="xl" />
         </div>
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Completing secure sign-in...</h2>
         <p className="text-gray-500 dark:text-gray-400 mt-2">Please wait while we verify your credentials.</p>

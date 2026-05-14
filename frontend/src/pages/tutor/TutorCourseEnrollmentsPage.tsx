@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { PageLoader } from '../../components/ui/Loading';
 import { useAuth } from '../../hooks/useAuth';
 import type { CourseEnrollment, ModuleProgress } from '../../types/course';
 import { getCourseEnrollments, resetModuleAttempts } from '../../services/courseService';
@@ -150,9 +151,7 @@ const TutorCourseEnrollmentsPage: React.FC = () => {
       />
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="animate-spin text-amber-400" size={36} />
-        </div>
+        <PageLoader message="Loading enrollments…" className="min-h-0 py-16" />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-slate-700 bg-slate-900/40">
           <table className="min-w-full divide-y divide-slate-700 text-left text-sm">

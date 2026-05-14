@@ -6,7 +6,6 @@ import {
   FileText,
   Clock,
   ExternalLink,
-  Loader2,
   Search,
   X,
   Bookmark,
@@ -25,6 +24,7 @@ import {
   type Announcement,
 } from '../../services/contentService';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/LearningMaterialsPage.css';
 
 const LearningMaterialsPage: React.FC = () => {
@@ -129,7 +129,7 @@ const LearningMaterialsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="learning-materials-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading materials...</div>
+        <PageLoader message="Loading materials…" className="min-h-0 py-12" />
       </div>
     );
   }

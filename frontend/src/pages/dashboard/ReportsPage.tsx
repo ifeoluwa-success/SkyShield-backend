@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, CheckCircle, XCircle, Clock, Award, Target, TrendingUp } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Award, Target, TrendingUp } from 'lucide-react';
 import { getAllSessions } from '../../services/simulationService';
 import { getUserPerformance, type UserPerformance } from '../../services/analyticsService';
 import type { SimulationSession } from '../../types/simulation';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/ReportsPage.css';
 
 function formatDuration(seconds: number): string {
@@ -68,9 +69,8 @@ const ReportsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-page loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', paddingTop: '4rem' }}>
-        <Loader2 size={28} className="spinner" />
-        <span>Loading reports…</span>
+      <div className="dashboard-page loading">
+        <PageLoader message="Loading reports…" className="min-h-0 py-16" />
       </div>
     );
   }

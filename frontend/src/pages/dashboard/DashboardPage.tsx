@@ -13,7 +13,6 @@ import {
   Calendar,
   Zap,
   Brain,
-  Loader2,
   Activity,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -33,6 +32,7 @@ import type {
 import type { User } from '../../types/auth';
 import type { SimulationSession } from '../../types/simulation';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/DashboardPage.css';
 
 // ─── Local types ──────────────────────────────────────────────────────────────
@@ -356,10 +356,7 @@ const DashboardPage: React.FC = () => {
   if (loading) {
     return (
       <div className="dashboard-page loading">
-        <div className="loading-spinner">
-          <Loader2 size={32} className="spinner" />
-          Loading dashboard…
-        </div>
+        <PageLoader message="Loading dashboard…" className="min-h-0 py-12" />
       </div>
     );
   }

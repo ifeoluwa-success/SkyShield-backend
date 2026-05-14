@@ -4,11 +4,18 @@ interface StressHUDProps {
   timeRemaining: number | null;
   phaseTimeLimit: number;
   isEscalated: boolean;
+  /** Lighter vignette for bright UI shells. */
+  surface?: 'cockpit' | 'studio';
 }
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
-export const StressHUD: React.FC<StressHUDProps> = ({ timeRemaining, phaseTimeLimit, isEscalated }) => {
+export const StressHUD: React.FC<StressHUDProps> = ({
+  timeRemaining,
+  phaseTimeLimit,
+  isEscalated,
+  surface = 'cockpit',
+}) => {
   const stress = useMemo(() => {
     if (timeRemaining == null || phaseTimeLimit <= 0) return 0;
     return clamp01(1 - timeRemaining / phaseTimeLimit);
@@ -131,6 +138,9 @@ export const StressHUD: React.FC<StressHUDProps> = ({ timeRemaining, phaseTimeLi
   const shake = level >= 0.8;
 
   const opacity = level < 0.4 ? 0 : level < 0.6 ? 0.18 : level < 0.8 ? 0.3 : 0.45;
+  const studio = surface === 'studio';
+  const vignetteRgb = studio ? '244, 63, 94' : '239, 68, 68';
+  const vignetteOpacity = studio ? opacity * 0.45 : opacity;
 
   return (
     <div className="fixed inset-0 z-30 pointer-events-none">
@@ -143,7 +153,7 @@ export const StressHUD: React.FC<StressHUDProps> = ({ timeRemaining, phaseTimeLi
           shake ? 'animate-[stressShake_0.35s_ease-in-out_infinite]' : '',
         ].join(' ')}
         style={{
-          boxShadow: `inset 0 0 0 9999px rgba(239, 68, 68, ${opacity})`,
+          boxShadow: `inset 0 0 0 9999px rgba(${vignetteRgb}, ${vignetteOpacity})`,
           maskImage: 'radial-gradient(circle at center, transparent 55%, black 85%)',
           WebkitMaskImage: 'radial-gradient(circle at center, transparent 55%, black 85%)',
         }}

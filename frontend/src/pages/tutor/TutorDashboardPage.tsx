@@ -9,6 +9,7 @@ import {
   ExternalLink, BarChart3, Eye
 } from 'lucide-react';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/TutorDashboardPage.css';
 
 const TutorDashboardPage: React.FC = () => {
@@ -40,7 +41,7 @@ const TutorDashboardPage: React.FC = () => {
   if (loading) {
     return (
       <div className="tutor-dashboard-page loading">
-        <div className="loading-spinner">Loading dashboard...</div>
+        <PageLoader message="Loading dashboard…" className="min-h-0 py-12" />
       </div>
     );
   }

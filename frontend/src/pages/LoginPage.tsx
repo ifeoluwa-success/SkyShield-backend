@@ -7,6 +7,7 @@ import {
   CheckCircle, Info, Chrome, Github, Eye, EyeOff, ArrowLeft
 } from 'lucide-react';
 import AuthGraphic from '../components/AuthGraphic';
+import { Spinner } from '../components/ui/Loading';
 import '@/assets/css/AuthShared.css';
 import '@/assets/css/LoginPage.css';
 
@@ -206,7 +207,7 @@ const LoginPage: React.FC = () => {
 
             <button type="submit" className="login-button" disabled={isLoading}>
               {isLoading
-                ? <><div className="spinner" /><span>Signing In…</span></>
+                ? <><Spinner size="sm" className="text-[#020c1b]" /><span>Signing In…</span></>
                 : <><Shield size={18} /><span>Sign In</span></>}
             </button>
           </form>

@@ -13,6 +13,49 @@ class SimulationEngine:
     triggers escalations, and computes final scores for an IncidentRun.
     """
 
+    @staticmethod
+    def _choice_id_set(value):
+        """
+        Normalize a submitted decision or a stored 'correct' value into a set of
+        comparable string ids (handles plain strings vs {id: ...} UI payloads).
+        """
+        out = set()
+        if value is None:
+            return out
+        if isinstance(value, str):
+            out.add(value)
+            return out
+        if isinstance(value, (int, float, bool)):
+            out.add(str(value))
+            return out
+        if isinstance(value, dict):
+            for key in ('id', 'choice_id', 'option_id', 'value', 'answer', 'selected'):
+                v = value.get(key)
+                if v is None or v == '':
+                    continue
+                if isinstance(v, list):
+                    for x in v:
+                        out.update(SimulationEngine._choice_id_set(x))
+                elif isinstance(v, dict):
+                    out.update(SimulationEngine._choice_id_set(v))
+                else:
+                    out.add(str(v))
+            return out or {str(value)}
+        if isinstance(value, list):
+            for item in value:
+                out.update(SimulationEngine._choice_id_set(item))
+            return out
+        out.add(str(value))
+        return out
+
+    @staticmethod
+    def _decision_matches_correct(correct_action, decision_data):
+        expected = SimulationEngine._choice_id_set(correct_action)
+        actual = SimulationEngine._choice_id_set(decision_data)
+        if expected and actual:
+            return bool(expected & actual)
+        return decision_data == correct_action
+
     def apply_action(self, run, action_data):
         """
         Core decision processing method.
@@ -43,7 +86,7 @@ class SimulationEngine:
              record decision in session_state['decisions']
         7. Create UserDecision record (existing model):
              session = get or create SimulationSession linked to run
-             step_number = action_data['step_id']
+             step_number = current step index (not graph step_id strings)
              decision_type = action_data['action_type']
              decision_data = action_data['decision_data']
              is_correct = is_correct
@@ -67,15 +110,38 @@ class SimulationEngine:
         else:
             latency_ms = 0
 
+        session_state = run.session_state or {}
+        current_step_idx = int(session_state.get('current_step', 0) or 0)
+        steps = run.scenario.steps or []
+
+        raw_step_id = action_data.get('step_id')
+        if isinstance(raw_step_id, str) and raw_step_id.lower() == 'current':
+            resolved = None
+            if current_step_idx < len(steps) and isinstance(steps[current_step_idx], dict):
+                row = steps[current_step_idx]
+                resolved = row.get('id') or row.get('step_id')
+            if resolved is None:
+                graph = getattr(run.scenario, 'graph', None) or {}
+                if isinstance(graph, dict) and graph:
+                    nodes = graph.get('nodes') or graph.get('steps') or []
+                    if isinstance(nodes, dict):
+                        nodes = list(nodes.values())
+                    if (
+                        isinstance(nodes, list)
+                        and current_step_idx < len(nodes)
+                        and isinstance(nodes[current_step_idx], dict)
+                    ):
+                        node = nodes[current_step_idx]
+                        resolved = node.get('id') or node.get('step_id')
+            if resolved is not None:
+                action_data['step_id'] = resolved
+
         is_correct, consequences, next_state = self.evaluate_decision(run.scenario, action_data)
 
         escalation_payload = None
         if not is_correct:
             escalation_payload = self.check_escalation(run)
 
-        session_state = run.session_state or {}
-        current_step_idx = int(session_state.get('current_step', 0) or 0)
-        steps = run.scenario.steps or []
         step = steps[current_step_idx] if current_step_idx < len(steps) else {}
 
         base_points = step.get('points_value', 10)
@@ -123,7 +189,7 @@ class SimulationEngine:
 
             UserDecision.objects.create(
                 session=sim_session,
-                step_number=action_data.get('step_id'),
+                step_number=current_step_idx,
                 decision_type=action_data.get('action_type'),
                 decision_data=action_data.get('decision_data'),
                 is_correct=is_correct,
@@ -157,9 +223,9 @@ class SimulationEngine:
 
         Graph-based: find node matching action_data['step_id'],
                      check if action_data['decision_data'] matches node's
-                     correct_action field.
-        List-based:  check if action_data['decision_data'] in
-                     scenario.correct_actions
+                     correct_action field (see _decision_matches_correct).
+        List-based:  true if decision matches any entry in scenario.correct_actions
+                     using the same normalization (string id vs {id: ...} object).
 
         Returns (is_correct: bool, consequences: list, next_state: dict)
         """
@@ -187,13 +253,15 @@ class SimulationEngine:
                 return (False, [{'reason': 'step_not_found_in_graph'}], {})
 
             correct_action = matched.get('correct_action')
-            is_correct = (decision_data == correct_action)
+            is_correct = self._decision_matches_correct(correct_action, decision_data)
             consequences = matched.get('consequences') or []
             next_state = matched.get('next_state') or {}
             return (is_correct, consequences, next_state)
 
         correct_actions = scenario.correct_actions or []
-        is_correct = decision_data in correct_actions
+        is_correct = any(
+            self._decision_matches_correct(ca, decision_data) for ca in correct_actions
+        )
         return (is_correct, consequences, next_state)
 
     def check_escalation(self, run):

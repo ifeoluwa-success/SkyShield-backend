@@ -32,6 +32,7 @@ import {
 import type { TeachingSession, Meeting, ScheduleItem } from '../../types/tutor';
 import { getStartTime, getEndTime, getJoinLink, getRecordingUrl } from '../../types/tutor';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import ScheduleMeetingModal from '../../components/ScheduleMeetingModal';
 import ScheduleSessionModal from '../../components/ScheduleSessionModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
@@ -253,7 +254,7 @@ const TutorSchedulePage: React.FC = () => {
   if (loading) {
     return (
       <div className="tutor-schedule-page loading">
-        <div className="loading-spinner">Loading schedule…</div>
+        <PageLoader message="Loading schedule…" className="min-h-0 py-12" />
       </div>
     );
   }

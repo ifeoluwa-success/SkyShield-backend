@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Loader2, Plus, Pencil, Trash2, ArrowLeft } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import type { Course, CourseModule } from '../../types/course';
 import {
   createCourse,
@@ -339,9 +340,7 @@ const TutorCourseBuilderPage: React.FC = () => {
         </div>
 
         {loadingList ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-amber-400" size={36} />
-          </div>
+          <PageLoader message="Loading your courses…" className="min-h-0 py-16" />
         ) : myCourses.length === 0 ? (
           <p className="rounded-lg border border-slate-700 bg-slate-900/50 p-8 text-center text-slate-400">
             No courses yet. Create your first course.

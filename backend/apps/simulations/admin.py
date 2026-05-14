@@ -3,8 +3,18 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils import timezone
 from .models import (
-    Scenario, SimulationSession, UserDecision, ScenarioFeedback,
-    ScenarioAchievement, ScenarioComment, ScenarioBookmark
+    Scenario,
+    SimulationSession,
+    UserDecision,
+    ScenarioFeedback,
+    ScenarioAchievement,
+    ScenarioComment,
+    ScenarioBookmark,
+    Course,
+    CourseModule,
+    CourseEnrollment,
+    ModuleProgress,
+    CourseCertificate,
 )
 import json
 
@@ -396,3 +406,44 @@ class ScenarioBookmarkAdmin(admin.ModelAdmin):
         url = reverse('admin:simulations_scenario_change', args=[obj.scenario.id])
         return format_html('<a href="{}">{}</a>', url, obj.scenario.title)
     scenario_link.short_description = 'Scenario'
+
+
+# --- Structured courses (linked to scenarios for simulation checkpoints) ---
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['title', 'threat_focus', 'is_published', 'created_by', 'created_at']
+    list_filter = ['is_published', 'difficulty']
+    search_fields = ['title', 'threat_focus']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+
+
+@admin.register(CourseModule)
+class CourseModuleAdmin(admin.ModelAdmin):
+    list_display = ['title', 'course', 'module_type', 'position', 'scenario']
+    list_filter = ['module_type']
+    search_fields = ['title', 'course__title']
+    ordering = ['course', 'position']
+
+
+class ModuleProgressInline(admin.TabularInline):
+    model = ModuleProgress
+    extra = 0
+    readonly_fields = ['module', 'status', 'attempts', 'best_score', 'passed_at']
+
+
+@admin.register(CourseEnrollment)
+class CourseEnrollmentAdmin(admin.ModelAdmin):
+    list_display = ['trainee', 'course', 'status', 'enrolled_at', 'completed_at']
+    list_filter = ['status']
+    search_fields = ['trainee__email', 'course__title']
+    inlines = [ModuleProgressInline]
+    readonly_fields = ['id', 'enrolled_at']
+
+
+@admin.register(CourseCertificate)
+class CourseCertificateAdmin(admin.ModelAdmin):
+    list_display = ['certificate_number', 'enrollment', 'final_score', 'issued_at']
+    search_fields = ['certificate_number', 'enrollment__trainee__email']
+    readonly_fields = ['id', 'issued_at']

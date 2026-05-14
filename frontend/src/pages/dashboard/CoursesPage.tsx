@@ -1,278 +1,350 @@
+import { AxiosError } from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, BookOpen, Clock, Layers } from 'lucide-react';
-import type { Course, CourseEnrollment } from '../../types/course';
-import { enrollInCourse, getCourses, getMyEnrollments } from '../../services/courseService';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
+import { enrollInCourse, getCourses, getMyProgress } from '../../services/courseService';
+import type { Course, CourseEnrollment } from '../../types/course';
+import '../../assets/css/Simulationdash.css';
+import '../../assets/css/CoursesPage.css';
 
-const DIFFICULTY_LABELS: Record<number, string> = {
-  1: 'Beginner',
-  2: 'Intermediate',
-  3: 'Advanced',
-  4: 'Expert',
-};
+// ─── Constants ───────────────────────────────────────────────────────────────
+const DIFFICULTY_LABELS: Record<number, string> = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced', 4: 'Expert' };
 
-const difficultyBadgeClass = (d: Course['difficulty']) => {
+function difficultyBadgeClass(d: Course['difficulty']): string {
   switch (d) {
     case 1:
-      return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40';
+      return 'beginner';
     case 2:
-      return 'bg-blue-500/15 text-blue-300 border-blue-500/40';
+      return 'intermediate';
     case 3:
-      return 'bg-amber-500/15 text-amber-300 border-amber-500/40';
+      return 'advanced';
     case 4:
-      return 'bg-red-500/15 text-red-300 border-red-500/40';
+      return 'expert';
     default:
-      return 'bg-slate-700/40 text-slate-300 border-slate-600/40';
+      return 'beginner';
   }
+}
+
+const THREAT_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
+  ransomware:    { icon: '🔒', color: '#534AB7', bg: 'rgba(83,74,183,0.12)' },
+  gps:           { icon: '🛰️', color: '#185FA5', bg: 'rgba(24,95,165,0.12)' },
+  navigation:    { icon: '🛰️', color: '#185FA5', bg: 'rgba(24,95,165,0.12)' },
+  social:        { icon: '🎭', color: '#993C1D', bg: 'rgba(153,60,29,0.12)' },
+  phish:         { icon: '🎣', color: '#993C1D', bg: 'rgba(153,60,29,0.12)' },
+  unauthorized:  { icon: '⚠️', color: '#854F0B', bg: 'rgba(133,79,11,0.12)' },
+  apt:           { icon: '🕵️', color: '#A32D2D', bg: 'rgba(163,45,45,0.12)' },
+  general:       { icon: '🛡️', color: '#1D9E75', bg: 'rgba(29,158,117,0.12)' },
 };
 
-const threatBadgeClass = (focus: string) => {
+function getThreatConfig(focus: string) {
   const k = focus.toLowerCase();
-  if (k.includes('ransom')) return 'bg-purple-500/15 text-purple-200 border-purple-500/35';
-  if (k.includes('gps') || k.includes('navigation')) return 'bg-cyan-500/15 text-cyan-200 border-cyan-500/35';
-  if (k.includes('social') || k.includes('phish')) return 'bg-orange-500/15 text-orange-200 border-orange-500/35';
-  return 'bg-slate-600/30 text-slate-200 border-slate-500/35';
-};
+  for (const [key, val] of Object.entries(THREAT_CONFIG)) {
+    if (k.includes(key)) return val;
+  }
+  return THREAT_CONFIG.general;
+}
 
-const enrollmentStatusLabel = (e: CourseEnrollment): string => {
+function enrollmentStatusLabel(e: CourseEnrollment): string {
   if (e.status === 'certificate_issued' || e.certificate_number) return 'Certified';
   if (e.status === 'completed') return 'Completed';
   if (e.status === 'in_progress') return 'In Progress';
   return 'Enrolled';
-};
+}
 
+function normalizeDifficulty(d: Course['difficulty'] | number): Course['difficulty'] {
+  const n = Number(d);
+  if (n === 1 || n === 2 || n === 3 || n === 4) return n;
+  return 1;
+}
+
+function isNotEnrolledResponse(
+  data: CourseEnrollment | { enrolled: false },
+): data is { enrolled: false } {
+  return typeof data === 'object' && data !== null && 'enrolled' in data && data.enrolled === false;
+}
+
+
+// ─── Component ───────────────────────────────────────────────────────────────
 const CoursesPage: React.FC = () => {
   const navigate = useNavigate();
+
   const [courses, setCourses] = useState<Course[]>([]);
-  const [enrollments, setEnrollments] = useState<CourseEnrollment[]>([]);
+  const [enrollmentByCourseId, setEnrollmentByCourseId] = useState<Map<string, CourseEnrollment>>(
+    () => new Map(),
+  );
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterDifficulty, setFilterDifficulty] = useState<number | null>(null);
-  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(
-    null,
-  );
+  const [filterDifficulty, setFilterDifficulty] = useState('');
   const [enrollingId, setEnrollingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
+  // Fetch real data
   useEffect(() => {
     let cancelled = false;
-    const load = async () => {
+
+    const loadData = async () => {
       try {
         setLoading(true);
-        const [coursesData, enrollmentData] = await Promise.all([getCourses(), getMyEnrollments()]);
+        const coursesData = await getCourses();
+        const published = coursesData.filter(c => c.is_published);
+
+        const map = new Map<string, CourseEnrollment>();
+        await Promise.all(
+          published.map(async c => {
+            try {
+              const progress = await getMyProgress(c.id);
+              if (!isNotEnrolledResponse(progress)) {
+                map.set(c.id, progress);
+              }
+            } catch (err) {
+              const status = (err as AxiosError)?.response?.status;
+              if (status !== 404) throw err;
+            }
+          }),
+        );
+
         if (!cancelled) {
-          setCourses(coursesData.filter(c => c.is_published));
-          setEnrollments(enrollmentData);
+          setCourses(published);
+          setEnrollmentByCourseId(map);
         }
-      } catch {
-        if (!cancelled) setToast({ type: 'error', message: 'Failed to load courses' });
+      } catch (err) {
+        console.error(err);
+        if (!cancelled) {
+          setToast({ type: 'error', message: 'Failed to load courses. Please try again.' });
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
-    void load();
-    return () => {
-      cancelled = true;
-    };
+
+    void loadData();
+    return () => { cancelled = true; };
   }, []);
 
-  const enrollmentByCourseId = useMemo(() => {
-    const m = new Map<string, CourseEnrollment>();
-    enrollments.forEach(en => m.set(en.course.id, en));
-    return m;
-  }, [enrollments]);
+  const enrollmentMap = enrollmentByCourseId;
 
   const filteredCourses = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    return courses.filter(c => {
-      const matchesSearch =
-        !q ||
-        c.title.toLowerCase().includes(q) ||
-        c.threat_focus.toLowerCase().includes(q);
-      const matchesDiff = filterDifficulty == null || c.difficulty === filterDifficulty;
+    return courses.filter(course => {
+      const matchesSearch = !q || 
+        course.title.toLowerCase().includes(q) || 
+        course.threat_focus.toLowerCase().includes(q);
+      
+      const matchesDiff =
+        filterDifficulty === '' ||
+        normalizeDifficulty(course.difficulty) === Number(filterDifficulty);
       return matchesSearch && matchesDiff;
     });
   }, [courses, searchTerm, filterDifficulty]);
+
+  const getPassedCount = (en: CourseEnrollment) =>
+    en.module_progresses.filter(p => p.status === 'passed').length;
 
   const handleEnroll = async (courseId: string) => {
     try {
       setEnrollingId(courseId);
       await enrollInCourse(courseId);
+      setToast({ type: 'success', message: 'Successfully enrolled!' });
       navigate(`/dashboard/courses/${courseId}`);
     } catch {
-      setToast({ type: 'error', message: 'Could not enroll in this course' });
+      setToast({ type: 'error', message: 'Failed to enroll. Please try again.' });
     } finally {
       setEnrollingId(null);
     }
   };
 
-  const passedCount = (en: CourseEnrollment) =>
-    en.module_progresses.filter(p => p.status === 'passed').length;
-
   if (loading) {
     return (
-      <div className="dashboard-page loading flex min-h-[40vh] items-center justify-center">
-        <Loader2 size={32} className="animate-spin text-sky-400" />
+      <div className="dashboard-page loading">
+        <PageLoader message="Loading courses…" />
       </div>
     );
   }
 
   return (
-    <div className="dashboard-page px-4 pb-10 pt-6 md:px-6">
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+    <div className="dashboard-page">
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
 
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-100 md:text-3xl">Courses</h1>
-          <p className="mt-1 text-slate-400">Structured learning paths with readings and simulations</p>
+      <div className="welcome-header">
+        <div className="welcome-content">
+          <h1 className="welcome-title">
+            Course <span className="gradient-text">Library</span>
+          </h1>
+          <p className="welcome-subtitle">
+            Structured learning paths with readings and simulations
+          </p>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <input
-            type="search"
-            placeholder="Search by title or threat focus…"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-          />
-          <select
-            value={filterDifficulty ?? ''}
-            onChange={e =>
-              setFilterDifficulty(e.target.value === '' ? null : Number(e.target.value))
-            }
-            className="rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-          >
-            <option value="">All difficulties</option>
-            <option value={1}>Beginner</option>
-            <option value={2}>Intermediate</option>
-            <option value={3}>Advanced</option>
-            <option value={4}>Expert</option>
-          </select>
+        <div className="welcome-actions">
+          <div className="filter-group" style={{ marginBottom: 0 }}>
+            <input
+              className="courses-search"
+              type="search"
+              placeholder="Search title or threat…"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            <select
+              className="filter-select"
+              value={filterDifficulty}
+              onChange={e => setFilterDifficulty(e.target.value)}
+            >
+              <option value="">All difficulties</option>
+              <option value="1">Beginner</option>
+              <option value="2">Intermediate</option>
+              <option value="3">Advanced</option>
+              <option value="4">Expert</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {filteredCourses.length === 0 ? (
-        <div className="rounded-xl border border-slate-700/60 bg-slate-900/40 py-16 text-center text-slate-400">
-          No courses match your filters.
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredCourses.map(course => {
-            const en = enrollmentByCourseId.get(course.id);
+      <div className="courses-count">
+        {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''}
+      </div>
+
+      <div className="simulations-grid">
+        {filteredCourses.length === 0 ? (
+          <div className="courses-empty">No courses match your filters.</div>
+        ) : (
+          filteredCourses.map((course, idx) => {
+            const en = enrollmentMap.get(course.id);
             const enrolled = Boolean(en);
-            const certified =
-              en?.status === 'certificate_issued' || Boolean(en?.certificate_number);
+            const certified = en?.status === 'certificate_issued' || Boolean(en?.certificate_number);
             const total = course.modules?.length ?? course.module_count;
-            const done = en ? passedCount(en) : 0;
+            const done = en ? getPassedCount(en) : 0;
             const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            const tc = getThreatConfig(course.threat_focus);
+            const difficulty = normalizeDifficulty(course.difficulty);
+            const diffClass = difficultyBadgeClass(difficulty);
+
+            const statusChipClass =
+              certified
+                ? 'course-status-chip course-status-chip--certified'
+                : en?.status === 'in_progress'
+                  ? 'course-status-chip course-status-chip--progress'
+                  : 'course-status-chip';
 
             return (
               <article
                 key={course.id}
-                className="flex flex-col overflow-hidden rounded-xl border border-slate-700/60 bg-slate-900/50 shadow-lg transition hover:border-sky-500/40"
+                className="course-card"
+                style={{ animationDelay: `${idx * 40}ms` }}
               >
-                <div className="relative aspect-video bg-slate-800">
+                <div className="course-card-thumb" style={{ background: tc.bg }}>
                   {course.thumbnail ? (
                     <img
                       src={course.thumbnail}
                       alt=""
-                      className="h-full w-full object-cover"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-slate-800 to-slate-900 p-4 text-center">
-                      <BookOpen className="text-slate-500" size={36} />
-                      <span className="text-sm font-medium text-slate-400">{course.threat_focus}</span>
-                    </div>
+                    <span className="course-thumb-icon">{tc.icon}</span>
                   )}
+
                   <span
-                    className={`absolute left-3 top-3 rounded-full border px-2 py-0.5 text-xs ${threatBadgeClass(course.threat_focus)}`}
+                    className="course-thumb-label"
+                    style={{ color: tc.color, background: tc.bg, borderColor: `${tc.color}40` }}
                   >
                     {course.threat_focus}
                   </span>
+
+                  {certified && <span className="course-certified-ribbon">✦ Certified</span>}
                 </div>
 
-                <div className="flex flex-1 flex-col p-5">
-                  <h2 className="text-lg font-semibold text-slate-100 line-clamp-2">{course.title}</h2>
+                <div className="course-card-body">
+                  <h2 className="course-card-title">{course.title}</h2>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span
-                      className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${difficultyBadgeClass(course.difficulty)}`}
-                    >
-                      {DIFFICULTY_LABELS[course.difficulty]}
+                  <div className="course-badges-row">
+                    <span className={`difficulty-badge ${diffClass}`}>
+                      {DIFFICULTY_LABELS[difficulty]}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-slate-400">
-                      <Clock size={14} />
-                      {course.estimated_hours}h
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-slate-400">
-                      <Layers size={14} />
-                      {course.module_count} modules
-                    </span>
+                    <div className="course-meta">
+                      <span className="course-meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {course.estimated_hours}h
+                      </span>
+                      <span className="course-meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                        {course.module_count} modules
+                      </span>
+                    </div>
                   </div>
 
                   {enrolled && en && (
                     <>
-                      <div className="mt-4">
-                        <div className="mb-1 flex justify-between text-xs text-slate-400">
+                      <div className="course-prog-section">
+                        <div className="course-prog-row">
                           <span>Progress</span>
-                          <span>
-                            {done} / {total} modules
-                          </span>
+                          <span>{done}/{total} modules</span>
                         </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-                          <div
-                            className="h-full rounded-full bg-sky-500 transition-all"
-                            style={{ width: `${pct}%` }}
-                          />
+                        <div className="course-prog-track">
+                          <div className="course-prog-fill" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
-                      <span className="mt-3 inline-flex w-fit rounded-full border border-slate-600/60 bg-slate-800/60 px-2.5 py-1 text-xs text-slate-300">
-                        {certified ? 'Certified' : enrollmentStatusLabel(en)}
-                      </span>
+                      <div>
+                        <span className={statusChipClass}>
+                          <span className="course-status-dot" />
+                          {enrollmentStatusLabel(en)}
+                        </span>
+                      </div>
                     </>
                   )}
 
                   {!enrolled && (
-                    <span className="mt-4 inline-flex w-fit rounded-full border border-slate-600/60 px-2.5 py-1 text-xs text-slate-400">
+                    <span className="course-status-chip">
+                      <span className="course-status-dot" />
                       Not enrolled
                     </span>
                   )}
 
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="course-actions">
                     {!enrolled && (
                       <button
                         type="button"
+                        className="start-button"
                         disabled={enrollingId === course.id}
-                        onClick={() => void handleEnroll(course.id)}
-                        className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-500 disabled:opacity-60"
+                        onClick={() => handleEnroll(course.id)}
                       >
-                        {enrollingId === course.id ? 'Enrolling…' : 'Enroll'}
+                        {enrollingId === course.id ? 'Enrolling…' : '→ Enroll'}
                       </button>
                     )}
                     {enrolled && !certified && (
                       <button
                         type="button"
+                        className="start-button"
                         onClick={() => navigate(`/dashboard/courses/${course.id}`)}
-                        className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-500"
                       >
-                        Continue
+                        → Continue
                       </button>
                     )}
                     {certified && (
                       <button
                         type="button"
+                        className="review-button"
                         onClick={() => navigate('/dashboard/certifications')}
-                        className="rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-200 hover:bg-amber-500/20"
                       >
-                        View Certificate
+                        ✦ View Certificate
+                      </button>
+                    )}
+                    {enrolled && (
+                      <button
+                        type="button"
+                        className="courses-btn-ghost"
+                        onClick={() => navigate(`/dashboard/courses/${course.id}`)}
+                      >
+                        Details
                       </button>
                     )}
                   </div>
                 </div>
               </article>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
     </div>
   );
 };

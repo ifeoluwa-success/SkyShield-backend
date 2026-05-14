@@ -1,8 +1,9 @@
 // src/pages/dashboard/ExercisesPage.tsx
 import React, { useState, useEffect } from 'react';
-import { ClipboardList, Clock, Award, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { ClipboardList, Clock, Award, CheckCircle, AlertCircle } from 'lucide-react';
 import { getAssignedExercises, submitExerciseAttempt, type AssignedExercise } from '../../services/simulationService';
 import Toast from '../../components/Toast';
+import { PageLoader, Spinner } from '../../components/ui/Loading';
 import '../../assets/css/ExercisesPage.css';
 
 const ExercisesPage: React.FC = () => {
@@ -64,7 +65,7 @@ const ExercisesPage: React.FC = () => {
   if (loading) {
     return (
       <div className="exercises-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading exercises...</div>
+        <PageLoader message="Loading exercises…" className="min-h-0 py-12" />
       </div>
     );
   }
@@ -96,7 +97,7 @@ const ExercisesPage: React.FC = () => {
               onClick={() => handleSubmit(selectedExercise.id)}
               disabled={submitting === selectedExercise.id}
             >
-              {submitting === selectedExercise.id ? <Loader2 size={18} className="spinner" /> : 'Submit Exercise'}
+              {submitting === selectedExercise.id ? <Spinner size="sm" /> : 'Submit Exercise'}
             </button>
           </div>
         </div>

@@ -1,11 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { PlayCircle, Clock, Award, Loader2, Sparkles } from 'lucide-react';
+import { PlayCircle, Clock, Award, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getScenarios, startSimulation, getCurrentSession } from '../../services/simulationService';
 import type { Scenario, SimulationSession } from '../../types/simulation';
 import Toast from '../../components/Toast';
+import { PageLoader } from '../../components/ui/Loading';
 import '../../assets/css/Simulationdash.css';
-import { startMission } from '../../services/incidentService';
+import { startMissionRun } from '../../services/incidentService';
 import { useAuth } from '../../hooks/useAuth';
 
 const DashboardSimulationsPage: React.FC = () => {
@@ -69,7 +70,7 @@ const DashboardSimulationsPage: React.FC = () => {
   const handleLaunchMission = async (scenarioId: string) => {
     try {
       setLaunchingScenarioId(scenarioId);
-      const result = await startMission({ scenario_id: scenarioId, operator_role: operatorRole });
+      const result = await startMissionRun({ scenario_id: scenarioId, operator_role: operatorRole });
       navigate(`/dashboard/mission/${result.run_id}`);
     } catch {
       setToast({ type: 'error', message: 'Failed to launch mission' });
@@ -110,7 +111,7 @@ const DashboardSimulationsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="dashboard-page loading">
-        <div className="loading-spinner"><Loader2 size={32} className="spinner" /> Loading simulations...</div>
+        <PageLoader message="Loading simulations…" />
       </div>
     );
   }
